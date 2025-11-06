@@ -1,0 +1,9 @@
+# Ignore large or generated items
+docx2tex/
+docs/api_reference.md
+result.zip
+result/
+examples/
+.DS_Store
+Thumbs.db
+*.log
