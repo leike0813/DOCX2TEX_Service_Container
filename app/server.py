@@ -536,6 +536,50 @@ def _cache_restore(key: str, cached_base: str, new_base: str, dest: Path):
         shutil.copytree(src_tmp, dst_tmp)
 
 
+def _strip_ns(tag: str) -> str:
+    return tag.split('}', 1)[1] if tag.startswith('{') else tag
+
+
+def _maybe_rewrite_conf_imports(conf_path: Path) -> bool:
+    """If user's uploaded xml2tex conf contains <import href="conf.xml"/>,
+    rewrite it to the container default conf absolute URI so it doesn't depend
+    on being placed under docx2tex/conf.
+
+    Returns True if a rewrite was performed.
+    """
+    target_uri = DEFAULT_CONF.resolve().as_uri()
+    changed = False
+    # Try XML parse first
+    try:
+        from xml.etree import ElementTree as ET
+        tree = ET.parse(conf_path)
+        root = tree.getroot()
+        for el in root.iter():
+            if _strip_ns(el.tag) == 'import':
+                href = (el.get('href') or '').strip()
+                # Only rewrite relative/conf.xml style references
+                if href and '://' not in href and href.lower().endswith('conf.xml'):
+                    el.set('href', target_uri)
+                    changed = True
+        if changed:
+            tree.write(conf_path, encoding='utf-8', xml_declaration=True)
+            _console(f"rewrite_conf_import: set import@href -> {target_uri}")
+            return True
+    except Exception:
+        pass
+    # Fallback: textual replace (minimal, safe)
+    try:
+        s = conf_path.read_text(encoding='utf-8', errors='ignore')
+        s2 = s.replace('href="conf.xml"', f'href="{target_uri}"').replace("href='conf.xml'", f"href='{target_uri}'")
+        if s2 != s:
+            conf_path.write_text(s2, encoding='utf-8')
+            _console(f"rewrite_conf_import(text): set import@href -> {target_uri}")
+            return True
+    except Exception:
+        pass
+    return False
+
+
 class JobManager:
     def __init__(self, workers: int = 2):
         self.lock = threading.Lock()
@@ -1072,6 +1116,11 @@ async def create_task(
     if conf is not None:
         conf_path = work / "conf.xml"
         write_bytes(conf_path, await conf.read())
+        # Normalize <import href="conf.xml"/> to absolute default conf inside container
+        try:
+            _maybe_rewrite_conf_imports(conf_path)
+        except Exception:
+            pass
 
     xsl_path: Optional[Path] = None
     if custom_xsl is not None:
