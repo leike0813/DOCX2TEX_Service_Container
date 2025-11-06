@@ -60,3 +60,6 @@ Invoke-Docx2Tex -Server http://127.0.0.1:8000 -File .\examples\forward\example_f
 - 容器使用说明：`README-container.md`
 - API 参考：`docs/API_DOC.md`
 
+## 感谢
+
+伟大且专业的开源项目：[docx2tex](https://github.com/transpect/docx2tex)
