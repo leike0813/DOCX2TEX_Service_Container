@@ -1,4 +1,4 @@
-FROM debian:bookworm-slim AS builder
+FROM debian:bookworm-slim
 
 # Configure Debian mirrors (CN-friendly) and install base packages
 ARG DEBIAN_MIRROR=mirrors.tuna.tsinghua.edu.cn
@@ -53,7 +53,6 @@ RUN python3 -m venv /opt/venv && \
 
 # Copy application code (changes here won't invalidate previous pip layer)
 COPY app/ /app/
-COPY scripts/ /app/scripts/
 RUN chmod +x /app/entrypoint.sh
 
 EXPOSE 8000

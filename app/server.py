@@ -396,7 +396,15 @@ def compute_sha256(path: Path) -> str:
     return h.hexdigest()
 
 
-def compute_cache_key(docx: Path, conf: Optional[Path], xsl: Optional[Path]) -> str:
+def compute_cache_key(
+    docx: Path,
+    conf: Optional[Path],
+    xsl: Optional[Path],
+    evolve_xsl: Optional[Path] = None,
+    mtef_source: Optional[str] = None,
+    table_model: Optional[str] = None,
+    fontmaps_zip: Optional[Path] = None,
+) -> str:
     import hashlib
     h = hashlib.sha256()
     # docx
@@ -417,6 +425,25 @@ def compute_cache_key(docx: Path, conf: Optional[Path], xsl: Optional[Path]) -> 
                 h.update(chunk)
     else:
         h.update(b"|XSL|NONE")
+    # evolve driver (optional)
+    if evolve_xsl and evolve_xsl.exists():
+        with open(evolve_xsl, "rb") as f:
+            for chunk in iter(lambda: f.read(1024 * 512), b""):
+                h.update(b"|EVOLVE|")
+                h.update(chunk)
+    else:
+        h.update(b"|EVOLVE|NONE")
+    # mtef/table
+    h.update(("|MTEF|" + (mtef_source or "NONE")).encode("utf-8"))
+    h.update(("|TABLE|" + (table_model or "NONE")).encode("utf-8"))
+    # fontmaps zip content
+    if fontmaps_zip and fontmaps_zip.exists():
+        with open(fontmaps_zip, "rb") as f:
+            for chunk in iter(lambda: f.read(1024 * 512), b""):
+                h.update(b"|FONTS|")
+                h.update(chunk)
+    else:
+        h.update(b"|FONTS|NONE")
     return h.hexdigest()
 
 
@@ -787,7 +814,21 @@ def _safe_filename_from_url(url: str) -> str:
         return "document.docx"
 
 
-def process_job(task_id: str, source_kind: str, source_value: str, debug: bool, img_post_proc: bool, conf_file: Optional[Path], custom_xsl: Optional[Path]):
+def process_job(
+    task_id: str,
+    source_kind: str,
+    source_value: str,
+    debug: bool,
+    img_post_proc: bool,
+    conf_file: Optional[Path],
+    custom_xsl: Optional[Path],
+    custom_evolve: Optional[Path],
+    mtef_source: Optional[str] = None,
+    table_model: Optional[str] = None,
+    fontmaps_dir: Optional[Path] = None,
+    fontmaps_zip: Optional[Path] = None,
+    job_cache_key: Optional[str] = None,
+):
     js = jobs.get(task_id)
     work = Path(js.work_dir)
     LOG_DIR.mkdir(parents=True, exist_ok=True)
@@ -828,8 +869,16 @@ def process_job(task_id: str, source_kind: str, source_value: str, debug: bool, 
         # Resolve configuration
         chosen_conf = conf_file if conf_file else DEFAULT_CONF
 
-        # compute cache key from (docx, conf, xsl)
-        cache_key = compute_cache_key(input_docx, chosen_conf, custom_xsl)
+        # compute cache key consistent with create_task
+        cache_key = job_cache_key or compute_cache_key(
+            input_docx,
+            chosen_conf,
+            custom_xsl,
+            custom_evolve,
+            mtef_source,
+            table_model,
+            fontmaps_zip,
+        )
         _db_set_sha(task_id, cache_key)
         # console: initial cache status snapshot
         row0 = _db_cache_get(cache_key)
@@ -944,14 +993,27 @@ def process_job(task_id: str, source_kind: str, source_value: str, debug: bool, 
                 f"result={to_file_uri(out_tex)}",
                 "-o",
                 f"hub={to_file_uri(out_xml)}",
+            ]
+            # optional: custom evolve-hub driver as stylesheet input port
+            if custom_evolve:
+                cmd.extend(["-i", f"custom-evolve-hub-driver={to_file_uri(custom_evolve)}"])
+            # pipeline and options
+            cmd.extend([
                 to_file_uri(DOCX2TEX_XPL),
                 f"docx={to_file_uri(input_docx)}",
                 f"conf={to_file_uri(chosen_conf)}",
                 f"debug={'yes'}",
                 f"debug-dir-uri={to_file_uri(debug_dir)}",
-            ]
+            ])
             if custom_xsl:
                 cmd.append(f"custom-xsl={to_file_uri(custom_xsl)}")
+            # optional mapping:
+            if mtef_source and mtef_source.lower() in ("ole", "wmf", "ole+wmf", "wmf+ole"):
+                cmd.append(f"mtef-source={mtef_source}")
+            if table_model and table_model.lower() in ("tabularx", "tabular", "htmltabs"):
+                cmd.append(f"table-model={table_model}")
+            if fontmaps_dir and fontmaps_dir.exists():
+                cmd.append(f"custom-font-maps-dir={to_file_uri(fontmaps_dir)}")
 
             env = os.environ.copy()
             if CATALOG_FILE.exists():
@@ -1008,6 +1070,15 @@ def process_job(task_id: str, source_kind: str, source_value: str, debug: bool, 
                 lf.write(b"\n--- pack_tex_with_images ---\n")
                 lf.write((out3 or "").encode("utf-8") + b"\n" + (err3 or "").encode("utf-8"))
 
+        # For debug builds: keep rich artifacts, but also tidy TeX by commenting .vsdx includes
+        # and normalizing width options so preview/LaTeX compiles cleanly in debug bundles.
+        if debug:
+            dbg_script = APP_HOME / "scripts" / "rewrite_tex_debug.py"
+            rc4, out4, err4 = run_subprocess(["python3", str(dbg_script), str(out_tex)], timeout=300)
+            with open(log_path, "ab") as lf:
+                lf.write(b"\n--- rewrite_tex_debug ---\n")
+                lf.write((out4 or "").encode("utf-8") + b"\n" + (err4 or "").encode("utf-8"))
+
         # Build manifest
         manifest = {
             "task_id": task_id,
@@ -1015,6 +1086,9 @@ def process_job(task_id: str, source_kind: str, source_value: str, debug: bool, 
             "start_time": js.start_time,
             "end_time": time.time(),
             "files": [],
+            "mtef_source": (mtef_source or ""),
+            "table_model": (table_model or ""),
+            "fontmaps_dir": str(fontmaps_dir) if fontmaps_dir else "",
         }
 
         # Create ZIP
@@ -1057,6 +1131,37 @@ def process_job(task_id: str, source_kind: str, source_value: str, debug: bool, 
                     arc = f"logs/{log_path.name}"
                     zf.write(log_path, arcname=arc)
                     manifest["files"].append(arc)
+                # include fontmaps.zip if any
+                fmzip = Path(js.work_dir) / "fontmaps.zip"
+                if fmzip.exists():
+                    arc = fmzip.name
+                    zf.write(fmzip, arcname=arc)
+                    manifest["files"].append(arc)
+                # 6) include effective custom XSLs (if any)
+                try:
+                    if custom_xsl and Path(custom_xsl).exists():
+                        cx = Path(custom_xsl)
+                        arc = f"xsl/{cx.name}"
+                        zf.write(cx, arcname=arc)
+                        manifest["files"].append(arc)
+                except Exception:
+                    pass
+                try:
+                    if custom_evolve and Path(custom_evolve).exists():
+                        ce = Path(custom_evolve)
+                        arc = f"xsl/{ce.name}"
+                        zf.write(ce, arcname=arc)
+                        manifest["files"].append(arc)
+                except Exception:
+                    pass
+                # 7) include stylemap manifest if present
+                try:
+                    sm = work / "stylemap_manifest.json"
+                    if sm.exists():
+                        zf.write(sm, arcname=sm.name)
+                        manifest["files"].append(sm.name)
+                except Exception:
+                    pass
             else:
                 # minimal: out.tex + image/
                 if out_tex.exists():
@@ -1089,6 +1194,11 @@ async def create_task(
     img_post_proc: bool = Form(default=True),
     conf: UploadFile | None = File(default=None),
     custom_xsl: UploadFile | None = File(default=None),
+    custom_evolve: UploadFile | None = File(default=None),
+    StyleMap: str | None = Form(default=None),
+    MathTypeSource: str | None = Form(default=None),
+    TableModel: str | None = Form(default=None),
+    FontMapsZip: UploadFile | None = File(default=None),
 ):
     if (file is None and not url) or (file is not None and url):
         raise HTTPException(status_code=400, detail="Provide exactly one of file or url")
@@ -1127,10 +1237,77 @@ async def create_task(
         xsl_path = work / "custom.xsl"
         write_bytes(xsl_path, await custom_xsl.read())
 
+    evolve_path: Optional[Path] = None
+    if custom_evolve is not None:
+        evolve_path = work / "custom-evolve-hub-driver.xsl"
+        write_bytes(evolve_path, await custom_evolve.read())
+
+    # Optional: fontmaps zip -> extract to work/fontmaps
+    fontmaps_zip_path: Optional[Path] = None
+    fontmaps_dir: Optional[Path] = None
+    if FontMapsZip is not None:
+        try:
+            fontmaps_zip_path = work / "fontmaps.zip"
+            write_bytes(fontmaps_zip_path, await FontMapsZip.read())
+            import zipfile, os
+            fontmaps_dir = work / "fontmaps"
+            fontmaps_dir.mkdir(parents=True, exist_ok=True)
+            with zipfile.ZipFile(fontmaps_zip_path, 'r') as zf:
+                for zi in zf.infolist():
+                    name = zi.filename
+                    if name.endswith('/'):
+                        continue
+                    # prevent path traversal
+                    target = (fontmaps_dir / name).resolve()
+                    if not str(target).startswith(str(fontmaps_dir.resolve())):
+                        continue
+                    target.parent.mkdir(parents=True, exist_ok=True)
+                    with zf.open(zi) as src, open(target, 'wb') as dst:
+                        dst.write(src.read())
+        except Exception:
+            fontmaps_zip_path = None
+            fontmaps_dir = None
+
+    # Prepare effective XSLs from StyleMap if provided
+    effective_evolve: Optional[Path] = None
+    effective_xsl: Optional[Path] = None
+    if StyleMap and StyleMap.strip():
+        try:
+            from scripts.stylemap_inject import prepare_effective_xsls
+            confs = [p for p in [conf_path, DEFAULT_CONF] if p is not None]
+            ee, ex, style_map, role_cmds = prepare_effective_xsls(StyleMap, confs, evolve_path, xsl_path, work)
+            effective_evolve = ee or evolve_path
+            effective_xsl = ex or xsl_path
+            # Log summary into task log later in process_job; here we store a small manifest
+            manifest = {
+                "style_map_keys": list(style_map.keys()),
+                "role_cmds": role_cmds,
+                "mtef_source": (MathTypeSource or ""),
+                "table_model": (TableModel or ""),
+            }
+            try:
+                (work / "stylemap_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
+            except Exception:
+                pass
+        except Exception:
+            effective_evolve = evolve_path
+            effective_xsl = xsl_path
+    else:
+        effective_evolve = evolve_path
+        effective_xsl = xsl_path
+
     # Compute cache key for response
     chosen_conf = conf_path if conf_path else DEFAULT_CONF
     try:
-        cache_key = compute_cache_key(input_docx, chosen_conf, xsl_path)
+        cache_key = compute_cache_key(
+            input_docx,
+            chosen_conf,
+            effective_xsl,
+            effective_evolve,
+            (MathTypeSource or None),
+            (TableModel or None),
+            fontmaps_zip_path,
+        )
         row = _db_cache_get(cache_key)
         if row and int(row.get("available", 0)) == 1:
             cache_status = "HIT"
@@ -1144,7 +1321,22 @@ async def create_task(
     # Submit background job (already saved the input path; mark kind=file for both)
     source_kind = "file"
     source_value = str(input_docx)
-    jobs.pool.submit(process_job, js.task_id, source_kind, source_value, debug, img_post_proc, conf_path, xsl_path)
+    jobs.pool.submit(
+        process_job,
+        js.task_id,
+        source_kind,
+        source_value,
+        debug,
+        img_post_proc,
+        conf_path,
+        effective_xsl,
+        effective_evolve,
+        (MathTypeSource or None),
+        (TableModel or None),
+        (fontmaps_dir or None),
+        (fontmaps_zip_path or None),
+        cache_key,
+    )
 
     return JSONResponse({"task_id": js.task_id, "cache_key": cache_key, "cache_status": cache_status})
 
@@ -1221,3 +1413,55 @@ def on_startup():
     sweep_int = int(os.environ.get("LOCK_SWEEP_INTERVAL_SEC", "120"))
     lock_max  = int(os.environ.get("LOCK_MAX_AGE_SEC", "1800"))
     start_lock_sweeper(sweep_int, lock_max)
+@app.post("/v1/dryrun")
+async def dryrun(
+    conf: UploadFile | None = File(default=None),
+    custom_xsl: UploadFile | None = File(default=None),
+    custom_evolve: UploadFile | None = File(default=None),
+    StyleMap: str | None = Form(default=None),
+):
+    work = DATA_ROOT / "dryrun" / str(uuid.uuid4())
+    work.mkdir(parents=True, exist_ok=True)
+    # Optional inputs
+    conf_path: Optional[Path] = None
+    if conf is not None:
+        conf_path = work / "conf.xml"
+        write_bytes(conf_path, await conf.read())
+        try:
+            _maybe_rewrite_conf_imports(conf_path)
+        except Exception:
+            pass
+    xsl_path: Optional[Path] = None
+    if custom_xsl is not None:
+        xsl_path = work / "custom.xsl"
+        write_bytes(xsl_path, await custom_xsl.read())
+    evolve_path: Optional[Path] = None
+    if custom_evolve is not None:
+        evolve_path = work / "custom-evolve-hub-driver.xsl"
+        write_bytes(evolve_path, await custom_evolve.read())
+
+    # Build effective XSLs from StyleMap
+    try:
+        from scripts.stylemap_inject import prepare_effective_xsls
+        confs = [p for p in [conf_path, DEFAULT_CONF] if p is not None]
+        effective_evolve, effective_xsl, style_map, role_cmds = prepare_effective_xsls(StyleMap, confs, evolve_path, xsl_path, work)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"StyleMap processing failed: {e}")
+
+    # Package only the effective XSLs for debugging
+    from zipfile import ZipFile, ZIP_DEFLATED
+    mem_zip = work / "dryrun_xsls.zip"
+    files_added = 0
+    with ZipFile(mem_zip, "w", ZIP_DEFLATED) as zf:
+        if effective_xsl and effective_xsl.exists():
+            zf.write(effective_xsl, arcname=f"xsl/{effective_xsl.name}")
+            files_added += 1
+        if effective_evolve and effective_evolve.exists():
+            zf.write(effective_evolve, arcname=f"xsl/{effective_evolve.name}")
+            files_added += 1
+        sm = work / "stylemap_manifest.json"
+        if sm.exists():
+            zf.write(sm, arcname=sm.name)
+    if files_added == 0:
+        raise HTTPException(status_code=400, detail="No effective XSLs generated (check StyleMap and conf)")
+    return StreamingResponse(open(mem_zip, "rb"), media_type="application/zip", headers={"Content-Disposition": f"attachment; filename=dryrun_xsls.zip"})

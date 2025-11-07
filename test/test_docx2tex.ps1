@@ -45,6 +45,11 @@ param(
 
 [Parameter()][string]$Conf,
 [Parameter()][string]$CustomXsl,
+[Parameter()][string]$StyleMap,
+[Parameter()][string]$MathTypeSource,
+[Parameter()][string]$TableModel,
+[Parameter()][string]$FontMapsZip,
+[Parameter()][string]$CustomEvolve,
 
 [Parameter()][int]$TimeoutSec = 300
 )
@@ -72,6 +77,21 @@ if ($CustomXsl) {
 if (-not (Test-Path -LiteralPath $CustomXsl)) { throw "CustomXsl not found: $CustomXsl" }
 $xslStream = Add-FilePart -Form $form -Name "custom_xsl" -FilePath $CustomXsl -ContentType "application/xml"
 $streams.Add($xslStream) | Out-Null
+}
+if ($StyleMap) {
+  Add-StringPart -Form $form -Name "StyleMap" -Value $StyleMap
+}
+if ($MathTypeSource) { Add-StringPart -Form $form -Name "MathTypeSource" -Value $MathTypeSource }
+if ($TableModel) { Add-StringPart -Form $form -Name "TableModel" -Value $TableModel }
+if ($FontMapsZip) {
+  if (-not (Test-Path -LiteralPath $FontMapsZip)) { throw "FontMapsZip not found: $FontMapsZip" }
+  $fmStream = Add-FilePart -Form $form -Name "FontMapsZip" -FilePath $FontMapsZip -ContentType "application/zip"
+  $streams.Add($fmStream) | Out-Null
+}
+if ($CustomEvolve) {
+if (-not (Test-Path -LiteralPath $CustomEvolve)) { throw "CustomEvolve not found: $CustomEvolve" }
+$evolveStream = Add-FilePart -Form $form -Name "custom_evolve" -FilePath $CustomEvolve -ContentType "application/xml"
+$streams.Add($evolveStream) | Out-Null
 }
 
 $resp = $hc.PostAsync($endpoint, $form).Result
@@ -168,15 +188,20 @@ param(
 
 [string]$Conf,
 [string]$CustomXsl,
+[string]$StyleMap,
+[string]$CustomEvolve,
+[string]$MathTypeSource,
+[string]$TableModel,
+[string]$FontMapsZip,
 
 [int]$PollIntervalSec = 2,
 [int]$TimeoutSec = 900
 )
 
 $task = if ($PSCmdlet.ParameterSetName -eq "File") {
-New-Docx2TexTask -Server $Server -File $File -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl
+New-Docx2TexTask -Server $Server -File $File -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip
 } else {
-New-Docx2TexTask -Server $Server -Url $Url -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl
+New-Docx2TexTask -Server $Server -Url $Url -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip
 }
 
 if (-not $task.TaskId) { throw "Task creation failed (no TaskId returned)." }
@@ -185,4 +210,61 @@ $st = Wait-Docx2TexTask -Server $Server -TaskId $task.TaskId -PollIntervalSec $P
 if ($st.data.state -ne 'done') { throw "Task failed: $($st.data.err_msg)" }
 $zip = Get-Docx2TexResult -Server $Server -TaskId $task.TaskId -OutFile $OutFile
   [PSCustomObject]@{ TaskId = $task.TaskId; CacheKey = $task.CacheKey; CacheStatus = $task.CacheStatus; State = $st.data.state; Zip = (Resolve-Path $zip).Path }
+}
+
+# Dry-run helper: build effective XSLs only and download as ZIP
+function Invoke-Docx2TexDryRun {
+param(
+  [Parameter(Mandatory=$true)][string]$Server,
+
+  [string]$Conf,
+  [string]$CustomXsl,
+  [string]$CustomEvolve,
+  [string]$StyleMap,
+
+  [string]$OutFile = $(Join-Path $PWD ("dryrun_{0}.zip" -f ([Guid]::NewGuid().ToString("n").Substring(0,8)))),
+  [int]$TimeoutSec = 300
+)
+
+$endpoint = "$Server/v1/dryrun"
+$hc = New-HttpClient -TimeoutSec $TimeoutSec
+$form = New-Object System.Net.Http.MultipartFormDataContent
+$streams = New-Object System.Collections.Generic.List[System.IDisposable]
+try {
+  if ($Conf) {
+    if (-not (Test-Path -LiteralPath $Conf)) { throw "Conf not found: $Conf" }
+    $s = Add-FilePart -Form $form -Name "conf" -FilePath $Conf -ContentType "application/xml"; $streams.Add($s) | Out-Null
+  }
+  if ($CustomXsl) {
+    if (-not (Test-Path -LiteralPath $CustomXsl)) { throw "CustomXsl not found: $CustomXsl" }
+    $s = Add-FilePart -Form $form -Name "custom_xsl" -FilePath $CustomXsl -ContentType "application/xml"; $streams.Add($s) | Out-Null
+  }
+  if ($CustomEvolve) {
+    if (-not (Test-Path -LiteralPath $CustomEvolve)) { throw "CustomEvolve not found: $CustomEvolve" }
+    $s = Add-FilePart -Form $form -Name "custom_evolve" -FilePath $CustomEvolve -ContentType "application/xml"; $streams.Add($s) | Out-Null
+  }
+  if ($StyleMap) {
+    Add-StringPart -Form $form -Name "StyleMap" -Value $StyleMap
+  }
+
+  $resp = $hc.PostAsync($endpoint, $form).Result
+  $bytes = $resp.Content.ReadAsByteArrayAsync().Result
+  if (-not $resp.IsSuccessStatusCode) {
+    $msg = try { [System.Text.Encoding]::UTF8.GetString($bytes) } catch { "" }
+    throw "HTTP $($resp.StatusCode) $msg"
+  }
+
+  $outDir = Split-Path -Parent $OutFile
+  if ($outDir -and -not (Test-Path -LiteralPath $outDir)) {
+    New-Item -ItemType Directory -Path $outDir -Force | Out-Null
+  }
+  [System.IO.File]::WriteAllBytes($OutFile, $bytes)
+  Write-Host ("DryRun ZIP -> {0}" -f (Resolve-Path $OutFile).Path)
+  return (Resolve-Path $OutFile).Path
+}
+finally {
+  foreach ($s in $streams) { try { $s.Dispose() } catch {} }
+  try { $form.Dispose() } catch {}
+  try { $hc.Dispose() } catch {}
+}
 }

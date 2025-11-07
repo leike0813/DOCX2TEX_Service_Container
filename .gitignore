@@ -2,8 +2,14 @@
 docx2tex/
 docs/api_reference.md
 result.zip
+result_debug.zip
+dryrun.zip
 result/
+result_debug
 examples/
+test/fontmaps-sample/
+test/fontmaps-sample.zip
+conf_test/
 .DS_Store
 Thumbs.db
 *.log
