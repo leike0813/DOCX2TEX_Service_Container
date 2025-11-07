@@ -1,8 +1,8 @@
 FROM debian:bookworm-slim
 
 # Configure Debian mirrors (CN-friendly) and install base packages
-ARG DEBIAN_MIRROR=mirrors.tuna.tsinghua.edu.cn
-ARG DEBIAN_SECURITY_MIRROR=mirrors.tuna.tsinghua.edu.cn
+ARG DEBIAN_MIRROR=mirrors.ustc.edu.cn
+ARG DEBIAN_SECURITY_MIRROR=mirrors.ustc.edu.cn
 
 ENV DEBIAN_FRONTEND=noninteractive \
     APP_HOME=/svc/app \
