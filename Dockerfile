@@ -42,7 +42,7 @@ RUN mkdir -p /opt/catalog
 COPY catalog/ /opt/catalog/
 
 # Set pip to Tsinghua mirror (CN) before installing Python libraries
-RUN printf "[global]\nindex-url = https://pypi.tuna.tsinghua.edu.cn/simple\n" > /etc/pip.conf
+RUN printf "[global]\nindex-url = https://pypi.mirrors.ustc.edu.cn/simple\n" > /etc/pip.conf
 
 # Install Python deps early for better build cache reuse
 WORKDIR /svc
