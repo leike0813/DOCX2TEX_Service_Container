@@ -63,3 +63,6 @@ Invoke-Docx2Tex -Server http://127.0.0.1:8000 -File .\examples\forward\example_f
 
 > 提示：还可结合 `MathTypeSource`（`ole|wmf|ole+wmf`）、`TableModel`（`tabularx|tabular|htmltabs`）、`FontMapsZip` 使用；详见 `docs/API_DOC.md`。
 
+## 感谢
+
+伟大且专业的开源项目：[docx2tex](https://github.com/transpect/docx2tex)
