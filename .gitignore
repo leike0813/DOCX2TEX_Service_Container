@@ -5,7 +5,7 @@ result.zip
 result_debug.zip
 dryrun.zip
 result/
-result_debug
+result_debug/
 examples/
 conf_test/
 .DS_Store
