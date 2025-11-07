@@ -16,6 +16,10 @@ from app.core.logging import log_line, console, log_exception
 from app.core.proc import run_subprocess
 from app.core.storage import compute_sha256
 from app.core.tasks import TaskStore
+from app.core.postprocess import (
+    release_collect_images_and_normalize,
+    debug_comment_vsdx_and_normalize,
+)
 from app.core.models import JobState
 
 
@@ -158,16 +162,19 @@ class JobManager:
                     finally:
                         self.locks.release(cache_key)
 
-            # Vector image conversion (optional)
+            # Vector image conversion (optional, in-process)
             if img_post_proc and out_tex.exists():
                 self.set_state(task_id, "converting")
-                from app.core.proc import run_subprocess as run2
-
-                conv_script = self.cfg.app_home / "scripts" / "convert_vector_images.py"
-                rc2, out2, err2 = run2(["python3", str(conv_script), str(out_tex)], timeout=600)
-                with open(log_path, "ab") as lf:
-                    lf.write(b"\n--- convert_vector_images ---\n")
-                    lf.write((out2 or "").encode("utf-8") + b"\n" + (err2 or "").encode("utf-8"))
+                try:
+                    from app.core.postprocess import convert_vector_references
+                    c, m, f = convert_vector_references(out_tex)
+                    with open(log_path, "ab") as lf:
+                        lf.write(b"\n--- convert_vector_images ---\n")
+                        lf.write(f"converted={c} missing={m} failed={f}\n".encode("utf-8"))
+                except Exception as e:
+                    with open(log_path, "ab") as lf:
+                        lf.write(b"\n--- convert_vector_images (error) ---\n")
+                        lf.write(str(e).encode("utf-8"))
 
             # Packaging
             self.set_state(task_id, "packaging")
@@ -189,6 +196,11 @@ class JobManager:
             self.cfg.public_root.mkdir(parents=True, exist_ok=True)
             with ZipFile(result_zip_public, "w", ZIP_DEFLATED) as zf:
                 if debug:
+                    # debug-mode: tidy TeX, comment .vsdx, normalize width
+                    try:
+                        _ = debug_comment_vsdx_and_normalize(out_tex)
+                    except Exception:
+                        pass
                     for p in [out_tex, out_xml]:
                         if p.exists():
                             zf.write(p, arcname=p.name)
@@ -210,7 +222,27 @@ class JobManager:
                                 arc = f"{tmp_dir.name}/{sub.relative_to(tmp_dir)}"
                                 zf.write(sub, arcname=arc)
                                 manifest["files"].append(arc)
+                    # include log
+                    if log_path.exists():
+                        arc = f"logs/{log_path.name}"
+                        zf.write(log_path, arcname=arc)
+                        manifest["files"].append(arc)
+                    # include effective custom evolve xsl & stylemap manifest if present
+                    eff = work / "custom-evolve-effective.xsl"
+                    if eff.exists():
+                        zf.write(eff, arcname=f"xsl/{eff.name}")
+                        manifest["files"].append(f"xsl/{eff.name}")
+                    sm = work / "stylemap_manifest.json"
+                    if sm.exists():
+                        zf.write(sm, arcname=sm.name)
+                        manifest["files"].append(sm.name)
                 else:
+                    # non-debug: collect images, rewrite paths, drop .vsdx, normalize width
+                    try:
+                        image_dir = work / "image"
+                        ncol, ndrop = release_collect_images_and_normalize(out_tex, image_dir)
+                    except Exception:
+                        pass
                     if out_tex.exists():
                         zf.write(out_tex, arcname=out_tex.name)
                         manifest["files"].append(out_tex.name)

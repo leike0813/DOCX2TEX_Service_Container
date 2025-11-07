@@ -17,6 +17,7 @@ from app.core.tasks import TaskStore
 from app.core.storage import write_bytes, safe_name
 from app.core.proc import download_to
 from app.core.convert import rewrite_conf_imports_to_default, compute_cache_key
+from app.core.stylemap import prepare_effective_xsls
 from app.services.job_manager import JobManager
 
 
@@ -105,14 +106,12 @@ async def create_task(
     # Prepare effective XSLs from StyleMap (if any)
     try:
         if StyleMap and StyleMap.strip():
-            from app.scripts.stylemap_inject import prepare_effective_xsls
-
             confs = [p for p in [conf_path, ctx.cfg.docx2tex_home / "conf" / "conf.xml"] if p is not None]
             effective_evolve, effective_xsl, style_map, role_cmds = prepare_effective_xsls(StyleMap, confs, evolve_path, xsl_path, work)
+            # Only evolve-driver injection is used for StyleMap (no output-layer custom-xsl injection)
             if effective_evolve:
                 evolve_path = effective_evolve
-            if effective_xsl:
-                xsl_path = effective_xsl
+            # effective_xsl is intentionally ignored
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"StyleMap processing failed: {e}")
 
@@ -213,10 +212,9 @@ async def dryrun(
         write_bytes(evolve_path, await custom_evolve.read())
 
     try:
-        from app.scripts.stylemap_inject import prepare_effective_xsls
-
         confs = [p for p in [conf_path, ctx.cfg.docx2tex_home / "conf" / "conf.xml"] if p is not None]
         effective_evolve, effective_xsl, style_map, role_cmds = prepare_effective_xsls(StyleMap, confs, evolve_path, xsl_path, work)
+        # Only evolve-driver output is relevant for dryrun packaging
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"StyleMap processing failed: {e}")
 

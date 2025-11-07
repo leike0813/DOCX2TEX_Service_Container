@@ -1,15 +1,15 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 import tempfile
 from pathlib import Path
 
+from app.core.stylemap import prepare_effective_xsls
+
 
 def test_stylemap_prepares_effective_evolve_xsl():
     # This test runs outside container and doesn't invoke Calabash.
     # It verifies that StyleMap + xml2tex conf can produce an effective evolve XSL.
-    from app.scripts.stylemap_inject import prepare_effective_xsls
-
     with tempfile.TemporaryDirectory() as td:
         work = Path(td)
         # Use one of the project-provided xml2tex configurations
@@ -32,4 +32,5 @@ def test_stylemap_prepares_effective_evolve_xsl():
         assert "evolve-hub-driver.xsl" in text or "docx2tex-preprocess" in text
         # Ensure role mapping keys recognized (intersection may vary by conf)
         assert any(k in style_map for k in ("Title", "Heading1"))
-
+        # Only evolve-driver injection is used; no separate custom XSL produced
+        assert ex is None

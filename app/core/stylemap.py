@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import re
 from pathlib import Path
@@ -22,9 +24,6 @@ def _xml_escape(s: str) -> str:
 
 
 def parse_style_map(style_str: Optional[str]) -> Dict[str, List[str]]:
-    """Parse the user-provided JSON StyleMap.
-    Returns role->list of visible names (strings) limited to accepted roles.
-    """
     roles = {"Title", "Heading1", "Heading2", "Heading3"}
     result: Dict[str, List[str]] = {}
     if not style_str:
@@ -43,9 +42,8 @@ def parse_style_map(style_str: Optional[str]) -> Dict[str, List[str]]:
             else:
                 vals = []
             if vals:
-                # de-dup while preserving order
                 seen = set()
-                uniq = []
+                uniq: List[str] = []
                 for s in vals:
                     if s not in seen:
                         uniq.append(s)
@@ -57,10 +55,6 @@ def parse_style_map(style_str: Optional[str]) -> Dict[str, List[str]]:
 
 
 def extract_role_cmds(conf_paths: List[Path]) -> Dict[str, str]:
-    """Extract role->TeX command mapping from provided xml2tex conf files.
-    Reads files in order; later files override earlier ones for the same role.
-    Only captures roles in {Title, Heading1, Heading2, Heading3}.
-    """
     wanted_roles = ["Title", "Heading1", "Heading2", "Heading3"]
     role_cmd: Dict[str, str] = {}
     for p in conf_paths:
@@ -69,21 +63,17 @@ def extract_role_cmds(conf_paths: List[Path]) -> Dict[str, str]:
         try:
             tree = ET.parse(str(p))
             root = tree.getroot()
-            # template elements reside in XML2TEX_NS
             for tpl in root.findall(f".//{{{XML2TEX_NS}}}template"):
                 ctx = tpl.get("context") or ""
                 if "dbk:para" not in ctx:
                     continue
-                # quick filter: check any role token string is present
                 matched_role: Optional[str] = None
                 for r in wanted_roles:
-                    # Look for quoted token occurrences e.g. 'Heading1' or "Heading1"
                     if re.search(r"['\"]%s['\"]" % re.escape(r), ctx):
                         matched_role = r
                         break
                 if not matched_role:
                     continue
-                # find first rule with type=cmd and take its name
                 for rule in tpl.findall(f".//{{{XML2TEX_NS}}}rule"):
                     if (rule.get("type") or "").strip() == "cmd":
                         name = (rule.get("name") or "").strip()
@@ -98,16 +88,13 @@ def extract_role_cmds(conf_paths: List[Path]) -> Dict[str, str]:
 def build_evolve_snippet(style_map: Dict[str, List[str]]) -> str:
     if not style_map:
         return ""
-    # Build variables for visible names and role sets
     lines: List[str] = []
     lines.append("  <!-- style-map preprocess: visible-name lists and normalization -->")
-    # visible lists
     for key, values in style_map.items():
         vals = ",".join("'" + _xml_escape(v) + "'" for v in values)
         lines.append(
             f"  <xsl:variable name=\"{key}-visible\" as=\"xs:string*\" select=\"({vals})\"/>"
         )
-    # roles lookup via native-name matching (css:rule and dbk:style)
     for key in style_map.keys():
         lines.append(
             "  <xsl:variable name=\"%s-roles\" as=\"xs:string*\"\n"
@@ -115,7 +102,6 @@ def build_evolve_snippet(style_map: Dict[str, List[str]]) -> str:
             "              /*//*[local-name()='style' and namespace-uri()='%s'][@native-name = $%s-visible]/(@name|@role)) ! normalize-space(.)\"/>"
             % (key, CSS_NS, key, XML2TEX_NS, key)
         )
-    # para role rewrite templates
     for key in style_map.keys():
         lines.append(
             "  <xsl:template match=\"*[@role][local-name()='para' and namespace-uri()='%s'][@role=$%s-roles]\" mode=\"docx2tex-preprocess\">\n"
@@ -126,7 +112,6 @@ def build_evolve_snippet(style_map: Dict[str, List[str]]) -> str:
             "    </xsl:copy>\n"
             "  </xsl:template>" % (DBK_NS, key, key)
         )
-    # Inject alias clones inside hub (avoid top-level xsl:if)
     lines.append(
         "  <xsl:template match=\"*[(local-name() = 'hub') and (namespace-uri() = '%s')]\" mode=\"docx2tex-preprocess\">\n"
         "    <xsl:copy>\n"
@@ -169,15 +154,13 @@ def build_evolve_snippet(style_map: Dict[str, List[str]]) -> str:
 
 
 def build_output_snippet(role_cmd: Dict[str, str], style_roles: List[str]) -> str:
-    # Only generate for intersection of parsed roles and style roles
     roles = [r for r in ["Title", "Heading1", "Heading2", "Heading3"] if r in role_cmd and r in style_roles]
     if not roles:
         return ""
-    lines = []
+    lines: List[str] = []
     lines.append("  <!-- headlines direct output from StyleMap + conf mapping (via PI 'latex' to avoid escaping) -->")
     for r in roles:
         cmd = role_cmd[r]
-        # open/close via processing-instruction('latex') so xml2tex outputs raw TeX
         open_cmd = f"\\{cmd}{{"
         lines.append(
             "  <xsl:template match=\"*[@role='%s'][local-name()='para' and namespace-uri()='%s']\" mode=\"docx2tex-postprocess\">\n"
@@ -200,14 +183,6 @@ EVOLVE_SKELETON = f"""<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 """
 
 
-OUTPUT_SKELETON = """<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-<xsl:stylesheet version=\"2.0\"
-  xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"
-  exclude-result-prefixes=\"#all\">
-</xsl:stylesheet>
-"""
-
-
 def merge_or_create_xsl(base_path: Optional[Path], snippet: str, out_path: Path, skeleton: str) -> Optional[Path]:
     if not snippet.strip():
         return None
@@ -223,7 +198,6 @@ def merge_or_create_xsl(base_path: Optional[Path], snippet: str, out_path: Path,
             merged = txt + "\n" + snippet
         out_path.write_text(merged, encoding="utf-8")
     else:
-        # create skeleton
         out_path.write_text(skeleton.replace("</xsl:stylesheet>", snippet + "\n</xsl:stylesheet>"), encoding="utf-8")
     return out_path
 
@@ -235,19 +209,28 @@ def prepare_effective_xsls(
     user_custom_xsl: Optional[Path],
     work_dir: Path,
 ) -> Tuple[Optional[Path], Optional[Path], Dict[str, List[str]], Dict[str, str]]:
-    """Return (effective_evolve, effective_custom_xsl, style_map, role_cmds)."""
     style_map = parse_style_map(style_str)
     role_cmds: Dict[str, str] = extract_role_cmds(conf_paths)
     evolve_snippet = build_evolve_snippet(style_map)
-    # generate command-injection snippet for roles present both in style_map and role_cmds
     output_snippet = build_output_snippet(role_cmds, list(style_map.keys()))
+    combined = (evolve_snippet or "") + (output_snippet or "")
     effective_evolve: Optional[Path] = None
     effective_custom: Optional[Path] = None
-    combined = (evolve_snippet or "") + (output_snippet or "")
     if combined.strip():
         effective_evolve = merge_or_create_xsl(
             user_custom_evolve, combined, work_dir / "custom-evolve-effective.xsl", EVOLVE_SKELETON
         )
-    # No separate output-layer XSL needed when we inline into evolve driver
-    effective_custom = None
+    # Output-layer XSL currently inlined to evolve effective driver; so effective_custom remains None
+    # Write stylemap_manifest.json for diagnostics
+    try:
+        manifest = {
+            "style_roles": list(style_map.keys()),
+            "role_cmds": role_cmds,
+        }
+        (work_dir / "stylemap_manifest.json").write_text(
+            json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+    except Exception:
+        pass
     return effective_evolve, effective_custom, style_map, role_cmds
+
