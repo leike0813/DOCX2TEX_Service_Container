@@ -1,4 +1,4 @@
-## docx2tex_inverse
+﻿## docx2tex_inverse
 
 面向 docx2tex 的深入解析与二次封装项目。
 - 文档解析：梳理 docx2tex 的处理流水线（docx2hub → evolve-hub → xml2tex）、配置与定制点（conf、自定义 XSL）。
@@ -6,18 +6,19 @@
 - 工程增强：内置缓存、并发锁、自愈与统一清理策略；内置 Inkscape 将 EMF/WMF/SVG 转为 PDF 并更新 TeX 引用。
 
 ### 仓库结构
-- `app/`：服务端实现（FastAPI，`server.py`，`entrypoint.sh`，`requirements.txt`）。
-- `app/scripts/`：
-  - `convert_vector_images.py`：将 EMF/WMF/SVG 转为 PDF 并改写 TeX 引用。
-  - `pack_tex_with_images.py`：在非调试模式下，仅打包被引用图片到 `image/` 并改写引用路径。
-- `docx2tex/`：上游项目源码（用于本仓库的解析与封装）。
-- `catalog/`：XML catalog（镜像构建时复制至 `/opt/catalog`）。
-- `conf/`：默认 xml2tex 配置集（详见“默认配置”）。
-- `docs/`：
-  - `overview-zh.md`：docx2tex 原理与要点。
-  - `API_DOC.md`：服务 API 参考。
-- `test/test_docx2tex.ps1`：PowerShell 5.1 示例客户端（上传/轮询/下载）。
-- `Dockerfile`：可离线的服务镜像构建文件。
+- `app/`：服务端实现
+  - `server.py`：应用入口，挂载路由、启动清理与锁回收
+  - `api/`：对外路由（`routes.py` 提供 `/v1/*`、`/healthz`、`/version`）
+  - `services/`：任务编排（`JobManager` 等）
+  - `core/`：通用能力（`config`、`db`、`cache`、`cleanup`、`storage`、`logging`、`convert`、`proc`、`tasks`）
+  - `scripts/`：后处理与 StyleMap 工具（`convert_vector_images.py`、`pack_tex_with_images.py`、`rewrite_tex_debug.py`、`stylemap_inject.py`）
+- `docs/`：文档（`overview-zh.md`、`API_DOC.md`、`architecture.md`）
+- `tests/`：单元测试与路由测试（最小依赖，路由测试需 httpx）
+- `conf/`：默认 xml2tex 配置
+- `catalog/`：XML catalog（离线映射）
+- `docx2tex/`：上游项目源码（用于容器内离线运行）
+- `Dockerfile`：服务镜像构建文件
+- `test/test_docx2tex.ps1`：PowerShell 客户端（上传/轮询/下载示例）
 
 ### 快速开始
 构建镜像：

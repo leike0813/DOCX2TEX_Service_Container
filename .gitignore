@@ -7,9 +7,9 @@ dryrun.zip
 result/
 result_debug
 examples/
-test/fontmaps-sample/
-test/fontmaps-sample.zip
 conf_test/
 .DS_Store
 Thumbs.db
 *.log
+.idea/
+*.pyc
