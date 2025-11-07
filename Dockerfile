@@ -5,7 +5,7 @@ ARG DEBIAN_MIRROR=mirrors.tuna.tsinghua.edu.cn
 ARG DEBIAN_SECURITY_MIRROR=mirrors.tuna.tsinghua.edu.cn
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    APP_HOME=/app \
+    APP_HOME=/svc/app \
     WORK_ROOT=/work \
     DATA_ROOT=/data \
     LOG_DIR=/var/log/docx2tex \
@@ -45,18 +45,18 @@ COPY catalog/ /opt/catalog/
 RUN printf "[global]\nindex-url = https://pypi.tuna.tsinghua.edu.cn/simple\n" > /etc/pip.conf
 
 # Install Python deps early for better build cache reuse
-WORKDIR /app
-COPY app/requirements.txt /app/requirements.txt
+WORKDIR /svc
+COPY app/requirements.txt /svc/app/requirements.txt
 RUN python3 -m venv /opt/venv && \
     . /opt/venv/bin/activate && \
-    pip install --no-cache-dir -r /app/requirements.txt
+    pip install --no-cache-dir -r /svc/app/requirements.txt
 
-# Copy application code (changes here won't invalidate previous pip layer)
-COPY app/ /app/
-RUN chmod +x /app/entrypoint.sh
+# Copy entire repository (ensures package root 'app' exists under /svc)
+COPY . /svc/
+RUN chmod +x /svc/app/entrypoint.sh
 
 EXPOSE 8000
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/svc/app/entrypoint.sh"]
 
 # Simple container healthcheck
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
