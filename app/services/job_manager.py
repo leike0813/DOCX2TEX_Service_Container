@@ -143,17 +143,17 @@ class JobManager:
                         str(self.cfg.docx2tex_home / "xpl" / "docx2tex.xpl"),
                     ]
                     # input DOCX
-                    cmd.extend(["-i", f"source=file://{(work / orig_name).as_posix()}"])
+                    cmd.extend(["-i", f"source={(work / orig_name).resolve().as_uri()}"])
                     # xml2tex configuration (uploaded or default)
                     cmd.extend(["-p", f"conf={chosen_conf.as_uri()}"])
                     # optional: custom evolve driver (effective from StyleMap or user upload)
                     if custom_evolve and Path(custom_evolve).exists():
                         # docx2tex.xpl expects this as an input port
-                        cmd.extend(["-i", f"custom-evolve-hub-driver={(Path(custom_evolve).as_uri())}"])
+                        cmd.extend(["-i", f"custom-evolve-hub-driver={(Path(custom_evolve).resolve().as_uri())}"])
                     # optional: user-provided custom XSL between evolve and xml2tex
                     if custom_xsl and Path(custom_xsl).exists():
                         # docx2tex.xpl expects this as a parameter
-                        cmd.extend(["-p", f"custom-xsl={(Path(custom_xsl).as_uri())}"])
+                        cmd.extend(["-p", f"custom-xsl={(Path(custom_xsl).resolve().as_uri())}"])
                     # optional MathType/Calstable settings
                     if mtef_source:
                         cmd.extend(["-p", f"mtef-source={mtef_source}"])
@@ -162,7 +162,16 @@ class JobManager:
                     if fontmaps_dir and Path(fontmaps_dir).exists():
                         cmd.extend(["-p", f"custom-font-maps-dir={Path(fontmaps_dir).resolve().as_uri()}"])
                     # output
-                    cmd.extend(["-o", f"result=file://{(out_tex).as_posix()}"])
+                    cmd.extend(["-o", f"result={out_tex.resolve().as_uri()}"])
+
+                    # Log constructed command for troubleshooting
+                    try:
+                        import shlex
+                        with open(log_path, "ab") as lf:
+                            lf.write(b"\n--- calabash_cmd ---\n")
+                            lf.write((" ".join(shlex.quote(x) for x in cmd) + "\n").encode("utf-8"))
+                    except Exception:
+                        pass
 
                     rc, out, err = run_subprocess(cmd, cwd=self.cfg.docx2tex_home, env=env, timeout=1200)
                     with open(log_path, "ab") as lf:
