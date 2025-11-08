@@ -1,4 +1,4 @@
-ï»¿from __future__ import annotations
+from __future__ import annotations
 
 import json
 import tempfile
@@ -16,12 +16,11 @@ def test_stylemap_prepares_effective_evolve_xsl():
         conf = Path("conf") / "conf-ctexbook-zh.xml"
         assert conf.exists(), f"missing conf: {conf}"
 
-        style = {"Title": "ä¸»æ ‡é¢˜", "Heading1": "Içº§æ ‡é¢˜"}
+        style = {"Title": "Ö÷±êÌâ", "Heading1": "I¼¶±êÌâ"}
         ee, style_map, role_cmds = prepare_effective_xsls(
             json.dumps(style, ensure_ascii=False),
             [conf],
             user_custom_evolve=None,
-            user_custom_xsl=None,
             work_dir=work,
         )
 
@@ -32,3 +31,44 @@ def test_stylemap_prepares_effective_evolve_xsl():
         assert "evolve-hub-driver.xsl" in text or "docx2tex-preprocess" in text
         # Ensure role mapping keys recognized (intersection may vary by conf)
         assert any(k in style_map for k in ("Title", "Heading1"))
+        # Role commands should follow conf definitions
+        assert set(role_cmds.keys()).issuperset(style_map.keys())
+
+
+def test_stylemap_prefers_later_conf_entries():
+    with tempfile.TemporaryDirectory() as td:
+        td_path = Path(td)
+        base_conf = td_path / "base.xml"
+        user_conf = td_path / "user.xml"
+        base_conf.write_text(
+            """
+<set xmlns='http://transpect.io/xml2tex'>
+  <template context="dbk:para[@role='Heading1']">
+    <rule type="cmd" name="chapter"/>
+  </template>
+</set>
+""".strip(),
+            encoding="utf-8",
+        )
+        user_conf.write_text(
+            """
+<set xmlns='http://transpect.io/xml2tex'>
+  <template context="dbk:para[@role='Heading1']">
+    <rule type="cmd" name="section"/>
+  </template>
+</set>
+""".strip(),
+            encoding="utf-8",
+        )
+
+        style = {"Heading1": "I¼¶±êÌâ"}
+        ee, style_map, role_cmds = prepare_effective_xsls(
+            json.dumps(style, ensure_ascii=False),
+            [base_conf, user_conf],
+            user_custom_evolve=None,
+            work_dir=td_path,
+        )
+
+        assert role_cmds.get("Heading1") == "section", "later conf should override earlier definitions"
+        assert list(style_map.keys()) == ["Heading1"]
+        assert ee is not None and ee.exists()

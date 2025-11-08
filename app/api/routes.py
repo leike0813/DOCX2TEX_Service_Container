@@ -333,8 +333,8 @@ async def _prepare_optional_inputs(
 
     try:
         if style_map and style_map.strip():
-            confs = [p for p in [conf_path, _default_conf_path()] if p is not None]
-            effective_evolve, _, _ = prepare_effective_xsls(style_map, confs, evolve_path, xsl_path, work)
+            confs = [p for p in [_default_conf_path(), conf_path] if p is not None]
+            effective_evolve, _, _ = prepare_effective_xsls(style_map, confs, evolve_path, work)
             if effective_evolve:
                 evolve_path = effective_evolve
     except Exception as e:
