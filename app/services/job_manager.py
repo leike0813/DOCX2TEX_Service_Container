@@ -139,7 +139,6 @@ class JobManager:
                     }
                     cmd = [
                         str(self.cfg.docx2tex_home / "calabash" / "calabash.sh"),
-                        str(self.cfg.docx2tex_home / "xpl" / "docx2tex.xpl"),
                     ]
                     # input DOCX
                     cmd.extend(["-i", f"source={(work / orig_name).resolve().as_uri()}"])
@@ -162,6 +161,8 @@ class JobManager:
                         cmd.extend(["-p", f"custom-font-maps-dir={Path(fontmaps_dir).resolve().as_uri()}"])
                     # output
                     cmd.extend(["-o", f"result={out_tex.resolve().as_uri()}"])
+                    # Pipeline document must be last per Calabash CLI rules
+                    cmd.append(str(self.cfg.docx2tex_home / "xpl" / "docx2tex.xpl"))
 
                     # Log constructed command for troubleshooting
                     try:

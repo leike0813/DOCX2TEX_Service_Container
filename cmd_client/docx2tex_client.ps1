@@ -50,10 +50,11 @@ param(
 [Parameter()][string]$TableModel,
 [Parameter()][string]$FontMapsZip,
 [Parameter()][string]$CustomEvolve,
+[Parameter()][bool]$NoCache = $false,
 
 [Parameter()][int]$TimeoutSec = 300
 )
-$endpoint = "$Server/v1/task"
+$endpoint = if ($NoCache) { "$Server/v1/nocache" } else { "$Server/v1/task" }
 $hc = New-HttpClient -TimeoutSec $TimeoutSec
 $form = New-Object System.Net.Http.MultipartFormDataContent
 $streams = New-Object System.Collections.Generic.List[System.IDisposable]
@@ -194,14 +195,15 @@ param(
 [string]$TableModel,
 [string]$FontMapsZip,
 
+[bool]$NoCache = $false,
 [int]$PollIntervalSec = 2,
 [int]$TimeoutSec = 900
 )
 
 $task = if ($PSCmdlet.ParameterSetName -eq "File") {
-New-Docx2TexTask -Server $Server -File $File -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip
+New-Docx2TexTask -Server $Server -File $File -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip -NoCache:$NoCache
 } else {
-New-Docx2TexTask -Server $Server -Url $Url -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip
+New-Docx2TexTask -Server $Server -Url $Url -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip -NoCache:$NoCache
 }
 
 if (-not $task.TaskId) { throw "Task creation failed (no TaskId returned)." }
