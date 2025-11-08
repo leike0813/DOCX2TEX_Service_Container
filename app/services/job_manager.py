@@ -140,29 +140,33 @@ class JobManager:
                     cmd = [
                         str(self.cfg.docx2tex_home / "calabash" / "calabash.sh"),
                     ]
+                    option_args: list[str] = []
                     # required docx option (expects file URI)
-                    cmd.extend(["-p", f"docx={(work / orig_name).resolve().as_uri()}"])
+                    option_args.append(f"docx={(work / orig_name).resolve().as_uri()}")
                     # xml2tex configuration (uploaded or default)
-                    cmd.extend(["-p", f"conf={chosen_conf.as_uri()}"])
+                    option_args.append(f"conf={chosen_conf.as_uri()}")
                     # optional: custom evolve driver (effective from StyleMap or user upload)
                     if custom_evolve and Path(custom_evolve).exists():
                         # docx2tex.xpl expects this as an input port
                         cmd.extend(["-i", f"custom-evolve-hub-driver={(Path(custom_evolve).resolve().as_uri())}"])
                     # optional: user-provided custom XSL between evolve and xml2tex
                     if custom_xsl and Path(custom_xsl).exists():
-                        # docx2tex.xpl expects this as a parameter
-                        cmd.extend(["-p", f"custom-xsl={(Path(custom_xsl).resolve().as_uri())}"])
+                        option_args.append(f"custom-xsl={(Path(custom_xsl).resolve().as_uri())}")
                     # optional MathType/Calstable settings
                     if mtef_source:
-                        cmd.extend(["-p", f"mtef-source={mtef_source}"])
+                        option_args.append(f"mtef-source={mtef_source}")
                     if table_model:
-                        cmd.extend(["-p", f"table-model={table_model}"])
+                        option_args.append(f"table-model={table_model}")
                     if fontmaps_dir and Path(fontmaps_dir).exists():
-                        cmd.extend(["-p", f"custom-font-maps-dir={Path(fontmaps_dir).resolve().as_uri()}"])
+                        option_args.append(f"custom-font-maps-dir={Path(fontmaps_dir).resolve().as_uri()}")
+                    # toggle docx2tex debug mode + directory so artifacts go under work/<basename>.debug
+                    option_args.append(f"debug={'yes' if debug else 'no'}")
+                    option_args.append(f"debug-dir-uri={debug_dir.resolve().as_uri()}")
                     # output
                     cmd.extend(["-o", f"result={out_tex.resolve().as_uri()}"])
                     # Pipeline document must be last per Calabash CLI rules
                     cmd.append(str(self.cfg.docx2tex_home / "xpl" / "docx2tex.xpl"))
+                    cmd.extend(option_args)
 
                     # Log constructed command for troubleshooting
                     try:
