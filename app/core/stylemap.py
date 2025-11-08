@@ -24,7 +24,6 @@ def _xml_escape(s: str) -> str:
 
 
 def parse_style_map(style_str: Optional[str]) -> Dict[str, List[str]]:
-    roles = {"Title", "Heading1", "Heading2", "Heading3"}
     result: Dict[str, List[str]] = {}
     if not style_str:
         return result
@@ -33,8 +32,6 @@ def parse_style_map(style_str: Optional[str]) -> Dict[str, List[str]]:
         if not isinstance(obj, dict):
             return {}
         for k, v in obj.items():
-            if k not in roles:
-                continue
             if isinstance(v, str):
                 vals = [v.strip()] if v.strip() else []
             elif isinstance(v, list):
@@ -54,8 +51,26 @@ def parse_style_map(style_str: Optional[str]) -> Dict[str, List[str]]:
     return result
 
 
+ROLE_SINGLE_RE = re.compile(r"@role\s*=\s*(['\"])([^'\"]+)\1")
+ROLE_LIST_RE = re.compile(r"@role\s*=\s*\(([^)]+)\)", re.DOTALL)
+
+
+def _roles_from_context(ctx: str) -> set[str]:
+    roles: set[str] = set()
+    for match in ROLE_LIST_RE.finditer(ctx):
+        chunk = match.group(1)
+        for part in chunk.split(","):
+            val = part.strip().strip("\"'").strip()
+            if val:
+                roles.add(val)
+    for match in ROLE_SINGLE_RE.finditer(ctx):
+        val = match.group(2).strip()
+        if val:
+            roles.add(val)
+    return roles
+
+
 def extract_role_cmds(conf_paths: List[Path]) -> Dict[str, str]:
-    wanted_roles = ["Title", "Heading1", "Heading2", "Heading3"]
     role_cmd: Dict[str, str] = {}
     for p in conf_paths:
         if not p or not p.exists():
@@ -67,18 +82,16 @@ def extract_role_cmds(conf_paths: List[Path]) -> Dict[str, str]:
                 ctx = tpl.get("context") or ""
                 if "dbk:para" not in ctx:
                     continue
-                matched_role: Optional[str] = None
-                for r in wanted_roles:
-                    if re.search(r"['\"]%s['\"]" % re.escape(r), ctx):
-                        matched_role = r
-                        break
-                if not matched_role:
+                matched_roles = _roles_from_context(ctx)
+                if not matched_roles:
                     continue
                 for rule in tpl.findall(f".//{{{XML2TEX_NS}}}rule"):
                     if (rule.get("type") or "").strip() == "cmd":
                         name = (rule.get("name") or "").strip()
-                        if name:
-                            role_cmd[matched_role] = name
+                        if not name:
+                            break
+                        for r in matched_roles:
+                            role_cmd[r] = name  # later entries override earlier ones
                         break
         except Exception:
             continue
@@ -145,7 +158,7 @@ def build_evolve_snippet(style_map: Dict[str, List[str]]) -> str:
             "        </xsl:if>\n"
             "      </xsl:if>\n"
         ).format(a=alias, css=CSS_NS, xml2tex=XML2TEX_NS)
-    for alias in ["Title", "Heading1", "Heading2", "Heading3"]:
+    for alias in style_map.keys():
         lines.append(alias_block(alias))
     lines.append("      <xsl:apply-templates mode=\"#current\"/>")
     lines.append("    </xsl:copy>")
@@ -153,8 +166,8 @@ def build_evolve_snippet(style_map: Dict[str, List[str]]) -> str:
     return "\n".join(lines) + "\n"
 
 
-def build_output_snippet(role_cmd: Dict[str, str], style_roles: List[str]) -> str:
-    roles = [r for r in ["Title", "Heading1", "Heading2", "Heading3"] if r in role_cmd and r in style_roles]
+def build_output_snippet(role_cmd: Dict[str, str], style_map: Dict[str, List[str]]) -> str:
+    roles = [r for r in style_map.keys() if r in role_cmd]
     if not roles:
         return ""
     lines: List[str] = []
@@ -162,12 +175,15 @@ def build_output_snippet(role_cmd: Dict[str, str], style_roles: List[str]) -> st
     for r in roles:
         cmd = role_cmd[r]
         open_cmd = f"\\{cmd}{{"
+        close_cmd = "}"
         lines.append(
             "  <xsl:template match=\"*[@role='%s'][local-name()='para' and namespace-uri()='%s']\" mode=\"docx2tex-postprocess\">\n"
+            "    <xsl:text>&#10;</xsl:text>\n"
             "    <xsl:processing-instruction name=\"latex\">%s</xsl:processing-instruction>\n"
             "    <xsl:apply-templates mode=\"#current\"/>\n"
-            "    <xsl:processing-instruction name=\"latex\">}</xsl:processing-instruction>\n"
-            "  </xsl:template>" % (r, DBK_NS, open_cmd)
+            "    <xsl:processing-instruction name=\"latex\">%s</xsl:processing-instruction>\n"
+            "    <xsl:text>&#10;&#10;</xsl:text>\n"
+            "  </xsl:template>" % (r, DBK_NS, open_cmd, close_cmd)
         )
     return "\n".join(lines) + "\n"
 
@@ -206,31 +222,36 @@ def prepare_effective_xsls(
     style_str: Optional[str],
     conf_paths: List[Path],
     user_custom_evolve: Optional[Path],
-    user_custom_xsl: Optional[Path],
     work_dir: Path,
-) -> Tuple[Optional[Path], Optional[Path], Dict[str, List[str]], Dict[str, str]]:
-    style_map = parse_style_map(style_str)
+) -> Tuple[Optional[Path], Dict[str, List[str]], Dict[str, str]]:
     role_cmds: Dict[str, str] = extract_role_cmds(conf_paths)
+    style_map = parse_style_map(style_str)
     evolve_snippet = build_evolve_snippet(style_map)
-    output_snippet = build_output_snippet(role_cmds, list(style_map.keys()))
+    output_snippet = build_output_snippet(role_cmds, style_map)
     combined = (evolve_snippet or "") + (output_snippet or "")
     effective_evolve: Optional[Path] = None
-    effective_custom: Optional[Path] = None
     if combined.strip():
         effective_evolve = merge_or_create_xsl(
             user_custom_evolve, combined, work_dir / "custom-evolve-effective.xsl", EVOLVE_SKELETON
         )
-    # Output-layer XSL currently inlined to evolve effective driver; so effective_custom remains None
     # Write stylemap_manifest.json for diagnostics
     try:
+        role_cmds_filtered = {role: role_cmds[role] for role in style_map.keys() if role in role_cmds}
+        style_cmds = {}
+        for role, names in style_map.items():
+            cmd = role_cmds.get(role)
+            if not cmd:
+                continue
+            for name in names:
+                style_cmds[name] = cmd
         manifest = {
-            "style_roles": list(style_map.keys()),
             "role_cmds": role_cmds,
+            "role_cmds_filtered": role_cmds_filtered,
+            "style_cmds": style_cmds,
         }
         (work_dir / "stylemap_manifest.json").write_text(
             json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
         )
     except Exception:
         pass
-    return effective_evolve, effective_custom, style_map, role_cmds
-
+    return effective_evolve, style_map, role_cmds

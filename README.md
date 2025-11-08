@@ -44,7 +44,7 @@
     - 关键增强：`postprocess`（图片收集/改写、VSDX 处理、宽度标准化、矢量转 PDF）、`stylemap`（仅 evolve‑driver 注入）
 - `docs/`：`overview-zh.md`、`API_DOC.md`、`architecture.md`
 - `tests/`：单元与路由测试（路由测试需 httpx）
-- 其余：`conf/`（xml2tex 配置）、`catalog/`（XML catalog）、`docx2tex/`（上游源码）、`Dockerfile`、`test/test_docx2tex.ps1`
+- 其余：`conf/`（xml2tex 配置）、`catalog/`（XML catalog）、`docx2tex/`（上游源码）、`Dockerfile`、`cmd_client/docx2tex_client.ps1`
 
 ---
 
@@ -76,6 +76,7 @@
 - `POST /v1/task`：提交转换任务
 - `GET  /v1/task/{task_id}`：查询状态
 - `GET  /v1/task/{task_id}/result`：下载结果 ZIP
+- `POST /v1/nocache`：提交转换任务，不使用缓存
 - `POST /v1/dryrun`：仅生成“有效 XSL”（不执行完整转换）
 - `GET  /healthz`：健康检查
 - `GET  /version`：版本信息

@@ -50,10 +50,11 @@ param(
 [Parameter()][string]$TableModel,
 [Parameter()][string]$FontMapsZip,
 [Parameter()][string]$CustomEvolve,
+[Parameter()][bool]$NoCache = $false,
 
 [Parameter()][int]$TimeoutSec = 300
 )
-$endpoint = "$Server/v1/task"
+$endpoint = if ($NoCache) { "$Server/v1/nocache" } else { "$Server/v1/task" }
 $hc = New-HttpClient -TimeoutSec $TimeoutSec
 $form = New-Object System.Net.Http.MultipartFormDataContent
 $streams = New-Object System.Collections.Generic.List[System.IDisposable]
@@ -194,14 +195,15 @@ param(
 [string]$TableModel,
 [string]$FontMapsZip,
 
+[bool]$NoCache = $false,
 [int]$PollIntervalSec = 2,
 [int]$TimeoutSec = 900
 )
 
 $task = if ($PSCmdlet.ParameterSetName -eq "File") {
-New-Docx2TexTask -Server $Server -File $File -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip
+New-Docx2TexTask -Server $Server -File $File -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip -NoCache:$NoCache
 } else {
-New-Docx2TexTask -Server $Server -Url $Url -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip
+New-Docx2TexTask -Server $Server -Url $Url -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip -NoCache:$NoCache
 }
 
 if (-not $task.TaskId) { throw "Task creation failed (no TaskId returned)." }
@@ -218,7 +220,6 @@ param(
   [Parameter(Mandatory=$true)][string]$Server,
 
   [string]$Conf,
-  [string]$CustomXsl,
   [string]$CustomEvolve,
   [string]$StyleMap,
 
@@ -235,10 +236,6 @@ try {
     if (-not (Test-Path -LiteralPath $Conf)) { throw "Conf not found: $Conf" }
     $s = Add-FilePart -Form $form -Name "conf" -FilePath $Conf -ContentType "application/xml"; $streams.Add($s) | Out-Null
   }
-  if ($CustomXsl) {
-    if (-not (Test-Path -LiteralPath $CustomXsl)) { throw "CustomXsl not found: $CustomXsl" }
-    $s = Add-FilePart -Form $form -Name "custom_xsl" -FilePath $CustomXsl -ContentType "application/xml"; $streams.Add($s) | Out-Null
-  }
   if ($CustomEvolve) {
     if (-not (Test-Path -LiteralPath $CustomEvolve)) { throw "CustomEvolve not found: $CustomEvolve" }
     $s = Add-FilePart -Form $form -Name "custom_evolve" -FilePath $CustomEvolve -ContentType "application/xml"; $streams.Add($s) | Out-Null
@@ -254,13 +251,19 @@ try {
     throw "HTTP $($resp.StatusCode) $msg"
   }
 
-  $outDir = Split-Path -Parent $OutFile
+  $basePath = (Get-Location).ProviderPath
+  if ([System.IO.Path]::IsPathRooted($OutFile)) {
+    $outFullPath = [System.IO.Path]::GetFullPath($OutFile)
+  } else {
+    $outFullPath = [System.IO.Path]::GetFullPath((Join-Path $basePath $OutFile))
+  }
+  $outDir = Split-Path -Parent $outFullPath
   if ($outDir -and -not (Test-Path -LiteralPath $outDir)) {
     New-Item -ItemType Directory -Path $outDir -Force | Out-Null
   }
-  [System.IO.File]::WriteAllBytes($OutFile, $bytes)
-  Write-Host ("DryRun ZIP -> {0}" -f (Resolve-Path $OutFile).Path)
-  return (Resolve-Path $OutFile).Path
+  [System.IO.File]::WriteAllBytes($outFullPath, $bytes)
+  Write-Host ("DryRun ZIP -> {0}" -f $outFullPath)
+  return $outFullPath
 }
 finally {
   foreach ($s in $streams) { try { $s.Dispose() } catch {} }
