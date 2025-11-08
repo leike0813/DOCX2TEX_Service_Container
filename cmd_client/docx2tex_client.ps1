@@ -220,7 +220,6 @@ param(
   [Parameter(Mandatory=$true)][string]$Server,
 
   [string]$Conf,
-  [string]$CustomXsl,
   [string]$CustomEvolve,
   [string]$StyleMap,
 
@@ -236,10 +235,6 @@ try {
   if ($Conf) {
     if (-not (Test-Path -LiteralPath $Conf)) { throw "Conf not found: $Conf" }
     $s = Add-FilePart -Form $form -Name "conf" -FilePath $Conf -ContentType "application/xml"; $streams.Add($s) | Out-Null
-  }
-  if ($CustomXsl) {
-    if (-not (Test-Path -LiteralPath $CustomXsl)) { throw "CustomXsl not found: $CustomXsl" }
-    $s = Add-FilePart -Form $form -Name "custom_xsl" -FilePath $CustomXsl -ContentType "application/xml"; $streams.Add($s) | Out-Null
   }
   if ($CustomEvolve) {
     if (-not (Test-Path -LiteralPath $CustomEvolve)) { throw "CustomEvolve not found: $CustomEvolve" }

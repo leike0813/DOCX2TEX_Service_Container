@@ -208,19 +208,17 @@ def prepare_effective_xsls(
     user_custom_evolve: Optional[Path],
     user_custom_xsl: Optional[Path],
     work_dir: Path,
-) -> Tuple[Optional[Path], Optional[Path], Dict[str, List[str]], Dict[str, str]]:
+) -> Tuple[Optional[Path], Dict[str, List[str]], Dict[str, str]]:
     style_map = parse_style_map(style_str)
     role_cmds: Dict[str, str] = extract_role_cmds(conf_paths)
     evolve_snippet = build_evolve_snippet(style_map)
     output_snippet = build_output_snippet(role_cmds, list(style_map.keys()))
     combined = (evolve_snippet or "") + (output_snippet or "")
     effective_evolve: Optional[Path] = None
-    effective_custom: Optional[Path] = None
     if combined.strip():
         effective_evolve = merge_or_create_xsl(
             user_custom_evolve, combined, work_dir / "custom-evolve-effective.xsl", EVOLVE_SKELETON
         )
-    # Output-layer XSL currently inlined to evolve effective driver; so effective_custom remains None
     # Write stylemap_manifest.json for diagnostics
     try:
         manifest = {
@@ -232,5 +230,4 @@ def prepare_effective_xsls(
         )
     except Exception:
         pass
-    return effective_evolve, effective_custom, style_map, role_cmds
-
+    return effective_evolve, style_map, role_cmds
