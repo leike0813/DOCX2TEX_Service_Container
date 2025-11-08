@@ -8,8 +8,10 @@ result/
 result_debug/
 examples/
 conf_test/
+tmpdata/
 .DS_Store
 Thumbs.db
 *.log
 .idea/
 *.pyc
+resp.zip

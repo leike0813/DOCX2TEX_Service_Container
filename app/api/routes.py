@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Optional
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, StreamingResponse, Response
 
 from app.core.config import Config, get_config
 from app.core.db import Database
@@ -223,7 +223,13 @@ async def dryrun(
             zf.write(sm, arcname=sm.name)
     if files_added == 0:
         raise HTTPException(status_code=400, detail="No effective XSLs generated (check StyleMap and conf)")
-    return StreamingResponse(open(mem_zip, "rb"), media_type="application/zip", headers={"Content-Disposition": f"attachment; filename=dryrun_xsls.zip"})
+
+    content = mem_zip.read_bytes()
+    return Response(
+        content=content,
+        media_type="application/zip",
+        headers={"Content-Disposition": "attachment; filename=dryrun_xsls.zip"},
+    )
 
 
 @dataclass
