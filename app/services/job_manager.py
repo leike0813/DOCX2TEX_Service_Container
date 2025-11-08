@@ -296,14 +296,14 @@ class JobManager:
                 zf.writestr("manifest.json", json.dumps(manifest, ensure_ascii=False, indent=2))
 
         # Sanity: if no meaningful files were added (e.g., calabash produced nothing), fail the task
-        if not out_tex.exists() and not debug:
+        if not debug and not out_tex.exists():
             self.set_state(task_id, "failed", "no output produced")
             console(f"task={task_id} stage=packaging_failed no_output")
             return
 
         self.set_state(task_id, "done")
-            log_line(log_path, "task_done")
-            console(f"task={task_id} stage=done")
+        log_line(log_path, "task_done")
+        console(f"task={task_id} stage=done")
         except Exception as e:
             log_line(log_path, f"task_failed: {e}")
             self.set_state(task_id, "failed", str(e))
