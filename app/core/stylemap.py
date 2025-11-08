@@ -174,13 +174,15 @@ def build_output_snippet(role_cmd: Dict[str, str], style_map: Dict[str, List[str
     lines.append("  <!-- headlines direct output from StyleMap + conf mapping (via PI 'latex' to avoid escaping) -->")
     for r in roles:
         cmd = role_cmd[r]
-        open_cmd = f"\n\\{cmd}{{"
-        close_cmd = "}\n\n"
+        open_cmd = f"\\{cmd}{{"
+        close_cmd = "}"
         lines.append(
             "  <xsl:template match=\"*[@role='%s'][local-name()='para' and namespace-uri()='%s']\" mode=\"docx2tex-postprocess\">\n"
+            "    <xsl:text>&#10;</xsl:text>\n"
             "    <xsl:processing-instruction name=\"latex\">%s</xsl:processing-instruction>\n"
             "    <xsl:apply-templates mode=\"#current\"/>\n"
             "    <xsl:processing-instruction name=\"latex\">%s</xsl:processing-instruction>\n"
+            "    <xsl:text>&#10;&#10;</xsl:text>\n"
             "  </xsl:template>" % (r, DBK_NS, open_cmd, close_cmd)
         )
     return "\n".join(lines) + "\n"
