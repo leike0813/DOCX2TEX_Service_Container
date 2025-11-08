@@ -233,8 +233,18 @@ def prepare_effective_xsls(
         )
     # Write stylemap_manifest.json for diagnostics
     try:
+        role_cmds_filtered = {role: role_cmds[role] for role in style_map.keys() if role in role_cmds}
+        style_cmds = {}
+        for role, names in style_map.items():
+            cmd = role_cmds.get(role)
+            if not cmd:
+                continue
+            for name in names:
+                style_cmds[name] = cmd
         manifest = {
             "role_cmds": role_cmds,
+            "role_cmds_filtered": role_cmds_filtered,
+            "style_cmds": style_cmds,
         }
         (work_dir / "stylemap_manifest.json").write_text(
             json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"

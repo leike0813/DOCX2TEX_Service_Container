@@ -251,13 +251,19 @@ try {
     throw "HTTP $($resp.StatusCode) $msg"
   }
 
-  $outDir = Split-Path -Parent $OutFile
+  $basePath = (Get-Location).ProviderPath
+  if ([System.IO.Path]::IsPathRooted($OutFile)) {
+    $outFullPath = [System.IO.Path]::GetFullPath($OutFile)
+  } else {
+    $outFullPath = [System.IO.Path]::GetFullPath((Join-Path $basePath $OutFile))
+  }
+  $outDir = Split-Path -Parent $outFullPath
   if ($outDir -and -not (Test-Path -LiteralPath $outDir)) {
     New-Item -ItemType Directory -Path $outDir -Force | Out-Null
   }
-  [System.IO.File]::WriteAllBytes($OutFile, $bytes)
-  Write-Host ("DryRun ZIP -> {0}" -f (Resolve-Path $OutFile).Path)
-  return (Resolve-Path $OutFile).Path
+  [System.IO.File]::WriteAllBytes($outFullPath, $bytes)
+  Write-Host ("DryRun ZIP -> {0}" -f $outFullPath)
+  return $outFullPath
 }
 finally {
   foreach ($s in $streams) { try { $s.Dispose() } catch {} }
