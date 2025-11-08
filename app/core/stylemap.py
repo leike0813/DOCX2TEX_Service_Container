@@ -51,7 +51,23 @@ def parse_style_map(style_str: Optional[str]) -> Dict[str, List[str]]:
     return result
 
 
-ROLE_IN_CONTEXT = re.compile(r"@role\s*=\s*['\"]([^'\"]+)['\"]")
+ROLE_SINGLE_RE = re.compile(r"@role\s*=\s*(['\"])([^'\"]+)\1")
+ROLE_LIST_RE = re.compile(r"@role\s*=\s*\(([^)]+)\)", re.DOTALL)
+
+
+def _roles_from_context(ctx: str) -> set[str]:
+    roles: set[str] = set()
+    for match in ROLE_LIST_RE.finditer(ctx):
+        chunk = match.group(1)
+        for part in chunk.split(","):
+            val = part.strip().strip("\"'").strip()
+            if val:
+                roles.add(val)
+    for match in ROLE_SINGLE_RE.finditer(ctx):
+        val = match.group(2).strip()
+        if val:
+            roles.add(val)
+    return roles
 
 
 def extract_role_cmds(conf_paths: List[Path]) -> Dict[str, str]:
@@ -66,7 +82,7 @@ def extract_role_cmds(conf_paths: List[Path]) -> Dict[str, str]:
                 ctx = tpl.get("context") or ""
                 if "dbk:para" not in ctx:
                     continue
-                matched_roles = {m.group(1) for m in ROLE_IN_CONTEXT.finditer(ctx)}
+                matched_roles = _roles_from_context(ctx)
                 if not matched_roles:
                     continue
                 for rule in tpl.findall(f".//{{{XML2TEX_NS}}}rule"):
@@ -207,10 +223,6 @@ def prepare_effective_xsls(
 ) -> Tuple[Optional[Path], Dict[str, List[str]], Dict[str, str]]:
     role_cmds: Dict[str, str] = extract_role_cmds(conf_paths)
     style_map = parse_style_map(style_str)
-    if role_cmds:
-        style_map = {k: v for k, v in style_map.items() if k in role_cmds}
-    else:
-        style_map = {}
     evolve_snippet = build_evolve_snippet(style_map)
     output_snippet = build_output_snippet(role_cmds, style_map)
     combined = (evolve_snippet or "") + (output_snippet or "")
