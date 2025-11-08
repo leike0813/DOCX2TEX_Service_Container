@@ -17,7 +17,7 @@ def test_stylemap_prepares_effective_evolve_xsl():
         assert conf.exists(), f"missing conf: {conf}"
 
         style = {"Title": "主标题", "Heading1": "I级标题"}
-        ee, ex, style_map, role_cmds = prepare_effective_xsls(
+        ee, style_map, role_cmds = prepare_effective_xsls(
             json.dumps(style, ensure_ascii=False),
             [conf],
             user_custom_evolve=None,
@@ -32,5 +32,3 @@ def test_stylemap_prepares_effective_evolve_xsl():
         assert "evolve-hub-driver.xsl" in text or "docx2tex-preprocess" in text
         # Ensure role mapping keys recognized (intersection may vary by conf)
         assert any(k in style_map for k in ("Title", "Heading1"))
-        # Only evolve-driver injection is used; no separate custom XSL produced
-        assert ex is None
