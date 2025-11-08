@@ -164,6 +164,7 @@ class JobManager:
                     option_args.append(f"debug-dir-uri={debug_dir.resolve().as_uri()}")
                     # output
                     cmd.extend(["-o", f"result={out_tex.resolve().as_uri()}"])
+                    cmd.extend(["-o", f"hub={out_xml.resolve().as_uri()}"])
                     # Pipeline document must be last per Calabash CLI rules
                     cmd.append(str(self.cfg.docx2tex_home / "xpl" / "docx2tex.xpl"))
                     cmd.extend(option_args)
