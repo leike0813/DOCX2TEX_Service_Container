@@ -71,6 +71,7 @@ class JobManager:
         fontmaps_dir: Optional[Path] = None,
         fontmaps_zip: Optional[Path] = None,
         job_cache_key: Optional[str] = None,
+        no_cache: bool = False,
     ):
         js = self.get(task_id)
         work = Path(js.work_dir)
@@ -105,7 +106,7 @@ class JobManager:
 
             # Pre-check READY cache
             row = self.cache.get(cache_key)
-            if (not kwargs.get("no_cache", False)) and row and int(row.get("available", 0)) == 1:
+            if (not no_cache) and row and int(row.get("available", 0)) == 1:
                 cached_base = row.get("basename") or basename
                 log_line(log_path, f"cache_hit key={cache_key} cached_base={cached_base} -> restore to {basename}")
                 console(f"task={task_id} cache_hit key={cache_key}")
@@ -118,7 +119,7 @@ class JobManager:
             else:
                 # Build path (optionally guarded by lock when using cache)
                 claimed = True
-                if not kwargs.get("no_cache", False):
+                if not no_cache:
                     claimed = self.locks.claim(cache_key, task_id)
                     if not claimed:
                         time.sleep(1.0)
@@ -178,20 +179,20 @@ class JobManager:
                     if rc != 0 or not out_tex.exists():
                         # hard fail; cleanup any partial cache artifacts and release lock
                         try:
-                            if not kwargs.get("no_cache", False):
+                            if not no_cache:
                                 self.cache.mark_gone(cache_key)
                                 # remove on-disk partials
                                 import shutil
                                 shutil.rmtree(self.cache.cache_dir(cache_key), ignore_errors=True)
                         except Exception:
                             pass
-                        if not kwargs.get("no_cache", False):
+                        if not no_cache:
                             self.locks.release(cache_key)
                         self.set_state(task_id, "failed", err or "docx2tex failed")
                         console(f"task={task_id} stage=docx2tex_failed")
                         return
                     # Cache publish
-                    if not kwargs.get("no_cache", False):
+                    if not no_cache:
                         try:
                             self.cache.save_to_disk(cache_key, basename, Path(js.work_dir))
                             self.cache.put(cache_key, basename)
@@ -216,94 +217,100 @@ class JobManager:
                         lf.write(b"\n--- convert_vector_images (error) ---\n")
                         lf.write(str(e).encode("utf-8"))
 
-            # Packaging (require valid main TeX or debug artifacts)
-            self.set_state(task_id, "packaging")
-            from zipfile import ZipFile, ZIP_DEFLATED
+            try:
+                # Packaging (require valid main TeX or debug artifacts)
+                self.set_state(task_id, "packaging")
+                from zipfile import ZipFile, ZIP_DEFLATED
 
-            result_zip_public = self.cfg.public_root / f"{basename}.zip"
-            log_line(log_path, f"packaging -> {result_zip_public}")
-            console(f"task={task_id} stage=packaging zip={result_zip_public}")
-            manifest = {
-                "task_id": task_id,
-                "debug": debug,
-                "start_time": js.start_time,
-                "end_time": time.time(),
-                "files": [],
-                "mtef_source": (mtef_source or ""),
-                "table_model": (table_model or ""),
-                "fontmaps_dir": str(fontmaps_dir) if fontmaps_dir else "",
-            }
-            self.cfg.public_root.mkdir(parents=True, exist_ok=True)
-            with ZipFile(result_zip_public, "w", ZIP_DEFLATED) as zf:
-                if debug:
-                    # debug-mode: tidy TeX, comment .vsdx, normalize width
-                    try:
-                        _ = debug_comment_vsdx_and_normalize(out_tex)
-                    except Exception:
-                        pass
-                    for p in [out_tex, out_xml]:
-                        if p.exists():
-                            zf.write(p, arcname=p.name)
-                            manifest["files"].append(p.name)
-                    csv_path = work / f"{basename}.csv"
-                    if csv_path.exists():
-                        zf.write(csv_path, arcname=csv_path.name)
-                        manifest["files"].append(csv_path.name)
-                    if (work / f"{basename}.debug").exists():
-                        for sub in (work / f"{basename}.debug").rglob("*"):
-                            if sub.is_file():
-                                arc = f"{(work / f'{basename}.debug').name}/{sub.relative_to(work / f'{basename}.debug')}"
-                                zf.write(sub, arcname=arc)
-                                manifest["files"].append(arc)
-                    tmp_dir = work / f"{basename}.docx.tmp"
-                    if tmp_dir.exists():
-                        for sub in tmp_dir.rglob("*"):
-                            if sub.is_file():
-                                arc = f"{tmp_dir.name}/{sub.relative_to(tmp_dir)}"
-                                zf.write(sub, arcname=arc)
-                                manifest["files"].append(arc)
-                    # include log
-                    if log_path.exists():
-                        arc = f"logs/{log_path.name}"
-                        zf.write(log_path, arcname=arc)
-                        manifest["files"].append(arc)
-                    # include effective custom evolve xsl & stylemap manifest if present
-                    eff = work / "custom-evolve-effective.xsl"
-                    if eff.exists():
-                        zf.write(eff, arcname=f"xsl/{eff.name}")
-                        manifest["files"].append(f"xsl/{eff.name}")
-                    sm = work / "stylemap_manifest.json"
-                    if sm.exists():
-                        zf.write(sm, arcname=sm.name)
-                        manifest["files"].append(sm.name)
-                else:
-                    # non-debug: collect images, rewrite paths, drop .vsdx, normalize width
-                    try:
+                result_zip_public = self.cfg.public_root / f"{basename}.zip"
+                log_line(log_path, f"packaging -> {result_zip_public}")
+                console(f"task={task_id} stage=packaging zip={result_zip_public}")
+                manifest = {
+                    "task_id": task_id,
+                    "debug": debug,
+                    "start_time": js.start_time,
+                    "end_time": time.time(),
+                    "files": [],
+                    "mtef_source": (mtef_source or ""),
+                    "table_model": (table_model or ""),
+                    "fontmaps_dir": str(fontmaps_dir) if fontmaps_dir else "",
+                }
+                self.cfg.public_root.mkdir(parents=True, exist_ok=True)
+                with ZipFile(result_zip_public, "w", ZIP_DEFLATED) as zf:
+                    if debug:
+                        # debug-mode: tidy TeX, comment .vsdx, normalize width
+                        try:
+                            _ = debug_comment_vsdx_and_normalize(out_tex)
+                        except Exception:
+                            pass
+                        for p in [out_tex, out_xml]:
+                            if p.exists():
+                                zf.write(p, arcname=p.name)
+                                manifest["files"].append(p.name)
+                        csv_path = work / f"{basename}.csv"
+                        if csv_path.exists():
+                            zf.write(csv_path, arcname=csv_path.name)
+                            manifest["files"].append(csv_path.name)
+                        if (work / f"{basename}.debug").exists():
+                            for sub in (work / f"{basename}.debug").rglob("*"):
+                                if sub.is_file():
+                                    arc = f"{(work / f'{basename}.debug').name}/{sub.relative_to(work / f'{basename}.debug')}"
+                                    zf.write(sub, arcname=arc)
+                                    manifest["files"].append(arc)
+                        tmp_dir = work / f"{basename}.docx.tmp"
+                        if tmp_dir.exists():
+                            for sub in tmp_dir.rglob("*"):
+                                if sub.is_file():
+                                    arc = f"{tmp_dir.name}/{sub.relative_to(tmp_dir)}"
+                                    zf.write(sub, arcname=arc)
+                                    manifest["files"].append(arc)
+                        # include log
+                        if log_path.exists():
+                            arc = f"logs/{log_path.name}"
+                            zf.write(log_path, arcname=arc)
+                            manifest["files"].append(arc)
+                        # include effective custom evolve xsl & stylemap manifest if present
+                        eff = work / "custom-evolve-effective.xsl"
+                        if eff.exists():
+                            zf.write(eff, arcname=f"xsl/{eff.name}")
+                            manifest["files"].append(f"xsl/{eff.name}")
+                        sm = work / "stylemap_manifest.json"
+                        if sm.exists():
+                            zf.write(sm, arcname=sm.name)
+                            manifest["files"].append(sm.name)
+                    else:
+                        # non-debug: collect images, rewrite paths, drop .vsdx, normalize width
+                        try:
+                            image_dir = work / "image"
+                            ncol, ndrop = release_collect_images_and_normalize(out_tex, image_dir)
+                        except Exception:
+                            pass
+                        if out_tex.exists():
+                            zf.write(out_tex, arcname=out_tex.name)
+                            manifest["files"].append(out_tex.name)
                         image_dir = work / "image"
-                        ncol, ndrop = release_collect_images_and_normalize(out_tex, image_dir)
-                    except Exception:
-                        pass
-                    if out_tex.exists():
-                        zf.write(out_tex, arcname=out_tex.name)
-                        manifest["files"].append(out_tex.name)
-                    image_dir = work / "image"
-                    if image_dir.exists():
-                        for sub in image_dir.rglob("*"):
-                            if sub.is_file():
-                                arc = f"image/{sub.relative_to(image_dir)}"
-                                zf.write(sub, arcname=arc)
-                                manifest["files"].append(arc)
-                zf.writestr("manifest.json", json.dumps(manifest, ensure_ascii=False, indent=2))
+                        if image_dir.exists():
+                            for sub in image_dir.rglob("*"):
+                                if sub.is_file():
+                                    arc = f"image/{sub.relative_to(image_dir)}"
+                                    zf.write(sub, arcname=arc)
+                                    manifest["files"].append(arc)
+                    zf.writestr("manifest.json", json.dumps(manifest, ensure_ascii=False, indent=2))
 
-        # Sanity: if no meaningful files were added (e.g., calabash produced nothing), fail the task
-        if not debug and not out_tex.exists():
-            self.set_state(task_id, "failed", "no output produced")
-            console(f"task={task_id} stage=packaging_failed no_output")
-            return
+                # Sanity: if no meaningful files were added (e.g., calabash produced nothing), fail the task
+                if not debug and not out_tex.exists():
+                    self.set_state(task_id, "failed", "no output produced")
+                    console(f"task={task_id} stage=packaging_failed no_output")
+                    return
 
-        self.set_state(task_id, "done")
-        log_line(log_path, "task_done")
-        console(f"task={task_id} stage=done")
+                self.set_state(task_id, "done")
+                log_line(log_path, "task_done")
+                console(f"task={task_id} stage=done")
+            except Exception as e:
+                log_line(log_path, f"task_failed: {e}")
+                self.set_state(task_id, "failed", str(e))
+                console(f"task={task_id} stage=failed error={e}")
+                return
         except Exception as e:
             log_line(log_path, f"task_failed: {e}")
             self.set_state(task_id, "failed", str(e))
