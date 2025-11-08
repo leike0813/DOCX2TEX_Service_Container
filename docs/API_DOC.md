@@ -106,13 +106,19 @@ $r = Invoke-Docx2Tex -Server http://127.0.0.1:8000 `
 
 ---
 
-## 4）Dry-run – `POST /v1/dryrun`
+## 4）提交任务（无缓存机制） – `POST /v1/nocache`
+
+请求字段与响应与`POST /v1/task` 相同，但不使用缓存。
+
+---
+
+## 5）Dry-run – `POST /v1/dryrun`
 
 仅构建“有效 XSL”，不运行完整 docx2tex 流程；用于验证 StyleMap 与自定义 XSL 的拼装与注入。
 
-字段：`conf`、`custom_xsl`、`custom_evolve`、`StyleMap`。
+字段：`conf`、`custom_evolve`、`StyleMap`。
 
-返回：ZIP，包含 `xsl/custom-effective.xsl`（若需要 xml2tex 阶段）、`xsl/custom-evolve-effective.xsl`（evolve-driver），以及汇总规则的 `stylemap_manifest.json`。
+返回：ZIP，包含 `xsl/custom-evolve-effective.xsl`（evolve-driver），以及汇总规则的 `stylemap_manifest.json`。
 
 示例：
 ```bash
