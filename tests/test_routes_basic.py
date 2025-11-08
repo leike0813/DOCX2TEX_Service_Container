@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib
 import os
 import tempfile
 
@@ -11,13 +12,15 @@ pytest.importorskip("httpx")
 
 
 def test_healthz_and_version():
-    from app.api import routes as r
-    from fastapi.testclient import TestClient
-
     with tempfile.TemporaryDirectory() as td:
         os.environ["DATA_ROOT"] = td
         os.environ["WORK_ROOT"] = td
         os.environ["LOG_DIR"] = td
+
+        import app.api.routes as routes
+        r = importlib.reload(routes)
+
+        from fastapi.testclient import TestClient
 
         app = FastAPI()
         app.include_router(r.router)

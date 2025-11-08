@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib
 import io
 import os
 import tempfile
@@ -21,8 +22,8 @@ def test_task_lifecycle_with_stubbed_background_job():
         os.environ["LOG_DIR"] = str(td / "logs")
         os.environ["DOCX2TEX_HOME"] = str(td / "d2t")  # not used when we provide conf
 
-        # Import router after env setup
-        from app.api import routes as r
+        import app.api.routes as routes
+        r = importlib.reload(routes)
         from fastapi.testclient import TestClient
 
         # Build app with router
