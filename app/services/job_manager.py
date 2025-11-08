@@ -138,9 +138,30 @@ class JobManager:
                         "PATH": os.environ.get("PATH", ""),
                         "JAVA_TOOL_OPTIONS": os.environ.get("JAVA_TOOL_OPTIONS", ""),
                     }
-                    cmd = [str(self.cfg.docx2tex_home / "calabash" / "calabash.sh"), str(self.cfg.docx2tex_home / "xpl" / "docx2tex.xpl")]
+                    cmd = [
+                        str(self.cfg.docx2tex_home / "calabash" / "calabash.sh"),
+                        str(self.cfg.docx2tex_home / "xpl" / "docx2tex.xpl"),
+                    ]
+                    # input DOCX
                     cmd.extend(["-i", f"source=file://{(work / orig_name).as_posix()}"])
-                    cmd.extend(["-p", f"conf={(self.cfg.docx2tex_home / 'conf' / 'conf.xml').as_uri()}"])
+                    # xml2tex configuration (uploaded or default)
+                    cmd.extend(["-p", f"conf={chosen_conf.as_uri()}"])
+                    # optional: custom evolve driver (effective from StyleMap or user upload)
+                    if custom_evolve and Path(custom_evolve).exists():
+                        # docx2tex.xpl expects this as an input port
+                        cmd.extend(["-i", f"custom-evolve-hub-driver={(Path(custom_evolve).as_uri())}"])
+                    # optional: user-provided custom XSL between evolve and xml2tex
+                    if custom_xsl and Path(custom_xsl).exists():
+                        # docx2tex.xpl expects this as a parameter
+                        cmd.extend(["-p", f"custom-xsl={(Path(custom_xsl).as_uri())}"])
+                    # optional MathType/Calstable settings
+                    if mtef_source:
+                        cmd.extend(["-p", f"mtef-source={mtef_source}"])
+                    if table_model:
+                        cmd.extend(["-p", f"table-model={table_model}"])
+                    if fontmaps_dir and Path(fontmaps_dir).exists():
+                        cmd.extend(["-p", f"custom-font-maps-dir={Path(fontmaps_dir).resolve().as_uri()}"])
+                    # output
                     cmd.extend(["-o", f"result=file://{(out_tex).as_posix()}"])
 
                     rc, out, err = run_subprocess(cmd, cwd=self.cfg.docx2tex_home, env=env, timeout=1200)
