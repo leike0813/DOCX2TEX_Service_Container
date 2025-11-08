@@ -140,8 +140,8 @@ class JobManager:
                     cmd = [
                         str(self.cfg.docx2tex_home / "calabash" / "calabash.sh"),
                     ]
-                    # input DOCX
-                    cmd.extend(["-i", f"source={(work / orig_name).resolve().as_uri()}"])
+                    # required docx option (expects file URI)
+                    cmd.extend(["-p", f"docx={(work / orig_name).resolve().as_uri()}"])
                     # xml2tex configuration (uploaded or default)
                     cmd.extend(["-p", f"conf={chosen_conf.as_uri()}"])
                     # optional: custom evolve driver (effective from StyleMap or user upload)
