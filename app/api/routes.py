@@ -147,9 +147,95 @@ async def create_task(
         fontmaps_dir=None,
         fontmaps_zip=fontmaps_zip_path,
         job_cache_key=cache_key,
+        no_cache=False,
     )
 
     return JSONResponse({"task_id": js.task_id, "cache_key": cache_key, "cache_status": cache_status})
+
+
+@router.post("/v1/nocache")
+async def create_task_nocache(
+    file: UploadFile | None = File(default=None),
+    url: str | None = Form(default=None),
+    debug: bool = Form(default=False),
+    img_post_proc: bool = Form(default=True),
+    conf: UploadFile | None = File(default=None),
+    custom_xsl: UploadFile | None = File(default=None),
+    custom_evolve: UploadFile | None = File(default=None),
+    StyleMap: str | None = Form(default=None),
+    MathTypeSource: str | None = Form(default=None),
+    TableModel: str | None = Form(default=None),
+    FontMapsZip: UploadFile | None = File(default=None),
+):
+    """Bypass cache and locks entirely. Always rebuild and do not publish to cache."""
+    if (file is None and not url) or (file is not None and url):
+        raise HTTPException(status_code=400, detail="Provide exactly one of file or url")
+
+    js = ctx.jobs.create(debug=debug, img_post_proc=img_post_proc)
+    work = Path(js.work_dir)
+
+    # Prepare input
+    if file is not None:
+        name = safe_name(file.filename or "document.docx")
+        if not name.lower().endswith(".docx"):
+            name = f"{name}.docx"
+        input_docx = work / name
+        await write_upload_stream(file, input_docx, ctx.cfg.max_upload_bytes)
+    else:
+        name = _safe_filename_from_url(url or "")
+        input_docx = work / name
+        download_to(input_docx, url or "")
+
+    conf_path: Optional[Path] = None
+    if conf is not None:
+        conf_path = work / "conf.xml"
+        write_bytes(conf_path, await conf.read())
+        try:
+            rewrite_conf_imports_to_default(conf_path, ctx.cfg.docx2tex_home / "conf" / "conf.xml")
+        except Exception:
+            pass
+    xsl_path: Optional[Path] = None
+    if custom_xsl is not None:
+        xsl_path = work / "custom.xsl"
+        write_bytes(xsl_path, await custom_xsl.read())
+    evolve_path: Optional[Path] = None
+    if custom_evolve is not None:
+        evolve_path = work / "custom-evolve-hub-driver.xsl"
+        write_bytes(evolve_path, await custom_evolve.read())
+    fontmaps_zip_path: Optional[Path] = None
+    if FontMapsZip is not None:
+        fontmaps_zip_path = work / "fontmaps.zip"
+        write_bytes(fontmaps_zip_path, await FontMapsZip.read())
+
+    # Prepare effective XSLs from StyleMap (evolve only)
+    try:
+        if StyleMap and StyleMap.strip():
+            confs = [p for p in [conf_path, ctx.cfg.docx2tex_home / "conf" / "conf.xml"] if p is not None]
+            effective_evolve, effective_xsl, style_map, role_cmds = prepare_effective_xsls(StyleMap, confs, evolve_path, xsl_path, work)
+            if effective_evolve:
+                evolve_path = effective_evolve
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"StyleMap processing failed: {e}")
+
+    # Submit background job with no_cache=True
+    ctx.jobs.submit(
+        task_id=js.task_id,
+        source_kind=("file" if file is not None else "url"),
+        source_value=(input_docx.name if file is not None else name),
+        debug=debug,
+        img_post_proc=img_post_proc,
+        conf_file=conf_path,
+        custom_xsl=xsl_path,
+        custom_evolve=evolve_path,
+        mtef_source=(MathTypeSource or None),
+        table_model=(TableModel or None),
+        fontmaps_dir=None,
+        fontmaps_zip=fontmaps_zip_path,
+        job_cache_key=None,
+        no_cache=True,
+    )
+
+    return JSONResponse({"task_id": js.task_id, "cache_status": "BYPASS"})
 
 
 @router.get("/v1/task/{task_id}")

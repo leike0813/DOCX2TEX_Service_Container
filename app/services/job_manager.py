@@ -105,7 +105,7 @@ class JobManager:
 
             # Pre-check READY cache
             row = self.cache.get(cache_key)
-            if row and int(row.get("available", 0)) == 1:
+            if (not kwargs.get("no_cache", False)) and row and int(row.get("available", 0)) == 1:
                 cached_base = row.get("basename") or basename
                 log_line(log_path, f"cache_hit key={cache_key} cached_base={cached_base} -> restore to {basename}")
                 console(f"task={task_id} cache_hit key={cache_key}")
@@ -116,20 +116,18 @@ class JobManager:
                     pass
                 self.cache.touch(cache_key)
             else:
-                # Reserve cache and attempt build
-                self.cache.reserve(cache_key)
-                claimed = self.locks.claim(cache_key, task_id)
-                if not claimed:
-                    # Another builder -> wait for availability or takeover after stale
-                    time.sleep(1.0)
-                    row = self.cache.get(cache_key)
-                    if row and int(row.get("available", 0)) == 1:
-                        cached_base = row.get("basename") or basename
-                        self.cache.restore_to_work(cache_key, cached_base, basename, Path(js.work_dir))
-                        self.cache.touch(cache_key)
-                    else:
-                        # No published result; try to claim again
-                        claimed = self.locks.claim(cache_key, task_id)
+                # Build path (optionally guarded by lock when using cache)
+                claimed = True
+                if not kwargs.get("no_cache", False):
+                    claimed = self.locks.claim(cache_key, task_id)
+                    if not claimed:
+                        time.sleep(1.0)
+                        row = self.cache.get(cache_key)
+                        if row and int(row.get("available", 0)) == 1:
+                            cached_base = row.get("basename") or basename
+                            self.cache.restore_to_work(cache_key, cached_base, basename, Path(js.work_dir))
+                            self.cache.touch(cache_key)
+                            claimed = False
                 if claimed:
                     # Build via Calabash
                     self.set_state(task_id, "converting")
@@ -178,19 +176,31 @@ class JobManager:
                         lf.write(b"\n--- calabash ---\n")
                         lf.write((out or "").encode("utf-8") + b"\n" + (err or "").encode("utf-8"))
                     if rc != 0 or not out_tex.exists():
+                        # hard fail; cleanup any partial cache artifacts and release lock
+                        try:
+                            if not kwargs.get("no_cache", False):
+                                self.cache.mark_gone(cache_key)
+                                # remove on-disk partials
+                                import shutil
+                                shutil.rmtree(self.cache.cache_dir(cache_key), ignore_errors=True)
+                        except Exception:
+                            pass
+                        if not kwargs.get("no_cache", False):
+                            self.locks.release(cache_key)
                         self.set_state(task_id, "failed", err or "docx2tex failed")
                         console(f"task={task_id} stage=docx2tex_failed")
                         return
                     # Cache publish
-                    try:
-                        self.cache.save_to_disk(cache_key, basename, Path(js.work_dir))
-                        self.cache.put(cache_key, basename)
-                        log_line(log_path, f"cache_saved key={cache_key} base={basename}")
-                        console(f"task={task_id} cache_saved key={cache_key}")
-                    except Exception as e:
-                        log_exception(log_path, "cache_save_failed", e)
-                    finally:
-                        self.locks.release(cache_key)
+                    if not kwargs.get("no_cache", False):
+                        try:
+                            self.cache.save_to_disk(cache_key, basename, Path(js.work_dir))
+                            self.cache.put(cache_key, basename)
+                            log_line(log_path, f"cache_saved key={cache_key} base={basename}")
+                            console(f"task={task_id} cache_saved key={cache_key}")
+                        except Exception as e:
+                            log_exception(log_path, "cache_save_failed", e)
+                        finally:
+                            self.locks.release(cache_key)
 
             # Vector image conversion (optional, in-process)
             if img_post_proc and out_tex.exists():
@@ -206,7 +216,7 @@ class JobManager:
                         lf.write(b"\n--- convert_vector_images (error) ---\n")
                         lf.write(str(e).encode("utf-8"))
 
-            # Packaging
+            # Packaging (require valid main TeX or debug artifacts)
             self.set_state(task_id, "packaging")
             from zipfile import ZipFile, ZIP_DEFLATED
 
@@ -285,7 +295,13 @@ class JobManager:
                                 manifest["files"].append(arc)
                 zf.writestr("manifest.json", json.dumps(manifest, ensure_ascii=False, indent=2))
 
-            self.set_state(task_id, "done")
+        # Sanity: if no meaningful files were added (e.g., calabash produced nothing), fail the task
+        if not out_tex.exists() and not debug:
+            self.set_state(task_id, "failed", "no output produced")
+            console(f"task={task_id} stage=packaging_failed no_output")
+            return
+
+        self.set_state(task_id, "done")
             log_line(log_path, "task_done")
             console(f"task={task_id} stage=done")
         except Exception as e:
