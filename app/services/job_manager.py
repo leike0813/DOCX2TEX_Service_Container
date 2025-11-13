@@ -72,6 +72,7 @@ class JobManager:
         fontmaps_zip: Optional[Path] = None,
         job_cache_key: Optional[str] = None,
         no_cache: bool = False,
+        image_dir: str = "image",
     ):
         js = self.get(task_id)
         work = Path(js.work_dir)
@@ -287,18 +288,20 @@ class JobManager:
                     else:
                         # non-debug: collect images, rewrite paths, drop .vsdx, normalize width
                         try:
-                            image_dir = work / "image"
-                            ncol, ndrop = release_collect_images_and_normalize(out_tex, image_dir)
+                            image_dir_path = work / image_dir
+                            ncol, ndrop = release_collect_images_and_normalize(
+                                out_tex, image_dir_path, image_alias=image_dir
+                            )
                         except Exception:
                             pass
                         if out_tex.exists():
                             zf.write(out_tex, arcname=out_tex.name)
                             manifest["files"].append(out_tex.name)
-                        image_dir = work / "image"
-                        if image_dir.exists():
-                            for sub in image_dir.rglob("*"):
+                        image_dir_path = work / image_dir
+                        if image_dir_path.exists():
+                            for sub in image_dir_path.rglob("*"):
                                 if sub.is_file():
-                                    arc = f"image/{sub.relative_to(image_dir)}"
+                                    arc = f"{image_dir}/{sub.relative_to(image_dir_path)}"
                                     zf.write(sub, arcname=arc)
                                     manifest["files"].append(arc)
                     zf.writestr("manifest.json", json.dumps(manifest, ensure_ascii=False, indent=2))

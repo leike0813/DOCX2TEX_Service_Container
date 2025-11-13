@@ -50,6 +50,7 @@ param(
 [Parameter()][string]$TableModel,
 [Parameter()][string]$FontMapsZip,
 [Parameter()][string]$CustomEvolve,
+[Parameter()][string]$ImageDir,
 [Parameter()][bool]$NoCache = $false,
 
 [Parameter()][int]$TimeoutSec = 300
@@ -92,7 +93,10 @@ if ($FontMapsZip) {
 if ($CustomEvolve) {
 if (-not (Test-Path -LiteralPath $CustomEvolve)) { throw "CustomEvolve not found: $CustomEvolve" }
 $evolveStream = Add-FilePart -Form $form -Name "custom_evolve" -FilePath $CustomEvolve -ContentType "application/xml"
-$streams.Add($evolveStream) | Out-Null
+  $streams.Add($evolveStream) | Out-Null
+}
+if ($ImageDir) {
+  Add-StringPart -Form $form -Name "image_dir" -Value $ImageDir
 }
 
 $resp = $hc.PostAsync($endpoint, $form).Result
@@ -194,6 +198,7 @@ param(
 [string]$MathTypeSource,
 [string]$TableModel,
 [string]$FontMapsZip,
+[string]$ImageDir,
 
 [bool]$NoCache = $false,
 [int]$PollIntervalSec = 2,
@@ -201,9 +206,9 @@ param(
 )
 
 $task = if ($PSCmdlet.ParameterSetName -eq "File") {
-New-Docx2TexTask -Server $Server -File $File -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip -NoCache:$NoCache
+New-Docx2TexTask -Server $Server -File $File -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip -NoCache:$NoCache -ImageDir $ImageDir
 } else {
-New-Docx2TexTask -Server $Server -Url $Url -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip -NoCache:$NoCache
+New-Docx2TexTask -Server $Server -Url $Url -IncludeDebug:$IncludeDebug -ImgPostProc:$ImgPostProc -Conf $Conf -CustomXsl $CustomXsl -CustomEvolve $CustomEvolve -StyleMap $StyleMap -MathTypeSource $MathTypeSource -TableModel $TableModel -FontMapsZip $FontMapsZip -NoCache:$NoCache -ImageDir $ImageDir
 }
 
 if (-not $task.TaskId) { throw "Task creation failed (no TaskId returned)." }

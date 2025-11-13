@@ -65,7 +65,9 @@ def _find_source(tex_dir: Path, stem_dir: Path, raw_path: str) -> Path | None:
     return None
 
 
-def release_collect_images_and_normalize(tex_path: Path, image_dir: Path) -> Tuple[int, int]:
+def release_collect_images_and_normalize(
+    tex_path: Path, image_dir: Path, image_alias: Optional[str] = None
+) -> Tuple[int, int]:
     """Non-debug: collect referenced images to image_dir, rewrite include paths,
     drop .vsdx includes, and normalize width options.
 
@@ -76,6 +78,9 @@ def release_collect_images_and_normalize(tex_path: Path, image_dir: Path) -> Tup
     image_dir.mkdir(parents=True, exist_ok=True)
     content = tex_path.read_text(encoding="utf-8", errors="replace")
 
+    prefix = (image_alias or image_dir.name).strip("/\\")
+    if not prefix:
+        prefix = "image"
     copied: dict[str, str] = {}
     removed_vsdx = 0
 
@@ -88,7 +93,7 @@ def release_collect_images_and_normalize(tex_path: Path, image_dir: Path) -> Tup
         if Path(_unescape_tex_path(raw)).suffix.lower() == ".vsdx":
             removed_vsdx += 1
             return ""  # remove the whole includegraphics command
-        if raw.replace("\\", "/").startswith("image/"):
+        if raw.replace("\\", "/").startswith(f"{prefix}/"):
             return match.group(0)
         src = _find_source(tex_dir, stem_dir, raw)
         if not src:
@@ -101,7 +106,7 @@ def release_collect_images_and_normalize(tex_path: Path, image_dir: Path) -> Tup
         if str(src) not in copied:
             shutil.copy2(src, dst)
             copied[str(src)] = new_name
-        new_ref = f"image/{copied[str(src)]}"
+        new_ref = f"{prefix}/{copied[str(src)]}"
         return f"{cmd}{opt}{{{new_ref}}}"
 
     new_content = INCLUDE_RE.sub(repl_func, content)

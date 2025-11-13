@@ -4,19 +4,14 @@
 
 ## 端点（Endpoints）
 - `POST /v1/task`：提交转换任务（上传 DOCX 或提供 URL）
-- `GET  /v1/task/{task_id}`：查询任务状态
-- `GET  /v1/task/{task_id}/result`：下载结果 ZIP（任务完成后）
-- `POST /v1/dryrun`：仅生成“有效 XSL”，不执行转换（用于调试 StyleMap/自定义 XSL）
-- `GET  /healthz`：健康检查
-- `GET  /version`：服务/版本信息
+- `GET /v1/task/{task_id}`：查询任务状态
+- `GET /v1/task/{task_id}/result`：下载结果 ZIP
+- `POST /v1/nocache`：绕过缓存执行任务
+- `POST /v1/dryrun`：仅生成有效 evolve driver（无需完整转换）
+- `GET /healthz`：健康检测
+- `GET /version`：版本信息
 
-任务状态：`pending | running | converting | packaging | done | failed`。
-
-ZIP 内容：
-- 当 `debug=false`：仅含 `<basename>.tex` 与 `image/`（仅拷贝被引用图片并重写路径）。
-- 当 `debug=true`：额外包含 `<basename>.xml`（Hub XML）、`<basename>.csv`（若有自动生成的 CSV 配置）、`<basename>.debug/`、`<basename>.docx.tmp/`、`logs/<task_id>.log`、`manifest.json`。若上传了 `custom_xsl`/`custom_evolve`、`fontmaps.zip` 会一并包含；使用了 StyleMap 时会包含 `stylemap_manifest.json`。
-
-缓存键：对 `(DOCX, conf(或默认), custom_xsl(或无), custom_evolve(或无), MathTypeSource, TableModel, FontMapsZip 内容)` 做 SHA-256 计算；与 `debug`、`img_post_proc` 无关。
+说明：所有上传的 `file`/`conf`/`custom_xsl`/`custom_evolve` 文件名都会自动经过 ASCII+safe_name 规范化，避免 Calabash 报错；`debug=false` 时可以通过 `image_dir` 指定图片目录，TeX 里 `\includegraphics` 的路径会同步改写。
 
 ---
 

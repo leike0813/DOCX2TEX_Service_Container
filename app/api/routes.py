@@ -21,6 +21,7 @@ from app.core.convert import rewrite_conf_imports_to_default, compute_cache_key
 from app.core.stylemap import prepare_effective_xsls
 from app.services.job_manager import JobManager
 
+from app.core.filenames import sanitize_filename
 
 router = APIRouter()
 
@@ -63,6 +64,7 @@ async def create_task(
     MathTypeSource: str | None = Form(default=None),
     TableModel: str | None = Form(default=None),
     FontMapsZip: UploadFile | None = File(default=None),
+    image_dir: str | None = Form(default=None),
 ):
     prep = await _prepare_job_request(
         file=file,
@@ -74,6 +76,7 @@ async def create_task(
         custom_evolve=custom_evolve,
         style_map=StyleMap,
         fontmaps_zip=FontMapsZip,
+        image_dir=image_dir,
     )
 
     cache_key = compute_cache_key(
@@ -108,6 +111,7 @@ async def create_task(
         fontmaps_zip=prep.fontmaps_zip_path,
         job_cache_key=cache_key,
         no_cache=False,
+        image_dir=prep.image_dir,
     )
 
     return JSONResponse({"task_id": prep.job.task_id, "cache_key": cache_key, "cache_status": cache_status})
@@ -138,6 +142,7 @@ async def create_task_nocache(
         custom_evolve=custom_evolve,
         style_map=StyleMap,
         fontmaps_zip=FontMapsZip,
+        image_dir=image_dir,
     )
 
     ctx.jobs.submit(
@@ -155,6 +160,7 @@ async def create_task_nocache(
         fontmaps_zip=prep.fontmaps_zip_path,
         job_cache_key=None,
         no_cache=True,
+        image_dir=prep.image_dir,
     )
 
     return JSONResponse({"task_id": prep.job.task_id, "cache_status": "BYPASS"})
@@ -243,6 +249,7 @@ class PreparedJobRequest:
     custom_xsl_path: Optional[Path]
     custom_evolve_path: Optional[Path]
     fontmaps_zip_path: Optional[Path]
+    image_dir: str
 
 
 def _default_conf_path() -> Path:
@@ -260,6 +267,7 @@ async def _prepare_job_request(
     custom_evolve: UploadFile | None,
     style_map: str | None,
     fontmaps_zip: UploadFile | None,
+    image_dir: str | None,
 ) -> PreparedJobRequest:
     if (file is None and not url) or (file is not None and url):
         raise HTTPException(status_code=400, detail="Provide exactly one of file or url")
@@ -273,14 +281,16 @@ async def _prepare_job_request(
             name = f"{name}.docx"
         input_docx = work / name
         await write_upload_stream(file, input_docx, ctx.cfg.max_upload_bytes)
+        input_docx = _sanitize_uploaded_path(input_docx)
         source_kind = "file"
         source_value = input_docx.name
     else:
         name = _safe_filename_from_url(url or "")
         input_docx = work / name
         download_to(input_docx, url or "")
+        input_docx = _sanitize_uploaded_path(input_docx)
         source_kind = "url"
-        source_value = name
+        source_value = input_docx.name
 
     conf_path, xsl_path, evolve_path, fontmaps_zip_path = await _prepare_optional_inputs(
         work=work,
@@ -290,6 +300,8 @@ async def _prepare_job_request(
         style_map=style_map,
         fontmaps_zip=fontmaps_zip,
     )
+
+    image_dir_name = _resolve_image_dir(image_dir)
 
     return PreparedJobRequest(
         job=js,
@@ -301,6 +313,7 @@ async def _prepare_job_request(
         custom_xsl_path=xsl_path,
         custom_evolve_path=evolve_path,
         fontmaps_zip_path=fontmaps_zip_path,
+        image_dir=image_dir_name,
     )
 
 
@@ -321,16 +334,19 @@ async def _prepare_optional_inputs(
             rewrite_conf_imports_to_default(conf_path, _default_conf_path())
         except Exception:
             pass
+        conf_path = _sanitize_uploaded_path(conf_path)
 
     xsl_path: Optional[Path] = None
     if custom_xsl is not None:
         xsl_path = work / "custom.xsl"
         write_bytes(xsl_path, await custom_xsl.read())
+        xsl_path = _sanitize_uploaded_path(xsl_path)
 
     evolve_path: Optional[Path] = None
     if custom_evolve is not None:
         evolve_path = work / "custom-evolve-hub-driver.xsl"
         write_bytes(evolve_path, await custom_evolve.read())
+        evolve_path = _sanitize_uploaded_path(evolve_path)
 
     fontmaps_zip_path: Optional[Path] = None
     if fontmaps_zip is not None:
@@ -350,6 +366,20 @@ async def _prepare_optional_inputs(
 
 
 # Helpers local to router
+
+
+def _sanitize_uploaded_path(path: Path) -> Path:
+    safe = sanitize_filename(path.name)
+    if safe == path.name:
+        return path
+    new_path = path.with_name(safe)
+    path.replace(new_path)
+    return new_path
+
+
+def _resolve_image_dir(image_dir: str | None) -> str:
+    cleaned = sanitize_filename(image_dir or "image")
+    return cleaned or "image"
 async def write_upload_stream(upload: UploadFile, dest: Path, max_bytes: int = 0):
     dest.parent.mkdir(parents=True, exist_ok=True)
     total = 0

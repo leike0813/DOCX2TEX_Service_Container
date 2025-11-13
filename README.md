@@ -74,12 +74,14 @@
 
 ### API 端点
 - `POST /v1/task`：提交转换任务
-- `GET  /v1/task/{task_id}`：查询状态
+- `GET  /v1/task/{task_id}`：查询任务状态
 - `GET  /v1/task/{task_id}/result`：下载结果 ZIP
-- `POST /v1/nocache`：提交转换任务，不使用缓存
-- `POST /v1/dryrun`：仅生成“有效 XSL”（不执行完整转换）
-- `GET  /healthz`：健康检查
+- `POST /v1/nocache`：提交任务并绕过缓存
+- `POST /v1/dryrun`：生成有效 evolve driver（不跑完整流程）
+- `GET  /healthz`：健康检测
 - `GET  /version`：版本信息
+
+> 服务端会对 `file`/`conf`/`custom_xsl`/`custom_evolve` 文件名做 ASCII+safe_name 规范化，避免 Calabash 报错；`debug=false` 时可通过 `image_dir` 指定图片目录，TeX 中的 `\includegraphics` 也会重写所指向的目录。
 
 ---
 
