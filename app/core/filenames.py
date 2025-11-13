@@ -90,12 +90,16 @@ def _limit_length(candidate: str) -> str:
     return truncated[:MAX_LENGTH]
 
 
+def _is_ascii(s: str) -> bool:
+    return all(ord(ch) < 128 for ch in s)
+
+
 def sanitize_filename(name: str, default: str = "file") -> str:
     if not name:
         return default
     base, ext = os.path.splitext(name)
     ascii_candidate = safe_name(base)
-    if base.isascii() and len(base) <= MAX_LENGTH:
+    if _is_ascii(base) and len(base) <= MAX_LENGTH:
         return f"{ascii_candidate}{ext}"
     dictionary = _load_cedict()
     translated_words = _translate_with_dictionary(base, dictionary) or []
@@ -109,6 +113,7 @@ def sanitize_filename(name: str, default: str = "file") -> str:
         candidate = ascii_candidate or default
     candidate = _limit_length(candidate)
     sanitized = safe_name(candidate)
+    sanitized = "".join(ch for ch in sanitized if _is_ascii(ch) or ch in ".-_+")
     if not sanitized:
         sanitized = default
     return f"{sanitized}{ext}"
