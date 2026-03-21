@@ -1,4 +1,4 @@
-## docx2tex_inverse
+## DOCX2TEX_Service_Container
 
 面向开源项目 docx2tex 的深入解析与服务化封装。项目在保持上游能力的基础上，进行工程化重构与增强，提供可离线、可配置、可扩展的 DOCX → LaTeX（TeX）转换服务。
 

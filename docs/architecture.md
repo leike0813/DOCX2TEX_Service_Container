@@ -1,4 +1,4 @@
-# docx2tex_inverse Architecture
+# DOCX2TEX_Service_Container Architecture
 
 This document summarizes the service architecture, key components, and data flow.
 
