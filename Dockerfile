@@ -3,6 +3,7 @@ FROM debian:bookworm-slim
 # Configure Debian mirrors (CN-friendly) and install base packages
 ARG DEBIAN_MIRROR=mirrors.ustc.edu.cn
 ARG DEBIAN_SECURITY_MIRROR=mirrors.ustc.edu.cn
+ARG PIP_INDEX_URL=https://pypi.org/simple
 
 ENV DEBIAN_FRONTEND=noninteractive \
     WORK_ROOT=/work \
@@ -31,8 +32,8 @@ RUN set -eux; \
     sed -i 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen && locale-gen; \
     rm -rf /var/lib/apt/lists/*
 
-# Set pip to Tsinghua mirror (CN) before installing Python libraries
-RUN printf "[global]\nindex-url = https://pypi.mirrors.ustc.edu.cn/simple\n" > /etc/pip.conf
+# Configure pip index before installing Python libraries.
+RUN printf "[global]\nindex-url = %s\n" "$PIP_INDEX_URL" > /etc/pip.conf
 
 # Install Python deps early for better build cache reuse
 WORKDIR /svc
