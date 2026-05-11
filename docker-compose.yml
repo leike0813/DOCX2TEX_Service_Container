@@ -1,0 +1,31 @@
+services:
+  docx2tex-service:
+    image: docx2tex-service:dev
+    container_name: docx2tex-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DEBIAN_MIRROR: ${DEBIAN_MIRROR:-mirrors.ustc.edu.cn}
+        DEBIAN_SECURITY_MIRROR: ${DEBIAN_SECURITY_MIRROR:-mirrors.ustc.edu.cn}
+    ports:
+      - "${DOCX2TEX_SERVICE_PORT:-8000}:8000"
+    environment:
+      WORK_ROOT: /work
+      DATA_ROOT: /data
+      LOG_DIR: /var/log/docx2tex
+      STATE_DB: /data/state.db
+      UVICORN_WORKERS: ${UVICORN_WORKERS:-2}
+      TTL_DAYS: ${TTL_DAYS:-7}
+      LOCK_SWEEP_INTERVAL_SEC: ${LOCK_SWEEP_INTERVAL_SEC:-120}
+      LOCK_MAX_AGE_SEC: ${LOCK_MAX_AGE_SEC:-1800}
+      MAX_UPLOAD_BYTES: ${MAX_UPLOAD_BYTES:-}
+    volumes:
+      - docx2tex-data:/data
+      - ${DOCX2TEX_WORK_DIR:-./.local/work}:/work
+      - docx2tex-logs:/var/log/docx2tex
+    restart: unless-stopped
+
+volumes:
+  docx2tex-data:
+  docx2tex-logs:

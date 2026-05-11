@@ -36,6 +36,25 @@ package-dir = {"" = "src"}
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+document_conversion = [
+  "interfaces/webui/*.css",
+  "interfaces/webui/*.html",
+  "interfaces/webui/*.js",
+]
+"engines.docx2tex_engine" = [
+  "assets/conf/*.xml",
+  "assets/conf/*.xsl",
+  "assets/xmlcatalog/*.xml",
+  "vendor/docx2tex/**/*",
+]
+"engines.pandoc_engine" = [
+  "assets/csl/*.csl",
+  "assets/filters/*.lua",
+  "assets/metadata/*.yaml",
+  "assets/templates/*.yaml",
+]
+
 [tool.mypy]
 python_version = "3.11"
 packages = ["document_conversion", "docx2tex_service", "engines"]
