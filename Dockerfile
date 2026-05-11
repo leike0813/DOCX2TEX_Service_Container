@@ -19,6 +19,8 @@ ENV DEBIAN_FRONTEND=noninteractive \
     LOCK_MAX_AGE_SEC=1800 \
     MAX_UPLOAD_BYTES=
 
+ENV PATH=/opt/venv/bin:$PATH
+
 RUN set -eux; \
     rm -f /etc/apt/sources.list.d/debian.sources || true; \
     printf 'deb http://%s/debian bookworm main contrib non-free non-free-firmware\n' "$DEBIAN_MIRROR" > /etc/apt/sources.list; \
@@ -35,16 +37,24 @@ RUN set -eux; \
 # Configure pip index before installing Python libraries.
 RUN printf "[global]\nindex-url = %s\n" "$PIP_INDEX_URL" > /etc/pip.conf
 
-# Install Python deps early for better build cache reuse
+# Install Python deps early for better build cache reuse.
 WORKDIR /svc
 COPY pyproject.toml README.md /svc/
 COPY src/ /svc/src/
 COPY scripts/ /svc/scripts/
-RUN python3 -m venv /opt/venv && \
-    . /opt/venv/bin/activate && \
-    pip install --no-cache-dir /svc && \
-    test -f "$DOCX2TEX_HOME/xpl/docx2tex.xpl" && \
-    /opt/venv/bin/python -u -m document_conversion.interfaces.cli check-system
+RUN set -eux; \
+    python3 -m venv /opt/venv; \
+    python -m pip install --no-cache-dir --upgrade pip setuptools wheel; \
+    python -m pip install --no-cache-dir /svc
+
+RUN set -eux; \
+    test -f "$DOCX2TEX_HOME/xpl/docx2tex.xpl"; \
+    python -c "from engines.docx2tex_engine.assets import resolve_catalog_template; print(resolve_catalog_template())"; \
+    command -v java; \
+    command -v inkscape; \
+    command -v pandoc; \
+    command -v pandoc-tex-numbering; \
+    python -u -m document_conversion.interfaces.cli check-system
 
 RUN chmod +x /svc/scripts/entrypoint.sh
 
