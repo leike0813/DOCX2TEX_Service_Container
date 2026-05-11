@@ -40,6 +40,6 @@ def reset_runtime_singletons():
 def pytest_terminal_summary(terminalreporter, exitstatus, config):
     if not filename_results:
         return
-    terminalreporter.write_sep("-", "filename sanitize results")
+    terminalreporter.write_sep("-", "filename handling results")
     for title, original, sanitized in filename_results:
         terminalreporter.write_line(f"{title}: {original} -> {sanitized}")

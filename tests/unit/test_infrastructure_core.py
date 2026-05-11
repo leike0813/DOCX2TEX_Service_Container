@@ -13,7 +13,12 @@ from document_conversion.infrastructure.state import JobState, TaskStore
 from document_conversion.infrastructure.storage import atomic_write_json, compute_sha256, safe_name
 from engines.docx2tex_engine.assets import resolve_docx2tex_home
 from engines.docx2tex_engine.convert import compute_cache_key, rewrite_conf_imports_to_default
-from engines.docx2tex_engine.filenames import sanitize_filename
+from engines.docx2tex_engine.filenames import (
+    INTERNAL_BASENAME,
+    INTERNAL_DOCX_FILENAME,
+    name_mapping_from_upload,
+    name_mapping_from_url,
+)
 
 
 def test_config_from_env_defaults():
@@ -23,17 +28,26 @@ def test_config_from_env_defaults():
     assert cfg.log_dir
 
 
-def test_storage_helpers_and_filename_sanitize(report_results):
+def test_storage_helpers_and_filename_metadata(report_results):
     with tempfile.TemporaryDirectory() as td:
         path = Path(td) / "data.json"
         atomic_write_json(path, {"x": 1})
         assert json.loads(path.read_text(encoding="utf-8")) == {"x": 1}
         assert len(compute_sha256(path)) == 64
     assert safe_name("a b@c.txt") == "a_b_c.txt"
-    result = sanitize_filename("安全报告.docx")
-    report_results.append(("Chinese translation", "安全报告.docx", result))
-    assert result.endswith(".docx")
-    assert result[:-5].isascii()
+    upload_mapping = name_mapping_from_upload("安全报告.docx")
+    report_results.append(
+        ("Canonical docx2tex name", "安全报告.docx", upload_mapping.internal_filename)
+    )
+    assert upload_mapping.original_filename == "安全报告.docx"
+    assert upload_mapping.display_basename == "安全报告"
+    assert upload_mapping.internal_filename == INTERNAL_DOCX_FILENAME
+    assert upload_mapping.internal_basename == INTERNAL_BASENAME
+    assert upload_mapping.result_name == "安全报告.zip"
+
+    url_mapping = name_mapping_from_url("https://example.test/files/../中文 报告")
+    assert url_mapping.original_filename == "中文 报告.docx"
+    assert url_mapping.display_basename == "中文 报告"
 
 
 def test_cache_and_lock_roundtrip():

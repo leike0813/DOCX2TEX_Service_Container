@@ -83,6 +83,15 @@ def test_platform_task_submission_and_matrix_paths(isolated_platform_env: Path):
     resp = client.post("/v2/tasks", data=data, files=files)
     assert resp.status_code == 200
     assert submitted
+    assert submitted[0]["source_value"] == "input.docx"
+    assert submitted[0]["display_basename"] == "sample"
+    work_dir = Path(str(submitted[0]["conf_file"])).parent
+    assert (work_dir / "input.docx").read_bytes() == b"FAKE-DOCX"
+    metadata = json.loads((work_dir / "task-metadata.json").read_text(encoding="utf-8"))
+    assert metadata["original_filename"] == "sample.docx"
+    assert metadata["display_basename"] == "sample"
+    assert metadata["internal_basename"] == "input"
+    assert metadata["result_name"] == "sample.zip"
     conf_file = submitted[0]["conf_file"]
     assert conf_file is not None
     conf_text = Path(str(conf_file)).read_text(encoding="utf-8")
@@ -132,6 +141,38 @@ def test_platform_task_submission_and_matrix_paths(isolated_platform_env: Path):
         files={"file": ("workspace.zip", b"PK\x03\x04", "application/zip")},
     )
     assert reverse_with_options.status_code == 200
+
+
+def test_docx2tex_non_ascii_filename_uses_internal_input_name(isolated_platform_env: Path):
+    r, client = _build_client()
+    submitted: list[dict[str, object]] = []
+    r.ctx.jobs.submit = lambda **kwargs: submitted.append(kwargs)  # type: ignore[assignment]
+
+    response = client.post(
+        "/v2/tasks",
+        data={
+            "source_format": "docx",
+            "target_format": "latex",
+            "profile_id": "docx_to_latex/docx2tex-book-en",
+        },
+        files={
+            "file": (
+                "安全报告.docx",
+                b"SAME-DOCX",
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            )
+        },
+    )
+
+    assert response.status_code == 200
+    assert submitted
+    assert submitted[0]["source_value"] == "input.docx"
+    assert submitted[0]["original_filename"] == "安全报告.docx"
+    assert submitted[0]["display_basename"] == "安全报告"
+    work_dir = Path(str(submitted[0]["conf_file"])).parent
+    assert (work_dir / "input.docx").read_bytes() == b"SAME-DOCX"
+    metadata = json.loads((work_dir / "task-metadata.json").read_text(encoding="utf-8"))
+    assert metadata["result_name"] == "安全报告.zip"
 
 
 def test_docx2tex_stylemap_submission_builds_effective_artifacts(isolated_platform_env: Path):

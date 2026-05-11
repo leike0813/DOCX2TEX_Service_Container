@@ -12,7 +12,12 @@ from document_conversion.infrastructure.process import download_to
 from document_conversion.infrastructure.storage import safe_name, write_bytes
 from document_conversion.infrastructure.task_metadata import write_task_metadata
 from engines.docx2tex_engine.convert import compute_cache_key, rewrite_conf_imports_to_default
-from engines.docx2tex_engine.filenames import sanitize_filename
+from engines.docx2tex_engine.filenames import (
+    Docx2TexNameMapping,
+    INTERNAL_DOCX_FILENAME,
+    name_mapping_from_upload,
+    name_mapping_from_url,
+)
 from engines.docx2tex_engine.presets import (
     CUSTOM_XSL_PRESETS,
     resolve_conf_preset,
@@ -33,6 +38,7 @@ class PreparedSubmission:
     custom_evolve_path: Optional[Path]
     fontmaps_zip_path: Optional[Path]
     image_dir: str
+    name_mapping: Docx2TexNameMapping
 
 
 class Docx2TexEngine(ConversionEngine):
@@ -97,6 +103,9 @@ class Docx2TexEngine(ConversionEngine):
             job_cache_key=cache_key,
             no_cache=False,
             image_dir=prepared.image_dir,
+            original_filename=prepared.name_mapping.original_filename,
+            display_basename=prepared.name_mapping.display_basename,
+            internal_basename=prepared.name_mapping.internal_basename,
         )
         return {
             "task_id": prepared.task_id,
@@ -124,19 +133,15 @@ class Docx2TexEngine(ConversionEngine):
         work = Path(job.work_dir)
 
         if submission.file is not None:
-            name = safe_name(getattr(submission.file, "filename", None) or "document.docx")
-            if not name.lower().endswith(".docx"):
-                name = f"{name}.docx"
-            input_docx = work / name
+            mapping = name_mapping_from_upload(getattr(submission.file, "filename", None))
+            input_docx = work / INTERNAL_DOCX_FILENAME
             await self._write_upload_stream(submission.file, input_docx, runtime.cfg.max_upload_bytes)
-            input_docx = self._sanitize_uploaded_path(input_docx)
             source_kind = "file"
             source_value = input_docx.name
         else:
-            name = self._safe_filename_from_url(submission.url or "")
-            input_docx = work / name
+            mapping = name_mapping_from_url(submission.url or "")
+            input_docx = work / INTERNAL_DOCX_FILENAME
             download_to(input_docx, submission.url or "")
-            input_docx = self._sanitize_uploaded_path(input_docx)
             source_kind = "url"
             source_value = input_docx.name
 
@@ -157,7 +162,11 @@ class Docx2TexEngine(ConversionEngine):
                 "path_id": "docx_to_latex",
                 "engine_id": self.engine_id,
                 "profile_id": profile.id,
-                "result_name": f"{input_docx.stem}.zip",
+                "original_filename": mapping.original_filename,
+                "display_basename": mapping.display_basename,
+                "internal_filename": mapping.internal_filename,
+                "internal_basename": mapping.internal_basename,
+                "result_name": mapping.result_name,
             },
         )
         return PreparedSubmission(
@@ -170,6 +179,7 @@ class Docx2TexEngine(ConversionEngine):
             custom_evolve_path=evolve_path,
             fontmaps_zip_path=fontmaps_zip_path,
             image_dir=self._resolve_image_dir(submission.image_dir),
+            name_mapping=mapping,
         )
 
     async def _prepare_optional_inputs(
@@ -263,7 +273,7 @@ class Docx2TexEngine(ConversionEngine):
 
     @staticmethod
     def _sanitize_uploaded_path(path: Path) -> Path:
-        safe = sanitize_filename(path.name)
+        safe = safe_name(path.name)
         if safe == path.name:
             return path
         new_path = path.with_name(safe)
@@ -272,7 +282,7 @@ class Docx2TexEngine(ConversionEngine):
 
     @staticmethod
     def _resolve_image_dir(image_dir: str | None) -> str:
-        cleaned = sanitize_filename(image_dir or "image")
+        cleaned = safe_name(image_dir or "image")
         return cleaned or "image"
 
     @staticmethod
@@ -297,21 +307,6 @@ class Docx2TexEngine(ConversionEngine):
             await upload.close()
         except Exception:
             pass
-
-    @staticmethod
-    def _safe_filename_from_url(url: str) -> str:
-        try:
-            from urllib.parse import urlparse
-
-            parsed = urlparse(url)
-            name = Path(parsed.path).name
-            if not name:
-                return "document.docx"
-            if not name.lower().endswith(".docx"):
-                name = f"{name}.docx"
-            return safe_name(name)
-        except Exception:
-            return "document.docx"
 
     @staticmethod
     def _resolve_conf_profile_or_400(profile: ConversionProfile) -> Path:

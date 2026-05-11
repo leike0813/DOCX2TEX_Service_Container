@@ -34,6 +34,9 @@ class TaskExecutionRequest:
     job_cache_key: str | None = None
     no_cache: bool = False
     image_dir: str = "image"
+    original_filename: str = ""
+    display_basename: str = ""
+    internal_basename: str = "input"
 
 
 class TaskExecutor:
@@ -99,7 +102,7 @@ class TaskExecutor:
                 request.table_model,
                 request.fontmaps_zip,
             )
-            basename = Path(orig_name).stem
+            basename = request.internal_basename or Path(orig_name).stem
             out_tex = work_dir / f"{basename}.tex"
             out_xml = work_dir / f"{basename}.xml"
             row = self.cache.get(cache_key)
@@ -186,6 +189,9 @@ class TaskExecutor:
                 mtef_source=request.mtef_source,
                 table_model=request.table_model,
                 fontmaps_dir=request.fontmaps_dir,
+                original_filename=request.original_filename,
+                display_basename=request.display_basename,
+                internal_basename=request.internal_basename,
             )
             self.set_state(request.task_id, "done")
             log_line(log_path, "task_done")

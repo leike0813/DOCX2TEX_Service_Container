@@ -117,6 +117,58 @@ def test_packager_manifest_excludes_ole_binary_assets_from_release_bundle():
         assert "omitted uncompilable OLE object reference" in tex_text
 
 
+def test_packager_publishes_display_basename_for_main_artifacts():
+    with tempfile.TemporaryDirectory() as td:
+        root = Path(td)
+        public_root = root / "public"
+        work_dir = root / "task"
+        work_dir.mkdir(parents=True, exist_ok=True)
+        out_tex = work_dir / "input.tex"
+        out_tex.write_text("\\documentclass{article}", encoding="utf-8")
+        out_xml = work_dir / "input.xml"
+        out_xml.write_text("<hub/>", encoding="utf-8")
+        (work_dir / "input.csv").write_text("a,b\n", encoding="utf-8")
+        log_path = root / "logs" / "task.log"
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        log_path.write_text("ok\n", encoding="utf-8")
+
+        result_zip = ArtifactPackager(public_root).package(
+            task_id="task-1",
+            job_state=JobState(
+                task_id="task-1",
+                state="packaging",
+                start_time=time.time(),
+                work_dir=str(work_dir),
+            ),
+            basename="input",
+            work_dir=work_dir,
+            out_tex=out_tex,
+            out_xml=out_xml,
+            debug=True,
+            img_post_proc=False,
+            image_dir="image",
+            log_path=log_path,
+            mtef_source="ole+wmf",
+            table_model="tabularx",
+            fontmaps_dir=None,
+            original_filename="安全报告.docx",
+            display_basename="安全报告",
+            internal_basename="input",
+        )
+
+        assert result_zip.name == "安全报告.zip"
+        with ZipFile(result_zip, "r") as archive:
+            names = set(archive.namelist())
+            manifest = archive.read("manifest.json").decode("utf-8")
+
+        assert "安全报告.tex" in names
+        assert "安全报告.xml" in names
+        assert "安全报告.csv" in names
+        assert '"original_filename": "安全报告.docx"' in manifest
+        assert '"display_basename": "安全报告"' in manifest
+        assert '"internal_basename": "input"' in manifest
+
+
 def test_builtin_docx2tex_confs_suppress_ole_binary_placeholders():
     conf_root = resolve_conf_assets_root()
     for name in [

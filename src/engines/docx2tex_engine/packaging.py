@@ -35,11 +35,15 @@ class ArtifactPackager:
         mtef_source: str | None,
         table_model: str | None,
         fontmaps_dir: Path | None,
+        original_filename: str = "",
+        display_basename: str = "",
+        internal_basename: str = "",
     ) -> Path:
         if img_post_proc and out_tex.exists():
             convert_vector_references(out_tex)
         postprocess_summary = None
-        result_zip = self.public_root / f"{basename}.zip"
+        published_basename = display_basename or basename
+        result_zip = self.public_root / f"{published_basename}.zip"
         self.public_root.mkdir(parents=True, exist_ok=True)
         manifest_files: list[str] = []
         manifest = {
@@ -51,6 +55,9 @@ class ArtifactPackager:
             "mtef_source": mtef_source or "",
             "table_model": table_model or "",
             "fontmaps_dir": str(fontmaps_dir) if fontmaps_dir else "",
+            "original_filename": original_filename,
+            "display_basename": published_basename,
+            "internal_basename": internal_basename or basename,
             "ole_binary_refs_commented": 0,
             "ole_binary_ref_paths": [],
             "ole_binary_assets_skipped": 0,
@@ -64,10 +71,14 @@ class ArtifactPackager:
                     postprocess_summary = debug_comment_vsdx_and_normalize(out_tex)
                 except Exception:
                     pass
-                for path in [out_tex, out_xml, work_dir / f"{basename}.csv"]:
+                for path, arcname in [
+                    (out_tex, f"{published_basename}.tex"),
+                    (out_xml, f"{published_basename}.xml"),
+                    (work_dir / f"{basename}.csv", f"{published_basename}.csv"),
+                ]:
                     if path.exists():
-                        zf.write(path, arcname=path.name)
-                        manifest_files.append(path.name)
+                        zf.write(path, arcname=arcname)
+                        manifest_files.append(arcname)
                 for directory_name in [f"{basename}.debug", f"{basename}.docx.tmp"]:
                     directory = work_dir / directory_name
                     if directory.exists():
@@ -97,8 +108,9 @@ class ArtifactPackager:
                 except Exception:
                     pass
                 if out_tex.exists():
-                    zf.write(out_tex, arcname=out_tex.name)
-                    manifest_files.append(out_tex.name)
+                    arcname = f"{published_basename}.tex"
+                    zf.write(out_tex, arcname=arcname)
+                    manifest_files.append(arcname)
                 if image_dir_path.exists():
                     for child in image_dir_path.rglob("*"):
                         if child.is_file():

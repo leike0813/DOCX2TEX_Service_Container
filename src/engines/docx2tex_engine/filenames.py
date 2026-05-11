@@ -1,118 +1,75 @@
 from __future__ import annotations
 
-import importlib
-import logging
 import os
-import re
 import unicodedata
-from functools import lru_cache
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
+from urllib.parse import unquote, urlparse
 
-from document_conversion.infrastructure.storage import safe_name
-
-_jieba_module: object | None
-try:
-    _jieba_module = importlib.import_module("jieba")
-except ModuleNotFoundError:
-    _jieba_module = None
-
-if _jieba_module is not None:
-    _jieba_module.setLogLevel(logging.ERROR)  # type: ignore[attr-defined]
-
-MAX_LENGTH = 40
-MAX_TAIL_WORDS = 4
+INTERNAL_DOCX_FILENAME = "input.docx"
+INTERNAL_BASENAME = "input"
+DEFAULT_DISPLAY_BASENAME = "document"
 
 
-@lru_cache(maxsize=1)
-def _load_cedict(path: Path | None = None) -> dict[str, str]:
-    if path is None:
-        path = Path(__file__).resolve().parents[3] / "resources" / "cedict_ts.u8"
-    mapping: dict[str, str] = {}
+@dataclass(frozen=True)
+class Docx2TexNameMapping:
+    original_filename: str
+    display_basename: str
+    internal_filename: str = INTERNAL_DOCX_FILENAME
+    internal_basename: str = INTERNAL_BASENAME
+
+    @property
+    def result_name(self) -> str:
+        return f"{self.display_basename}.zip"
+
+
+def name_mapping_from_upload(filename: str | None) -> Docx2TexNameMapping:
+    original = _clean_original_filename(filename or "document.docx")
+    return Docx2TexNameMapping(
+        original_filename=original,
+        display_basename=display_basename(original),
+    )
+
+
+def name_mapping_from_url(url: str) -> Docx2TexNameMapping:
+    original = "document.docx"
     try:
-        with open(path, "r", encoding="utf-8") as handle:
-            for line in handle:
-                line = line.strip()
-                if not line or line.startswith("#"):
-                    continue
-                header, _, definitions = line.partition("/")
-                if not definitions:
-                    continue
-                words = header.split()
-                if not words:
-                    continue
-                trad = words[0]
-                simp = words[1] if len(words) > 1 else trad
-                first_def = definitions.strip("/").split("/")[0] or "term"
-                term = first_def.split(";")[0]
-                mapping[trad] = term
-                mapping[simp] = term
+        parsed = urlparse(url)
+        candidate = unquote(Path(parsed.path).name)
+        if candidate:
+            original = candidate
     except Exception:
         pass
-    return mapping
+    original = _clean_original_filename(original)
+    if not original.lower().endswith(".docx"):
+        original = f"{original}.docx"
+    return Docx2TexNameMapping(
+        original_filename=original,
+        display_basename=display_basename(original),
+    )
 
 
-def _segment_text(text: str) -> Iterable[str]:
-    if _jieba_module is None:
-        return list(text)
-    return _jieba_module.lcut(text)  # type: ignore[attr-defined]
+def display_basename(filename: str | None) -> str:
+    original = _clean_original_filename(filename or "")
+    stem, _ = os.path.splitext(original)
+    return _clean_path_component(stem, default=DEFAULT_DISPLAY_BASENAME)
 
 
-def _pinyin_transliteration(text: str) -> Iterable[str]:
-    try:
-        module = importlib.import_module("pypinyin")
-        return module.lazy_pinyin(text, strict=False)  # type: ignore[attr-defined]
-    except ModuleNotFoundError:
-        return ()
+def _clean_original_filename(filename: str) -> str:
+    cleaned = _clean_path_component(filename, default="document.docx")
+    return cleaned or "document.docx"
 
 
-def _translate_with_dictionary(text: str, dictionary: dict[str, str]) -> list[str]:
-    words: list[str] = []
-    for term in _segment_text(text):
-        term = term.strip()
-        if not term:
-            continue
-        candidate = dictionary.get(term)
-        if candidate:
-            words.extend(re.findall(r"[A-Za-z0-9]+", candidate))
-        elif term.isascii() and term.isalnum():
-            words.append(term)
-        elif len(term) < 3:
-            words.append(term)
+def _clean_path_component(value: str, *, default: str) -> str:
+    # Preserve Unicode display text, but remove characters that can escape ZIP paths
+    # or produce invalid filesystem components.
+    value = value.replace("\\", "/").split("/")[-1]
+    chars: list[str] = []
+    for char in unicodedata.normalize("NFC", value):
+        category = unicodedata.category(char)
+        if category.startswith("C") or char in {"/", "\\"}:
+            chars.append("_")
         else:
-            pinyin = "".join(_pinyin_transliteration(term))
-            if pinyin:
-                words.append(pinyin)
-    return words
-
-
-def _limit_length(candidate: str) -> str:
-    if len(candidate) <= MAX_LENGTH:
-        return candidate
-    parts = [part for part in candidate.split("-") if part]
-    if len(parts) <= MAX_TAIL_WORDS:
-        return candidate[:MAX_LENGTH]
-    head = "-".join(parts[: max(1, len(parts) - MAX_TAIL_WORDS)])
-    tail = "-".join(parts[-MAX_TAIL_WORDS:])
-    return f"{head}-{tail}"[:MAX_LENGTH]
-
-
-def _is_ascii(text: str) -> bool:
-    return all(ord(ch) < 128 for ch in text)
-
-
-def sanitize_filename(name: str, default: str = "file") -> str:
-    if not name:
-        return default
-    base, ext = os.path.splitext(name)
-    ascii_candidate = safe_name(base)
-    if _is_ascii(base) and len(base) <= MAX_LENGTH:
-        return f"{ascii_candidate}{ext}"
-    translated_words = _translate_with_dictionary(base, _load_cedict()) or []
-    if not translated_words:
-        normalized = unicodedata.normalize("NFKD", base)
-        translated_words = [char for char in normalized if unicodedata.category(char) != "Mn"]
-    candidate = "-".join(filter(None, translated_words)) or ascii_candidate or default
-    sanitized = safe_name(_limit_length(candidate))
-    sanitized = "".join(ch for ch in sanitized if _is_ascii(ch) or ch in ".-_+")
-    return f"{(sanitized or default)}{ext}"
+            chars.append(char)
+    cleaned = "".join(chars).strip().strip(".")
+    return cleaned or default

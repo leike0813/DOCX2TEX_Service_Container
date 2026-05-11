@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from urllib.parse import quote
 from zipfile import ZIP_DEFLATED, ZipFile
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
@@ -136,8 +137,18 @@ def get_platform_result(task_id: str):
     return StreamingResponse(
         open(result_path, "rb"),
         media_type="application/zip",
-        headers={"Content-Disposition": f"attachment; filename={result_path.name}"},
+        headers={"Content-Disposition": _content_disposition(result_path.name)},
     )
+
+
+def _content_disposition(filename: str) -> str:
+    ascii_fallback = "".join(
+        char if 32 <= ord(char) < 127 and char not in {'"', "\\", ";"} else "_"
+        for char in filename
+    ).strip("_")
+    if not ascii_fallback:
+        ascii_fallback = "result.zip"
+    return f"attachment; filename=\"{ascii_fallback}\"; filename*=UTF-8''{quote(filename)}"
 
 
 @router.post("/v2/dryrun")

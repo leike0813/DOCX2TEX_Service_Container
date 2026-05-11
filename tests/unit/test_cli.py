@@ -165,4 +165,5 @@ def test_dockerfile_contains_build_time_runtime_assertions() -> None:
     content = dockerfile.read_text(encoding="utf-8")
 
     assert "test -f \"$DOCX2TEX_HOME/xpl/docx2tex.xpl\"" in content
-    assert "/opt/venv/bin/python -u -m document_conversion.interfaces.cli check-system" in content
+    assert "ENV PATH=/opt/venv/bin:$PATH" in content
+    assert "python -u -m document_conversion.interfaces.cli check-system" in content
