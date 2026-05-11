@@ -3,6 +3,7 @@ set -euo pipefail
 
 export WORK_ROOT="${WORK_ROOT:-/work}"
 export LOG_DIR="${LOG_DIR:-/var/log/docx2tex}"
+export DOCX2TEX_HOME="${DOCX2TEX_HOME:-/opt/docx2tex}"
 export XML_CATALOG_FILES="${XML_CATALOG_FILES:-}"
 
 mkdir -p "$WORK_ROOT" "$LOG_DIR"

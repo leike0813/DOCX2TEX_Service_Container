@@ -4,11 +4,14 @@ FROM debian:bookworm-slim
 ARG DEBIAN_MIRROR=mirrors.ustc.edu.cn
 ARG DEBIAN_SECURITY_MIRROR=mirrors.ustc.edu.cn
 ARG PIP_INDEX_URL=https://pypi.org/simple
+ARG DOCX2TEX_REPO=https://github.com/transpect/docx2tex.git
+ARG DOCX2TEX_REF=b8e1e891facb296685cf6421aca45a768b85577d
 
 ENV DEBIAN_FRONTEND=noninteractive \
     WORK_ROOT=/work \
     DATA_ROOT=/data \
     LOG_DIR=/var/log/docx2tex \
+    DOCX2TEX_HOME=/opt/docx2tex \
     XML_CATALOG_FILES= \
     PYTHONUNBUFFERED=1 \
     UVICORN_WORKERS=2 \
@@ -28,10 +31,16 @@ RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
       openjdk-17-jre-headless inkscape pandoc python3 python3-pip python3-venv \
-      sqlite3 \
+      git sqlite3 \
       fonts-noto-cjk zip unzip locales curl wget; \
     sed -i 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen && locale-gen; \
     rm -rf /var/lib/apt/lists/*
+
+RUN set -eux; \
+    git clone --recursive "$DOCX2TEX_REPO" "$DOCX2TEX_HOME"; \
+    git -C "$DOCX2TEX_HOME" checkout "$DOCX2TEX_REF"; \
+    git -C "$DOCX2TEX_HOME" submodule update --init --recursive; \
+    test -f "$DOCX2TEX_HOME/xpl/docx2tex.xpl"
 
 # Configure pip index before installing Python libraries.
 RUN printf "[global]\nindex-url = %s\n" "$PIP_INDEX_URL" > /etc/pip.conf
@@ -47,7 +56,7 @@ RUN set -eux; \
     python -m pip install --no-cache-dir /svc
 
 RUN set -eux; \
-    python -c "from engines.docx2tex_engine.assets import resolve_docx2tex_home; p = resolve_docx2tex_home(); print(p); raise SystemExit(0 if (p / 'xpl' / 'docx2tex.xpl').is_file() else 1)"; \
+    test -f "$DOCX2TEX_HOME/xpl/docx2tex.xpl"; \
     python -c "from engines.docx2tex_engine.assets import resolve_catalog_template; print(resolve_catalog_template())"; \
     command -v java; \
     command -v inkscape; \
