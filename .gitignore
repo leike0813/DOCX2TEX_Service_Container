@@ -17,3 +17,6 @@ Thumbs.db
 resp.zip
 .opencode
 .vscode/
+.codex/
+.history/
+.local/
