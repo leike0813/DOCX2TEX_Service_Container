@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<c:result xmlns:c="http://www.w3.org/ns/xproc-step"
+          xmlns:cat="urn:oasis:names:tc:entity:xmlns:xml:catalog"
+          xmlns:cx="http://xmlcalabash.com/ns/extensions"
+          xmlns:pos="http://exproc.org/proposed/steps/os"
+          xmlns:tr="http://transpect.io"
+          xmlns:xs="http://www.w3.org/2001/XMLSchema"
+          xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+          href="file:///D:/%E8%BD%AF%E4%BB%B6/docx2tex/TMP/example_forward.docx"
+          cwd="D:/软件/docx2tex/"
+          local-href="file:///D:/%E8%BD%AF%E4%BB%B6/docx2tex/TMP/example_forward.docx"
+          os-path="D:/软件/docx2tex/TMP/example_forward.docx"
+          lastpath="example_forward.docx"
+          lastpath-os="example_forward.docx"
+          rel-path="TMP/example_forward.docx"/>

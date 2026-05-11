@@ -1,0 +1,22 @@
+name: base
+preprocessors:
+  - name: normalize_strong
+    order: 0
+  - name: includegraphics_assets
+    order: 2
+  - name: tabularx
+    order: 5
+filters:
+  - name: math_cleanup
+    order: -10
+    lua: true
+pandoc:
+  reader: latex
+  writer: docx
+  args:
+    - --standalone
+detect:
+  classes: []
+  packages: {}
+  features: {}
+  threshold: 3

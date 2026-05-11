@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!DOCTYPE catalog PUBLIC "-//OASIS//DTD XML Catalogs V1.0//EN" "http://www.oasis-open.org/committees/entity/release/1.0/catalog.dtd">
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+  <!-- Map common transpect URLs to the effective docx2tex vendor tree for offline use. -->
+  <rewriteURI uriStartString="http://transpect.io/" rewritePrefix="__DOCX2TEX_HOME_URI__"/>
+  <rewriteURI uriStartString="https://transpect.io/" rewritePrefix="__DOCX2TEX_HOME_URI__"/>
+
+  <!-- xmlcalabash extension steps library -->
+  <rewriteURI uriStartString="http://xmlcalabash.com/extension/steps/" rewritePrefix="__DOCX2TEX_HOME_URI__xmlcalabash/"/>
+  <rewriteURI uriStartString="https://xmlcalabash.com/extension/steps/" rewritePrefix="__DOCX2TEX_HOME_URI__xmlcalabash/"/>
+
+  <!-- docbook ns schemas if referenced (optional) -->
+  <rewriteURI uriStartString="http://www.le-tex.de/resource/schema/hub/" rewritePrefix="__DOCX2TEX_HOME_URI__schema/hub/"/>
+</catalog>

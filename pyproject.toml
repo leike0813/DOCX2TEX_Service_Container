@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "docx2tex-service"
+version = "0.2.0"
+description = "Matrix-based document conversion platform with pluggable engines."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "pandoc-tex-numbering",
+  "pydantic>=2,<3",
+  "PyYAML>=6,<7",
+  "python-multipart>=0.0.9,<1",
+  "requests>=2.32,<3",
+  "uvicorn[standard]>=0.30,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "httpx>=0.26,<1",
+  "mypy>=1.8,<2",
+  "pytest>=8,<9",
+  "pytest-asyncio>=0.23,<1",
+  "ruff>=0.5,<1",
+]
+
+[project.scripts]
+docx2tex-service = "document_conversion.interfaces.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.mypy]
+python_version = "3.11"
+packages = ["document_conversion", "docx2tex_service", "engines"]
+warn_unused_configs = true
+check_untyped_defs = true
+no_implicit_optional = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+force-exclude = true
+exclude = [
+  ".git",
+  ".history",
+  ".idea",
+  ".local",
+  ".mypy_cache",
+  ".pytest_cache",
+  ".ruff_cache",
+  "legacy",
+  "result",
+  "result_debug",
+  "src/engines/docx2tex_engine/vendor/docx2tex",
+  "tmpdata",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/document_conversion/infrastructure/__init__.py" = ["I001", "E501"]
+"src/document_conversion/infrastructure/runtime.py" = ["I001"]
+"src/document_conversion/interfaces/api/router.py" = ["B008", "I001"]
+"src/engines/docx2tex_engine/assets.py" = ["I001", "E501"]
+"src/engines/docx2tex_engine/converter.py" = ["I001", "E501"]
+"src/engines/docx2tex_engine/postprocess.py" = ["I001"]
+"src/engines/docx2tex_engine/stylemap.py" = ["I001", "E501"]
+"src/engines/pandoc_engine/**/*.py" = ["I001", "E501"]
+"src/docx2tex_service/interfaces/api/router.py" = ["B008"]
+"tests/api/test_platform_api.py" = ["E501"]

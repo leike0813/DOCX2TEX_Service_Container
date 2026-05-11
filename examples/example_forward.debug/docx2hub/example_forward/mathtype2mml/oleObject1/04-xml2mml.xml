@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:tr="http://transpect.io">
+   <mrow>
+      <mrow>
+         <mrow>
+            <mi mathvariant="italic"
+                fontfamily="Times New Roman"
+                default-font=""
+                mathsize="100%">I</mi>
+            <mi mathvariant="italic"
+                fontfamily="Times New Roman"
+                default-font=""
+                mathsize="100%">n</mi>
+         </mrow>
+         <mo>/</mo>
+         <mrow>
+            <mi mathvariant="italic"
+                fontfamily="Times New Roman"
+                default-font=""
+                mathsize="100%">l</mi>
+            <mi mathvariant="italic"
+                fontfamily="Times New Roman"
+                default-font=""
+                mathsize="100%">i</mi>
+            <mi mathvariant="italic"
+                fontfamily="Times New Roman"
+                default-font=""
+                mathsize="100%">n</mi>
+            <mi mathvariant="italic"
+                fontfamily="Times New Roman"
+                default-font=""
+                mathsize="100%">e</mi>
+         </mrow>
+      </mrow>
+      <mo mathvariant="normal"
+          font-position="003D"
+          fontfamily="Symbol"
+          default-font=""
+          mathsize="100%">=</mo>
+      <mstyle displaystyle="true">
+         <munderover>
+            <mo mathvariant="normal"
+                font-position="00E5"
+                fontfamily="Symbol"
+                default-font="">∑</mo>
+            <mrow/>
+            <mrow/>
+         </munderover>
+         <mrow>
+            <mi mathvariant="italic"
+                fontfamily="Times New Roman"
+                default-font=""
+                mathsize="100%">e</mi>
+            <mi mathvariant="italic"
+                fontfamily="Times New Roman"
+                default-font=""
+                mathsize="100%">q</mi>
+            <mi mathvariant="italic"
+                fontfamily="Times New Roman"
+                default-font=""
+                mathsize="100%">u</mi>
+            <mfenced separators="" open="(" close=")">
+               <mrow>
+                  <mi mathvariant="italic"
+                      fontfamily="Times New Roman"
+                      default-font=""
+                      mathsize="100%">a</mi>
+                  <mi mathvariant="italic"
+                      fontfamily="Times New Roman"
+                      default-font=""
+                      mathsize="100%">t</mi>
+               </mrow>
+            </mfenced>
+            <mi mathvariant="italic"
+                fontfamily="Times New Roman"
+                default-font=""
+                mathsize="100%">i</mi>
+            <mi mathvariant="italic"
+                fontfamily="Times New Roman"
+                default-font=""
+                mathsize="100%">o</mi>
+            <mi mathvariant="italic"
+                fontfamily="Times New Roman"
+                default-font=""
+                mathsize="100%">n</mi>
+         </mrow>
+      </mstyle>
+   </mrow>
+</math>

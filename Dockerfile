@@ -5,12 +5,11 @@ ARG DEBIAN_MIRROR=mirrors.ustc.edu.cn
 ARG DEBIAN_SECURITY_MIRROR=mirrors.ustc.edu.cn
 
 ENV DEBIAN_FRONTEND=noninteractive \
-    APP_HOME=/svc/app \
     WORK_ROOT=/work \
     DATA_ROOT=/data \
     LOG_DIR=/var/log/docx2tex \
-    DOCX2TEX_HOME=/opt/docx2tex \
-    XML_CATALOG_FILES=/opt/catalog/catalog.xml \
+    DOCX2TEX_HOME=/svc/src/engines/docx2tex_engine/vendor/docx2tex \
+    XML_CATALOG_FILES= \
     PYTHONUNBUFFERED=1 \
     UVICORN_WORKERS=2 \
     STATE_DB=/data/state.db \
@@ -26,37 +25,30 @@ RUN set -eux; \
     printf 'deb http://%s/debian-security bookworm-security main contrib non-free non-free-firmware\n' "$DEBIAN_SECURITY_MIRROR" >> /etc/apt/sources.list; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-      openjdk-17-jre-headless inkscape python3 python3-pip python3-venv \
+      openjdk-17-jre-headless inkscape pandoc python3 python3-pip python3-venv \
       sqlite3 \
-      fonts-noto-cjk zip unzip locales curl wget git; \
+      fonts-noto-cjk zip unzip locales curl wget; \
     sed -i 's/# zh_CN.UTF-8 UTF-8/zh_CN.UTF-8 UTF-8/' /etc/locale.gen && locale-gen; \
     rm -rf /var/lib/apt/lists/*
-
-# Fetch docx2tex at build time (offline at runtime)
-RUN git clone --recursive https://github.com/transpect/docx2tex.git /opt/docx2tex
-
-# Create XML catalog mapping transpect URLs to local paths
-RUN mkdir -p /opt/catalog
-
-# Allow overriding catalog from build context if provided
-COPY catalog/ /opt/catalog/
 
 # Set pip to Tsinghua mirror (CN) before installing Python libraries
 RUN printf "[global]\nindex-url = https://pypi.mirrors.ustc.edu.cn/simple\n" > /etc/pip.conf
 
 # Install Python deps early for better build cache reuse
 WORKDIR /svc
-COPY app/requirements.txt /svc/app/requirements.txt
+COPY pyproject.toml README.md /svc/
+COPY src/ /svc/src/
+COPY scripts/ /svc/scripts/
 RUN python3 -m venv /opt/venv && \
     . /opt/venv/bin/activate && \
-    pip install --no-cache-dir -r /svc/app/requirements.txt
+    pip install --no-cache-dir /svc && \
+    test -f "$DOCX2TEX_HOME/xpl/docx2tex.xpl" && \
+    /opt/venv/bin/python -u -m document_conversion.interfaces.cli check-system
 
-# Copy entire repository (ensures package root 'app' exists under /svc)
-COPY . /svc/
-RUN chmod +x /svc/app/entrypoint.sh
+RUN chmod +x /svc/scripts/entrypoint.sh
 
 EXPOSE 8000
-ENTRYPOINT ["/svc/app/entrypoint.sh"]
+ENTRYPOINT ["/svc/scripts/entrypoint.sh"]
 
 # Simple container healthcheck
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \

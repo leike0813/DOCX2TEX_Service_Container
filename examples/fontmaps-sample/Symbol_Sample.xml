@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<symbols mathtype-name="Symbol">
+  <!-- Minimal demonstration mappings for the Symbol font (make differences obvious) -->
+  <!-- PLUS SIGN F02B: map to ⊕ (U+2295) to make a visible change -->
+  <symbol number="F02B" entity="&#xF02B;" char="&#x2295;"/>
+  <!-- COMMA F02C: map to ◆ (U+25C6) to make a visible change -->
+  <symbol number="F02C" entity="&#xF02C;" char="&#x25C6;"/>
+  <!-- PHI F06A (as per common Symbol positions): map to ★ (U+2605) for easy spotting -->
+  <symbol number="F06A" entity="&#xF06A;" char="&#x2605;"/>
+</symbols>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<c:errors xmlns:c="http://www.w3.org/ns/xproc-step"
+          xmlns:tr="http://transpect.io"
+          tr:rule-family="Internal">
+   <c:error href="file:/D:/%E8%BD%AF%E4%BB%B6/docx2tex/xproc-util/xslt-mode/xpl/xslt-mode.xpl"
+            line="21"
+            column="23"
+            code="escape-bad-chars"
+            type="tr:xslt-mode"
+            role="fatal-error">Errors were reported during stylesheet compilation</c:error>
+</c:errors>

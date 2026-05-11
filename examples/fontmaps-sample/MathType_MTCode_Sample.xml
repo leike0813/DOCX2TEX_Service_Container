@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<symbols mathtype-name="MathType MTCode">
+  <!-- Force visible differences when MathType MTCode is used -->
+  <!-- '+' 0x002B → ⊕ -->
+  <symbol number="002B" entity="&#x002B;" char="&#x2295;"/>
+  <!-- '=' 0x003D → ≡ -->
+  <symbol number="003D" entity="&#x003D;" char="&#x2261;"/>
+  <!-- '-' 0x002D → − (minus sign) to differentiate -->
+  <symbol number="002D" entity="&#x002D;" char="&#x2212;"/>
+</symbols>
+

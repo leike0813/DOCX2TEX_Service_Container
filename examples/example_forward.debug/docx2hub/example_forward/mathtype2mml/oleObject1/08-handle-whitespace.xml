@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<math xmlns="http://www.w3.org/1998/Math/MathML" xmlns:tr="http://transpect.io">
+   <mrow>
+      <mrow>
+         <mrow>
+            <mi mathsize="100%" mathvariant="italic">I</mi>
+            <mi mathsize="100%" mathvariant="italic">n</mi>
+         </mrow>
+         <mo>/</mo>
+         <mrow>
+            <mi mathsize="100%" mathvariant="italic">l</mi>
+            <mi mathsize="100%" mathvariant="italic">i</mi>
+            <mi mathsize="100%" mathvariant="italic">n</mi>
+            <mi mathsize="100%" mathvariant="italic">e</mi>
+         </mrow>
+      </mrow>
+      <mo mathsize="100%" mathvariant="normal">=</mo>
+      <mstyle displaystyle="true">
+         <munderover>
+            <mo mathvariant="normal">∑</mo>
+            <mrow/>
+            <mrow/>
+         </munderover>
+         <mrow>
+            <mi mathsize="100%" mathvariant="italic">e</mi>
+            <mi mathsize="100%" mathvariant="italic">q</mi>
+            <mi mathsize="100%" mathvariant="italic">u</mi>
+            <mfenced close=")" open="(" separators="">
+               <mrow>
+                  <mi mathsize="100%" mathvariant="italic">a</mi>
+                  <mi mathsize="100%" mathvariant="italic">t</mi>
+               </mrow>
+            </mfenced>
+            <mi mathsize="100%" mathvariant="italic">i</mi>
+            <mi mathsize="100%" mathvariant="italic">o</mi>
+            <mi mathsize="100%" mathvariant="italic">n</mi>
+         </mrow>
+      </mstyle>
+   </mrow>
+</math>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<math xmlns="http://www.w3.org/1998/Math/MathML">
+   <mrow xmlns:tr="http://transpect.io">
+      <mrow>
+         <mi>I</mi>
+         <mi>n</mi>
+      </mrow>
+      <mo>/</mo>
+      <mrow>
+         <mi>l</mi>
+         <mi>i</mi>
+         <mi>n</mi>
+         <mi>e</mi>
+      </mrow>
+   </mrow>
+   <mo xmlns:tr="http://transpect.io">=</mo>
+   <mstyle xmlns:tr="http://transpect.io" displaystyle="true">
+      <mo>∑</mo>
+      <mrow>
+         <mi>e</mi>
+         <mi>q</mi>
+         <mi>u</mi>
+         <mfenced close=")" open="(" separators="">
+            <mi>a</mi>
+            <mi>t</mi>
+         </mfenced>
+         <mi>i</mi>
+         <mi>o</mi>
+         <mi>n</mi>
+      </mrow>
+   </mstyle>
+</math>

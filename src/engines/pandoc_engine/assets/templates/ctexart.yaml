@@ -1,0 +1,14 @@
+inherits: base
+preprocessors:
+  - name: math_symbol
+    order: 0
+  - name: tabularray
+    order: 10
+detect:
+  classes:
+    - ctexart
+  packages:
+    ctex: 3
+  features:
+    "\\CTEXsetup": 2
+  threshold: 3

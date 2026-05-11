@@ -1,0 +1,29 @@
+# meta_zh.yaml
+
+section-prefix: ""
+figure-prefix: 图
+table-prefix: 表
+equation-prefix: 式
+prefix-space: false
+theorem-thm-prefix: 定理
+theorem-lem-prefix: 引理
+
+subfigure-numstyle: "roman"
+appendix-numstyle-1: "Roman"
+
+table-src-format: "表{this_num}"
+table-Cref-format: "表{this_num}"
+table-cref-format: "Table {this_num}"
+figure-src-format: "图{this_num}"
+figure-Cref-format: "图{this_num}"
+figure-cref-format: "Figure {this_num}"
+equation-src-format: ""
+equation-Cref-format: "式{this_num}"
+equation-cref-format: "Eq. {this_num}"
+subfigure-src-format: "({this_num})"
+appendix-ref-format-1: "附录{this_num}"
+appendix-src-format-1: "附录{this_num}"
+
+multiple-ref-separator: "、"
+multiple-ref-last-separator: "\\ 和\\ "
+multiple-ref-to: "\\ 至\\ "

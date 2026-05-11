@@ -1,19 +1,30 @@
-# Ignore large or generated items
-docx2tex/
-docs/api_reference.md
-result.zip
-result_debug.zip
-dryrun.zip
+# Runtime data
+.local/
 result/
 result_debug/
-examples/
-conf_test/
 tmpdata/
+*.log
+*.zip
+
+# Python caches and build output
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.python-version
+
+# Editor and local tooling
 .DS_Store
 Thumbs.db
-*.log
 .idea/
-*.pyc
-resp.zip
-.opencode
 .vscode/
+.history/
+.opencode/
+
+# Codex workspace metadata
+.codex/
+.opencode

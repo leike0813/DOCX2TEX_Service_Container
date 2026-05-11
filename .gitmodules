@@ -1,0 +1,3 @@
+[submodule "upstream-docx2tex"]
+	path = src/engines/docx2tex_engine/vendor/docx2tex
+	url = https://github.com/transpect/docx2tex.git

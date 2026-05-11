@@ -1,0 +1,36 @@
+inherits: base
+preprocessors:
+  - name: captionsetup_cleanup
+    order: -20
+  - name: tsup_citation
+    order: -10
+  - name: bicaption
+    order: 0
+  - name: math_symbol
+    order: 10
+  - name: tabularray
+    order: 20
+pandoc:
+  reference_doc: prototype/custom-reference.docx
+  args:
+    - --citeproc
+citations:
+  metadata:
+    - prototype/custom-meta.yaml
+  csl: prototype/gb-t-7714-numeric.csl
+  bibliography:
+    - prototype/main.bib
+postprocessors:
+  - caption_colon_fix
+  - org_helper
+detect:
+  classes:
+    - article
+  packages:
+    bicaption: 3
+    ctex: 3
+    tabularray: 1
+  features:
+    "\\setCJKmainfont": 3
+    "\\captionsetup[figure][bi-first]": 4
+  threshold: 6

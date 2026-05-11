@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<collection xmlns:c="http://www.w3.org/ns/xproc-step"
+            xmlns:cx="http://xmlcalabash.com/ns/extensions"
+            xmlns:tr="http://transpect.io"
+            xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            xml:base="file:///D:/%E8%BD%AF%E4%BB%B6/docx2tex/TMP/example_forward.debug/docx2hub/example_forward/08-join-instrText-runs-input.catalog.xml">
+   <doc href="file:///D:/%E8%BD%AF%E4%BB%B6/docx2tex/TMP/example_forward.debug/docx2hub/example_forward/08-join-instrText-runs-input/document..xml"/>
+   <doc href="file:///D:/%E8%BD%AF%E4%BB%B6/docx2tex/TMP/example_forward.debug/docx2hub/example_forward/08-join-instrText-runs-input/catalog..xml"/>
+</collection>

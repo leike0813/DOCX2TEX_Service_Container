@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<symbols mathtype-name="MT Symbol">
+  <!-- Map common ASCII slots when MT Symbol is selected -->
+  <!-- '+' 0x002B → ⊗ -->
+  <symbol number="002B" entity="&#x002B;" char="&#x2297;"/>
+  <!-- '=' 0x003D → ≠ -->
+  <symbol number="003D" entity="&#x003D;" char="&#x2260;"/>
+  <!-- ',' 0x002C → ◆ -->
+  <symbol number="002C" entity="&#x002C;" char="&#x25C6;"/>
+</symbols>
+

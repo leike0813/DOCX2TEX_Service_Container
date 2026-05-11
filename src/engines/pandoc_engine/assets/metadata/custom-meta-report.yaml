@@ -1,0 +1,28 @@
+# custom-meta-report.yaml
+
+number-reset-level: 2
+section-prefix: ""
+figure-prefix: 图
+table-prefix: 表
+equation-prefix: 式
+prefix-space: false
+theorem-thm-prefix: 定理
+theorem-lem-prefix: 引理
+
+section-src-format-1: "{num}"
+section-src-format-2: "{num}"
+section-src-format-3: "{num}"
+section-src-format-4: "{num}"
+table-src-format: "表 {parent_num}-{this_num}"
+table-Cref-format: "表 {parent_num}-{this_num}"
+table-cref-format: "Table {parent_num}-{this_num}"
+figure-src-format: "图 {parent_num}-{this_num}"
+figure-Cref-format: "图 {parent_num}-{this_num}"
+figure-cref-format: "Figure {parent_num}-{this_num}"
+equation-src-format: ""
+equation-Cref-format: "式 {parent_num}-{this_num}"
+equation-cref-format: "Eq. {parent_num}-{this_num}"
+
+multiple-ref-separator: "、"
+multiple-ref-last-separator: "\\ 和\\ "
+multiple-ref-to: "\\ 至\\ "

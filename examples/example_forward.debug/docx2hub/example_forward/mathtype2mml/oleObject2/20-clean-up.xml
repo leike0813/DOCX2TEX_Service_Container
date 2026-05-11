@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block">
+   <mfrac xmlns:tr="http://transpect.io">
+      <mrow>
+         <mi>f</mi>
+         <mi>r</mi>
+      </mrow>
+      <mrow>
+         <mi>a</mi>
+         <mi>c</mi>
+      </mrow>
+   </mfrac>
+   <mo xmlns:tr="http://transpect.io">=</mo>
+   <mstyle xmlns:tr="http://transpect.io" displaystyle="true">
+      <msubsup>
+         <mo>∫</mo>
+         <mi>a</mi>
+         <mi>b</mi>
+      </msubsup>
+      <mrow>
+         <mi>c</mi>
+         <mi mathvariant="normal">d</mi>
+         <mi>e</mi>
+      </mrow>
+   </mstyle>
+   <mo xmlns:tr="http://transpect.io">±</mo>
+   <mroot xmlns:tr="http://transpect.io">
+      <mi>f</mi>
+      <mi>g</mi>
+   </mroot>
+   <mo xmlns:tr="http://transpect.io">∈</mo>
+   <mover xmlns:tr="http://transpect.io" accent="true">
+      <mrow>
+         <mi>h</mi>
+         <mi>i</mi>
+         <mi>j</mi>
+      </mrow>
+      <mo stretchy="true">⇀</mo>
+   </mover>
+   <mi xmlns:tr="http://transpect.io">k</mi>
+   <mstyle xmlns:tr="http://transpect.io" displaystyle="true">
+      <munderover>
+         <mo>⋃</mo>
+         <mrow>
+            <mi>l</mi>
+            <mi>m</mi>
+            <mi>n</mi>
+         </mrow>
+         <mrow>
+            <mi>o</mi>
+            <mi>p</mi>
+            <mi>q</mi>
+         </mrow>
+      </munderover>
+      <mrow>
+         <mi>R</mi>
+         <mi>S</mi>
+         <mi>T</mi>
+      </mrow>
+   </mstyle>
+   <mi xmlns:tr="http://transpect.io">α</mi>
+   <mi xmlns:tr="http://transpect.io" mathvariant="normal">Β</mi>
+   <mi xmlns:tr="http://transpect.io">χ</mi>
+   <mi xmlns:tr="http://transpect.io" mathvariant="normal">Δ</mi>
+   <mi xmlns:tr="http://transpect.io">ι</mi>
+   <mi xmlns:tr="http://transpect.io" mathvariant="normal">Ο</mi>
+   <mi xmlns:tr="http://transpect.io">ρ</mi>
+   <mi xmlns:tr="http://transpect.io" mathvariant="normal">Ρ</mi>
+</math>

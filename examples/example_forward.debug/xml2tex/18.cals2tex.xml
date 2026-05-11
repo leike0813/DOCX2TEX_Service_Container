@@ -1,0 +1,775 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="http://www.le-tex.de/resource/schema/hub/1.2/hub.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<?xml-model href="http://www.le-tex.de/resource/schema/hub/1.2/hub.rng" type="application/xml" schematypens="http://purl.oclc.org/dsdl/schematron"?>
+<hub xmlns="http://docbook.org/ns/docbook"
+     xmlns:css="http://www.w3.org/1996/css"
+     version="5.1-variant le-tex_Hub-1.2"
+     css:version="3.0-variant le-tex_Hub-1.2"
+     css:rule-selection-attribute="role"
+     xml:base="file:///D:/%E8%BD%AF%E4%BB%B6/docx2tex/TMP/example_forward.hub.xml"
+     xml:lang="zh-CN">
+   <info>
+      <keywordset role="hub">
+         <keyword role="formatting-deviations-only">true</keyword>
+         <keyword role="source-type">docx</keyword>
+         <keyword role="source-dir-uri">file:/D:/软件/docx2tex/TMP/example_forward.docx.tmp/</keyword>
+         <keyword role="archive-dir-uri">file:/D:/软件/docx2tex/TMP/</keyword>
+         <keyword role="archive-uri">file:///D:/%E8%BD%AF%E4%BB%B6/docx2tex/TMP/example_forward.docx</keyword>
+         <keyword role="archive-uri-local">file:///D:/%E8%BD%AF%E4%BB%B6/docx2tex/TMP/example_forward.docx</keyword>
+         <keyword role="source-basename">example_forward</keyword>
+         <keyword role="source-application">Microsoft Office Word</keyword>
+         <keyword role="mathtype2mml">ole</keyword>
+         <keyword role="marked-identifiers">true</keyword>
+         <keyword role="processed-lists">true</keyword>
+      </keywordset>
+      <keywordset role="docProps">
+         <keyword role="dc:title">example_docx</keyword>
+         <keyword role="dc:subject"/>
+         <keyword role="dc:creator">wy</keyword>
+         <keyword role="cp:keywords"/>
+         <keyword role="dc:description">NE.Ref</keyword>
+         <keyword role="cp:lastModifiedBy">Joshua Reed</keyword>
+         <keyword role="cp:revision">3</keyword>
+         <keyword role="cp:lastPrinted">2005-01-22T03:59:00Z</keyword>
+         <keyword role="dcterms:created">2018-11-12T02:49:00Z</keyword>
+         <keyword role="dcterms:modified">2025-11-04T17:53:00Z</keyword>
+         <keyword role="extendedProps:Template">Normal.dotm</keyword>
+         <keyword role="extendedProps:TotalTime">15</keyword>
+         <keyword role="extendedProps:Pages">2</keyword>
+         <keyword role="extendedProps:Words">302</keyword>
+         <keyword role="extendedProps:Characters">1727</keyword>
+         <keyword role="extendedProps:Application">Microsoft Office Word</keyword>
+         <keyword role="extendedProps:DocSecurity">0</keyword>
+         <keyword role="extendedProps:Lines">14</keyword>
+         <keyword role="extendedProps:Paragraphs">4</keyword>
+         <keyword role="extendedProps:ScaleCrop">false</keyword>
+         <keyword role="extendedProps:Company"/>
+         <keyword role="extendedProps:LinksUpToDate">false</keyword>
+         <keyword role="extendedProps:CharactersWithSpaces">2025</keyword>
+         <keyword role="extendedProps:SharedDoc">false</keyword>
+         <keyword role="extendedProps:HyperlinksChanged">false</keyword>
+         <keyword role="extendedProps:AppVersion">16.0000</keyword>
+      </keywordset>
+      <keywordset role="docVars">
+         <keyword role="NE.Ref{2B48D0DF-1FB5-4AA4-B8EA-D7B7E050604F}"> ADDIN NE.Ref.{2B48D0DF-1FB5-4AA4-B8EA-D7B7E050604F}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;491&lt;/ID&gt;&lt;UID&gt;{9518A2E0-641B-454F-803D-4ED68A9BD85B}&lt;/UID&gt;&lt;Title&gt;Sequential excavation, NATM and ADECO: What they have in common and how they differ&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Fulvio, Tonon&lt;/Author&gt;&lt;Year&gt;2010&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;3&lt;/_issue&gt;&lt;_journal&gt;Tunnelling &amp;amp; Underground Space Technology Incorporating Trenchless Technology Research&lt;/_journal&gt;&lt;_pages&gt;245-265&lt;/_pages&gt;&lt;_volume&gt;25&lt;/_volume&gt;&lt;_created&gt;62478483&lt;/_created&gt;&lt;_modified&gt;62478502&lt;/_modified&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{312C9D14-91F2-4F5E-8400-DD26B8AA4188}"> ADDIN NE.Ref.{312C9D14-91F2-4F5E-8400-DD26B8AA4188}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;499&lt;/ID&gt;&lt;UID&gt;{F592165D-EB88-4833-B712-E99BA71618B1}&lt;/UID&gt;&lt;Title&gt;Effects of pipe roof supports and the excavation method on the displacements above a tunnel face&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Hisatake, M; Ohno, S&lt;/Author&gt;&lt;Year&gt;2008&lt;/Year&gt;&lt;Details&gt;&lt;_isbn&gt;0886-7798&lt;/_isbn&gt;&lt;_issue&gt;2&lt;/_issue&gt;&lt;_journal&gt;Tunnelling and Underground Space Technology&lt;/_journal&gt;&lt;_pages&gt;120-127&lt;/_pages&gt;&lt;_volume&gt;23&lt;/_volume&gt;&lt;_created&gt;62482826&lt;/_created&gt;&lt;_modified&gt;62485826&lt;/_modified&gt;&lt;_impact_factor&gt;   2.418&lt;/_impact_factor&gt;&lt;_collection_scope&gt;EI;SCIE;&lt;/_collection_scope&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{3365AD1A-FFCA-4EB6-80CE-135F3C218735}"> ADDIN NE.Ref.{3365AD1A-FFCA-4EB6-80CE-135F3C218735}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;487&lt;/ID&gt;&lt;UID&gt;{95B98850-F42A-4E20-AED9-EE78B7A9EB59}&lt;/UID&gt;&lt;Title&gt;Design and Construction of Tunnels&lt;/Title&gt;&lt;Template&gt;Book&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Lunardi, Pietro&lt;/Author&gt;&lt;Year&gt;2008&lt;/Year&gt;&lt;Details&gt;&lt;_pages&gt;79&lt;/_pages&gt;&lt;_publisher&gt;Springer Berlin Heidelberg&lt;/_publisher&gt;&lt;_created&gt;62478411&lt;/_created&gt;&lt;_modified&gt;62485880&lt;/_modified&gt;&lt;_accessed&gt;62485897&lt;/_accessed&gt;&lt;_place_published&gt;Berlin&lt;/_place_published&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{378F7E82-3A94-4F87-A5B6-D30DFA47896A}"> ADDIN NE.Ref.{378F7E82-3A94-4F87-A5B6-D30DFA47896A}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;487&lt;/ID&gt;&lt;UID&gt;{95B98850-F42A-4E20-AED9-EE78B7A9EB59}&lt;/UID&gt;&lt;Title&gt;Design and Construction of Tunnels&lt;/Title&gt;&lt;Template&gt;Book&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Lunardi, Pietro&lt;/Author&gt;&lt;Year&gt;2008&lt;/Year&gt;&lt;Details&gt;&lt;_pages&gt;79&lt;/_pages&gt;&lt;_publisher&gt;Springer Berlin Heidelberg&lt;/_publisher&gt;&lt;_created&gt;62478411&lt;/_created&gt;&lt;_modified&gt;62485880&lt;/_modified&gt;&lt;_accessed&gt;62485897&lt;/_accessed&gt;&lt;_place_published&gt;Berlin&lt;/_place_published&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{40296E7D-D5AA-443A-A29D-E73D84F026C0}"> ADDIN NE.Ref.{40296E7D-D5AA-443A-A29D-E73D84F026C0}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;483&lt;/ID&gt;&lt;UID&gt;{56A78337-0945-4100-AD23-E6919FBBDD4E}&lt;/UID&gt;&lt;Title&gt;软弱围岩隧道变形及其控制技术&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;关宝树&lt;/Author&gt;&lt;Year&gt;2011&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;1&lt;/_issue&gt;&lt;_journal&gt;隧道建设(中英文)&lt;/_journal&gt;&lt;_keywords&gt;软弱围岩;隧道;变形;变形控制;先行位移;挤出位移;容许变形值;超前支护;掌子面补强;脚部补强&lt;/_keywords&gt;&lt;_pages&gt;1-17&lt;/_pages&gt;&lt;_volume&gt;31&lt;/_volume&gt;&lt;_created&gt;62478406&lt;/_created&gt;&lt;_modified&gt;62478409&lt;/_modified&gt;&lt;_translated_author&gt;Guan, Baoshu&lt;/_translated_author&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{44F7E344-D45C-4544-8722-4EB865F9B873}"> ADDIN NE.Ref.{44F7E344-D45C-4544-8722-4EB865F9B873}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;495&lt;/ID&gt;&lt;UID&gt;{6A7A3AE7-2666-4C47-9746-06706B83DD2F}&lt;/UID&gt;&lt;Title&gt;国内外水平旋喷注浆加固技术的应用发展&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;孙星亮; 刘勇; 王朝建&lt;/Author&gt;&lt;Year&gt;2001&lt;/Year&gt;&lt;Details&gt;&lt;_author_adr&gt;石家庄铁道学院交通工程系!河北石家庄050043,石家庄铁道学院交通工程系!河北石家庄050043,中国地质科学院勘探技术研究所!河北廊坊065000&lt;/_author_adr&gt;&lt;_db_provider&gt;CNKI&lt;/_db_provider&gt;&lt;_isbn&gt;1000-3746&lt;/_isbn&gt;&lt;_issue&gt;01&lt;/_issue&gt;&lt;_journal&gt;探矿工程(岩土钻掘工程)&lt;/_journal&gt;&lt;_keywords&gt;水平旋喷;;加固;;水平旋喷机;;高压注浆泵&lt;/_keywords&gt;&lt;_pages&gt;8-11&lt;/_pages&gt;&lt;_created&gt;62482767&lt;/_created&gt;&lt;_modified&gt;62482777&lt;/_modified&gt;&lt;_accessed&gt;62482776&lt;/_accessed&gt;&lt;_translated_author&gt;Sun, Xingliang;Liu, Yong;Wang, Chaojian&lt;/_translated_author&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;486&lt;/ID&gt;&lt;UID&gt;{AAFE9379-083F-4949-BF7A-E9F4CC9F129D}&lt;/UID&gt;&lt;Title&gt;预切槽技术&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;王霆; 刘维宁&lt;/Author&gt;&lt;Year&gt;2004&lt;/Year&gt;&lt;Details&gt;&lt;_keywords&gt;预切槽技术;地铁工程;地表沉降;预支护技术&lt;/_keywords&gt;&lt;_secondary_title&gt;中国土木工程学会年会&lt;/_secondary_title&gt;&lt;_created&gt;62478406&lt;/_created&gt;&lt;_modified&gt;62478407&lt;/_modified&gt;&lt;_accessed&gt;62478407&lt;/_accessed&gt;&lt;_journal&gt;现代隧道技术&lt;/_journal&gt;&lt;_issue&gt;S1&lt;/_issue&gt;&lt;_pages&gt;221-226&lt;/_pages&gt;&lt;_collection_scope&gt;中国科技核心期刊;中文核心期刊;EI;&lt;/_collection_scope&gt;&lt;_translated_author&gt;Wang, Ting;Liu, Weining&lt;/_translated_author&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{45578C86-7FDF-433A-AF8F-D5897DCABDDD}"> ADDIN NE.Ref.{45578C86-7FDF-433A-AF8F-D5897DCABDDD}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;494&lt;/ID&gt;&lt;UID&gt;{A6274B67-3996-4E00-A9B6-37EBAA7D1C9E}&lt;/UID&gt;&lt;Title&gt;The cellular arch method: technical solution for the construction of the Milan railway&amp;apos;s venezia station&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Lunardi, Pietro&lt;/Author&gt;&lt;Year&gt;1990&lt;/Year&gt;&lt;Details&gt;&lt;_isbn&gt;0886-7798&lt;/_isbn&gt;&lt;_issue&gt;4&lt;/_issue&gt;&lt;_journal&gt;Tunnelling and underground space Technology&lt;/_journal&gt;&lt;_pages&gt;351-356&lt;/_pages&gt;&lt;_volume&gt;5&lt;/_volume&gt;&lt;_created&gt;62482755&lt;/_created&gt;&lt;_modified&gt;62482755&lt;/_modified&gt;&lt;_impact_factor&gt;   2.418&lt;/_impact_factor&gt;&lt;_collection_scope&gt;EI;SCIE;&lt;/_collection_scope&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{4A02AB1C-A6C0-425B-9571-A93D37D47926}"> ADDIN NE.Ref.{4A02AB1C-A6C0-425B-9571-A93D37D47926}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;496&lt;/ID&gt;&lt;UID&gt;{309915F7-C913-4AB2-B7F4-9288E9EB4142}&lt;/UID&gt;&lt;Title&gt;Simple method for the design of jet grouted umbrellas in tunneling&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Lignola, Gian Piero; Flora, A; Manfredi, G&lt;/Author&gt;&lt;Year&gt;2008&lt;/Year&gt;&lt;Details&gt;&lt;_isbn&gt;1090-0241&lt;/_isbn&gt;&lt;_issue&gt;12&lt;/_issue&gt;&lt;_journal&gt;Journal of geotechnical and geoenvironmental engineering&lt;/_journal&gt;&lt;_pages&gt;1778-1790&lt;/_pages&gt;&lt;_volume&gt;134&lt;/_volume&gt;&lt;_created&gt;62482784&lt;/_created&gt;&lt;_modified&gt;62482784&lt;/_modified&gt;&lt;_impact_factor&gt;   3.305&lt;/_impact_factor&gt;&lt;_collection_scope&gt;EI;SCI;SCIE;&lt;/_collection_scope&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{4A5606ED-113A-4C3D-8669-1EEAD916EED3}"> ADDIN NE.Ref.{4A5606ED-113A-4C3D-8669-1EEAD916EED3}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;501&lt;/ID&gt;&lt;UID&gt;{CB61D680-4C54-496F-A982-968E417319B6}&lt;/UID&gt;&lt;Title&gt;大跨度隧道围岩压力拱效应研究&lt;/Title&gt;&lt;Template&gt;Thesis&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;王文谦&lt;/Author&gt;&lt;Year&gt;2018&lt;/Year&gt;&lt;Details&gt;&lt;_db_provider&gt;CNKI&lt;/_db_provider&gt;&lt;_keywords&gt;压力拱;;数值分析;;演化规律;;深浅埋分界&lt;/_keywords&gt;&lt;_publisher&gt;北京交通大学&lt;/_publisher&gt;&lt;_tertiary_author&gt;贺少辉&lt;/_tertiary_author&gt;&lt;_type_work&gt;硕士&lt;/_type_work&gt;&lt;_created&gt;62485859&lt;/_created&gt;&lt;_modified&gt;62486070&lt;/_modified&gt;&lt;_accessed&gt;62486068&lt;/_accessed&gt;&lt;_translated_author&gt;Wenqian, WANG&lt;/_translated_author&gt;&lt;_translated_title&gt;Study on pressure arch effect of a large crosssection tunnel[Master Thesis]&lt;/_translated_title&gt;&lt;_translated_publisher&gt;Beijing Jiaotong University&lt;/_translated_publisher&gt;&lt;_place_published&gt;北京&lt;/_place_published&gt;&lt;_translated_place_published&gt;Beijing&lt;/_translated_place_published&gt;&lt;_translated_tertiary_author&gt;He, Shaohui&lt;/_translated_tertiary_author&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{5B86AE80-587C-402D-8BD0-2FCEF8525B33}"> ADDIN NE.Ref.{5B86AE80-587C-402D-8BD0-2FCEF8525B33}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;504&lt;/ID&gt;&lt;UID&gt;{D31D7560-EC3E-4C96-AC55-6243C7E076D4}&lt;/UID&gt;&lt;Title&gt;DL/T 5102—2013 土工离心模型试验技术规程&lt;/Title&gt;&lt;Template&gt;Book&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;中国电力企业联合会&lt;/Author&gt;&lt;Year&gt;2014&lt;/Year&gt;&lt;Details&gt;&lt;_publisher&gt;中国电力出版社&lt;/_publisher&gt;&lt;_created&gt;62485874&lt;/_created&gt;&lt;_modified&gt;62485879&lt;/_modified&gt;&lt;_accessed&gt;62485878&lt;/_accessed&gt;&lt;_place_published&gt;北京&lt;/_place_published&gt;&lt;_translated_author&gt;Zhong, Guodianliqiyelianhehui&lt;/_translated_author&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{654B4750-408D-4E4C-B386-A7F73E9A010E}"> ADDIN NE.Ref.{654B4750-408D-4E4C-B386-A7F73E9A010E}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;487&lt;/ID&gt;&lt;UID&gt;{95B98850-F42A-4E20-AED9-EE78B7A9EB59}&lt;/UID&gt;&lt;Title&gt;Design and Construction of Tunnels&lt;/Title&gt;&lt;Template&gt;Book&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Lunardi, Pietro&lt;/Author&gt;&lt;Year&gt;2008&lt;/Year&gt;&lt;Details&gt;&lt;_pages&gt;79&lt;/_pages&gt;&lt;_publisher&gt;Springer Berlin Heidelberg&lt;/_publisher&gt;&lt;_created&gt;62478411&lt;/_created&gt;&lt;_modified&gt;62485880&lt;/_modified&gt;&lt;_accessed&gt;62485897&lt;/_accessed&gt;&lt;_place_published&gt;Berlin&lt;/_place_published&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{67DD3B88-7E90-4602-A1CB-FE7FBB981389}"> ADDIN NE.Ref.{67DD3B88-7E90-4602-A1CB-FE7FBB981389}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;493&lt;/ID&gt;&lt;UID&gt;{D42061D2-0F43-46AC-8D71-1D8CC93B3936}&lt;/UID&gt;&lt;Title&gt;Soil improvement by jet grouting for the solution of tunnelling problems&lt;/Title&gt;&lt;Template&gt;Conference Paper&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Tornaghi, R; Cippo, A Perelli&lt;/Author&gt;&lt;Year&gt;1985&lt;/Year&gt;&lt;Details&gt;&lt;_pages&gt;265-276&lt;/_pages&gt;&lt;_secondary_title&gt;Proceedings of the 4th International Symposium Tunnelling&lt;/_secondary_title&gt;&lt;_volume&gt;85&lt;/_volume&gt;&lt;_created&gt;62482739&lt;/_created&gt;&lt;_modified&gt;62482740&lt;/_modified&gt;&lt;_accessed&gt;62482740&lt;/_accessed&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{75D8A389-23D0-42B3-B5E9-5F2BA5162A86}"> ADDIN NE.Ref.{75D8A389-23D0-42B3-B5E9-5F2BA5162A86}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;488&lt;/ID&gt;&lt;UID&gt;{0B9F959F-95FD-4644-939F-6F6C7504DF92}&lt;/UID&gt;&lt;Title&gt;A study of inclined impact in polymethylmethacrylate plates&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Dorogoy, A; Rittel, D; Brill, A&lt;/Author&gt;&lt;Year&gt;2010&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;3&lt;/_issue&gt;&lt;_journal&gt;International Journal of Impact Engineering&lt;/_journal&gt;&lt;_keywords&gt;Inclined impact;PMMA;Ricochet;Simulation&lt;/_keywords&gt;&lt;_pages&gt;285-294&lt;/_pages&gt;&lt;_volume&gt;37&lt;/_volume&gt;&lt;_created&gt;62478414&lt;/_created&gt;&lt;_modified&gt;62479608&lt;/_modified&gt;&lt;_impact_factor&gt;   3.344&lt;/_impact_factor&gt;&lt;_collection_scope&gt;EI;SCI;SCIE;&lt;/_collection_scope&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;489&lt;/ID&gt;&lt;UID&gt;{62B399D8-95BB-485D-97F3-BB982F92CE86}&lt;/UID&gt;&lt;Title&gt;Dynamic flow and failure of confined polymethylmethacrylate&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Rittel, D; Brill, A&lt;/Author&gt;&lt;Year&gt;2008&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;4&lt;/_issue&gt;&lt;_journal&gt;Journal of the Mechanics &amp;amp; Physics of Solids&lt;/_journal&gt;&lt;_keywords&gt;PMMA;Confinement;Pressure sensitivity;High strain rate;Adiabatic shear&lt;/_keywords&gt;&lt;_pages&gt;1401-1416&lt;/_pages&gt;&lt;_volume&gt;56&lt;/_volume&gt;&lt;_created&gt;62478414&lt;/_created&gt;&lt;_modified&gt;62485835&lt;/_modified&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;490&lt;/ID&gt;&lt;UID&gt;{CAF8DFFC-A1CB-444B-A052-8E25F8664677}&lt;/UID&gt;&lt;Title&gt;Ricochet of 0.3″ AP projectile from inclined polymeric plates&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Rosenberg, Z; Surujon, Z; Yeshurun, Y; Ashuach, Y; Dekel, E&lt;/Author&gt;&lt;Year&gt;2005&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;3&lt;/_issue&gt;&lt;_journal&gt;International Journal of Impact Engineering&lt;/_journal&gt;&lt;_keywords&gt;Ricochet;Armor piercing projectiles;Plexiglas;Brittle failure&lt;/_keywords&gt;&lt;_pages&gt;221-233&lt;/_pages&gt;&lt;_volume&gt;31&lt;/_volume&gt;&lt;_created&gt;62478414&lt;/_created&gt;&lt;_modified&gt;62485835&lt;/_modified&gt;&lt;_impact_factor&gt;   3.344&lt;/_impact_factor&gt;&lt;_collection_scope&gt;EI;SCI;SCIE;&lt;/_collection_scope&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{7BA3A793-A959-4B19-B148-AA28ED3FA225}"> ADDIN NE.Ref.{7BA3A793-A959-4B19-B148-AA28ED3FA225}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;500&lt;/ID&gt;&lt;UID&gt;{52890F4E-C687-40A1-BAEB-04BBAC344A79}&lt;/UID&gt;&lt;Title&gt;隧道管棚预支护的力学行为及参数优化&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;王海涛; 贾金青; 郁胜&lt;/Author&gt;&lt;Year&gt;2010&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;4&lt;/_issue&gt;&lt;_journal&gt;中国公路学报&lt;/_journal&gt;&lt;_pages&gt;78-83&lt;/_pages&gt;&lt;_volume&gt;23&lt;/_volume&gt;&lt;_created&gt;62482828&lt;/_created&gt;&lt;_modified&gt;62485886&lt;/_modified&gt;&lt;_collection_scope&gt;中国科技核心期刊;中文核心期刊;CSCD;EI;&lt;/_collection_scope&gt;&lt;_accessed&gt;62485880&lt;/_accessed&gt;&lt;_translated_title&gt;Mechanical Behavior and Parameter Optimization of Pipe Roof Reinforcement Applied in Tunnel&lt;/_translated_title&gt;&lt;_translated_author&gt;Haitao, WANG; Jinqing, JIA; Sheng, YU&lt;/_translated_author&gt;&lt;_tertiary_title&gt;China Journal of Highway and Transport&lt;/_tertiary_title&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{8C4A10AB-2E45-4200-899D-2D0CB76C1990}"> ADDIN NE.Ref.{8C4A10AB-2E45-4200-899D-2D0CB76C1990}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;497&lt;/ID&gt;&lt;UID&gt;{8B90000E-968C-414B-81CF-CDBEA37DE327}&lt;/UID&gt;&lt;Title&gt;Numerical analyses in the design of umbrella arch systems&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Oke, J; Vlachopoulos, N; Diederichs, M S&lt;/Author&gt;&lt;Year&gt;2014&lt;/Year&gt;&lt;Details&gt;&lt;_isbn&gt;1674-7755&lt;/_isbn&gt;&lt;_issue&gt;6&lt;/_issue&gt;&lt;_journal&gt;Journal of Rock Mechanics and Geotechnical Engineering&lt;/_journal&gt;&lt;_pages&gt;546-564&lt;/_pages&gt;&lt;_volume&gt;6&lt;/_volume&gt;&lt;_created&gt;62482820&lt;/_created&gt;&lt;_modified&gt;62482821&lt;/_modified&gt;&lt;_collection_scope&gt;CSCD;&lt;/_collection_scope&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{9B85413D-7A3C-4240-BF1D-CB171E1E39D4}"> ADDIN NE.Ref.{9B85413D-7A3C-4240-BF1D-CB171E1E39D4}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;503&lt;/ID&gt;&lt;UID&gt;{BE44F04A-0E03-4017-A22C-DF122B32FF65}&lt;/UID&gt;&lt;Title&gt;特大断面隧道分步施工动态压力拱分析研究&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;郑康成; 丁文其; 金威; 罗云&lt;/Author&gt;&lt;Year&gt;2015&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;s1&lt;/_issue&gt;&lt;_journal&gt;岩土工程学报&lt;/_journal&gt;&lt;_pages&gt;72-77&lt;/_pages&gt;&lt;_volume&gt;37&lt;/_volume&gt;&lt;_created&gt;62485864&lt;/_created&gt;&lt;_modified&gt;62485864&lt;/_modified&gt;&lt;_collection_scope&gt;中国科技核心期刊;中文核心期刊;CSCD;EI;&lt;/_collection_scope&gt;&lt;_translated_author&gt;Zheng, Kangcheng;Ding, Wenqi;Jin, Wei;Luo, Yun&lt;/_translated_author&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;502&lt;/ID&gt;&lt;UID&gt;{A0E9446E-0F05-4765-84A1-727D352FAFC9}&lt;/UID&gt;&lt;Title&gt;软弱破碎围岩高铁隧道压力拱演化规律分析&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;台启民; 张顶立; 王剑晨; 孙振宇; 李奥&lt;/Author&gt;&lt;Year&gt;2015&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;6&lt;/_issue&gt;&lt;_journal&gt;北京交通大学学报&lt;/_journal&gt;&lt;_pages&gt;62-68&lt;/_pages&gt;&lt;_volume&gt;39&lt;/_volume&gt;&lt;_created&gt;62485864&lt;/_created&gt;&lt;_modified&gt;62485865&lt;/_modified&gt;&lt;_collection_scope&gt;中文核心期刊;&lt;/_collection_scope&gt;&lt;_translated_author&gt;Tai, Qimin;Zhang, Dingli;Wang, Jianchen;Sun, Zhenyu;Li, Ao&lt;/_translated_author&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{B1DFC7B3-2A87-4605-8D8E-B9B9F2B3C0DA}"> ADDIN NE.Ref.{B1DFC7B3-2A87-4605-8D8E-B9B9F2B3C0DA}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;480&lt;/ID&gt;&lt;UID&gt;{D1238CD0-DBB1-4D58-94D6-8F701D57F4A0}&lt;/UID&gt;&lt;Title&gt;水平旋喷预支护技术在铁路隧道中的应用&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;刘勇; 孙星亮; 朱永全; 景诗庭&lt;/Author&gt;&lt;Year&gt;2002&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;6&lt;/_issue&gt;&lt;_journal&gt;岩石力学与工程学报&lt;/_journal&gt;&lt;_keywords&gt;水平旋喷;预支护;铁路隧道;应用技术&lt;/_keywords&gt;&lt;_pages&gt;905-909&lt;/_pages&gt;&lt;_volume&gt;21&lt;/_volume&gt;&lt;_created&gt;62478406&lt;/_created&gt;&lt;_modified&gt;62486058&lt;/_modified&gt;&lt;_collection_scope&gt;中国科技核心期刊;中文核心期刊;CSCD;EI;&lt;/_collection_scope&gt;&lt;_accessed&gt;62486057&lt;/_accessed&gt;&lt;_translated_title&gt;APPLICATION OF HORIZONTAL JET GROUTING REINFORCEMENT TECHNIQUE IN RAILWAY TUNNEL&lt;/_translated_title&gt;&lt;_translated_author&gt;Yong, LIU; Xingliang, SUN; Yongquan, ZHU; Shiting, JING&lt;/_translated_author&gt;&lt;_tertiary_title&gt;Chinese Journal of Rock Mechanics and Engineering&lt;/_tertiary_title&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{BB0FF428-13B9-44D9-ACEA-589BCD49EA36}"> ADDIN NE.Ref.{BB0FF428-13B9-44D9-ACEA-589BCD49EA36}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;496&lt;/ID&gt;&lt;UID&gt;{309915F7-C913-4AB2-B7F4-9288E9EB4142}&lt;/UID&gt;&lt;Title&gt;Simple method for the design of jet grouted umbrellas in tunneling&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Lignola, Gian Piero; Flora, A; Manfredi, G&lt;/Author&gt;&lt;Year&gt;2008&lt;/Year&gt;&lt;Details&gt;&lt;_isbn&gt;1090-0241&lt;/_isbn&gt;&lt;_issue&gt;12&lt;/_issue&gt;&lt;_journal&gt;Journal of geotechnical and geoenvironmental engineering&lt;/_journal&gt;&lt;_pages&gt;1778-1790&lt;/_pages&gt;&lt;_volume&gt;134&lt;/_volume&gt;&lt;_created&gt;62482784&lt;/_created&gt;&lt;_modified&gt;62482784&lt;/_modified&gt;&lt;_impact_factor&gt;   3.305&lt;/_impact_factor&gt;&lt;_collection_scope&gt;EI;SCI;SCIE;&lt;/_collection_scope&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{C96C21CF-B0E2-4E95-8AB8-11961F95AB68}"> ADDIN NE.Ref.{C96C21CF-B0E2-4E95-8AB8-11961F95AB68}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;498&lt;/ID&gt;&lt;UID&gt;{E1F282F0-5EBB-48A2-898C-393E7B493CBE}&lt;/UID&gt;&lt;Title&gt;水平旋喷拱棚结构的承载特性与机理研究&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;张慧乐; 张慧东; 王述红; 柳建国; 李建可; 赵琰飞&lt;/Author&gt;&lt;Year&gt;2012&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;8&lt;/_issue&gt;&lt;_journal&gt;土木工程学报&lt;/_journal&gt;&lt;_pages&gt;131-139&lt;/_pages&gt;&lt;_created&gt;62482820&lt;/_created&gt;&lt;_modified&gt;62485895&lt;/_modified&gt;&lt;_collection_scope&gt;中国科技核心期刊;中文核心期刊;CSCD;EI;&lt;/_collection_scope&gt;&lt;_accessed&gt;62485892&lt;/_accessed&gt;&lt;_tertiary_title&gt;China Civil Engineering Journal&lt;/_tertiary_title&gt;&lt;_translated_title&gt;Study on the bearing characteristics and mechanism of horizontal jet grouting arch structures&lt;/_translated_title&gt;&lt;_translated_author&gt;Huile, ZHANG; Huidong, ZHANG; Shuhong, WANG; Jianguo, LIU; Jianke, LI; Yanfei, ZHAO&lt;/_translated_author&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{CC0BAFDC-9EAA-409A-8176-38A6F28EB0BF}"> ADDIN NE.Ref.{CC0BAFDC-9EAA-409A-8176-38A6F28EB0BF}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;505&lt;/ID&gt;&lt;UID&gt;{2495CEBA-A63A-4D26-9CB8-B5AF9BE4552B}&lt;/UID&gt;&lt;Title&gt;软弱围岩隧道掌子面稳定性及预支护受力特性研究&lt;/Title&gt;&lt;Template&gt;Thesis&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;李凯&lt;/Author&gt;&lt;Year&gt;2016&lt;/Year&gt;&lt;Details&gt;&lt;_publisher&gt;北京交通大学&lt;/_publisher&gt;&lt;_created&gt;62488777&lt;/_created&gt;&lt;_modified&gt;62488780&lt;/_modified&gt;&lt;_accessed&gt;62488777&lt;/_accessed&gt;&lt;_translated_author&gt;LI, Kai&lt;/_translated_author&gt;&lt;_translated_title&gt;Research on tunnel face stability and pre-lining loads in soft surrounding rockmass&lt;/_translated_title&gt;&lt;_translated_publisher&gt;Beijing Jiaotong University&lt;/_translated_publisher&gt;&lt;_place_published&gt;北京&lt;/_place_published&gt;&lt;_translated_place_published&gt;Beijing&lt;/_translated_place_published&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{D126B626-F5A5-404B-9056-63B92EB62636}"> ADDIN NE.Ref.{D126B626-F5A5-404B-9056-63B92EB62636}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;478&lt;/ID&gt;&lt;UID&gt;{C8146F37-9AC0-4900-BAFE-A4FE5C1190BC}&lt;/UID&gt;&lt;Title&gt;パイプルーフ設計法としての弾性支承上梁モデルとその設計パラメータの提案&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;大谷達彦; 進士正人; 千々和辰訓&lt;/Author&gt;&lt;Year&gt;2008&lt;/Year&gt;&lt;Details&gt;&lt;_isbn&gt;1880-6074&lt;/_isbn&gt;&lt;_issue&gt;4&lt;/_issue&gt;&lt;_journal&gt;土木学会論文集 F&lt;/_journal&gt;&lt;_pages&gt;450-462&lt;/_pages&gt;&lt;_volume&gt;64&lt;/_volume&gt;&lt;_created&gt;62478300&lt;/_created&gt;&lt;_modified&gt;62485891&lt;/_modified&gt;&lt;_accessed&gt;62485887&lt;/_accessed&gt;&lt;_translated_title&gt;Proposal of Numerical Model and the Determination Method of Design Parameters for Pipe Roofing Method&lt;/_translated_title&gt;&lt;_tertiary_title&gt;Proceedings of the Japan Society of Civil Engineers F&lt;/_tertiary_title&gt;&lt;_translated_author&gt;Tatsuhiko, OTANI; Masato, SHINJI; Tatsunori, CHIJIWA&lt;/_translated_author&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{E4ADBFC1-0F79-444D-9B06-6302A880DD6A}"> ADDIN NE.Ref.{E4ADBFC1-0F79-444D-9B06-6302A880DD6A}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;492&lt;/ID&gt;&lt;UID&gt;{BCE8E08B-2236-4719-B14A-A5EF1E6975D3}&lt;/UID&gt;&lt;Title&gt;The mechanical pre-cutting method&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Bougard, J F&lt;/Author&gt;&lt;Year&gt;1988&lt;/Year&gt;&lt;Details&gt;&lt;_isbn&gt;0886-7798&lt;/_isbn&gt;&lt;_issue&gt;2&lt;/_issue&gt;&lt;_journal&gt;Tunnelling and Underground Space Technology&lt;/_journal&gt;&lt;_pages&gt;163-167&lt;/_pages&gt;&lt;_volume&gt;3&lt;/_volume&gt;&lt;_created&gt;62482735&lt;/_created&gt;&lt;_modified&gt;62482735&lt;/_modified&gt;&lt;_impact_factor&gt;   2.418&lt;/_impact_factor&gt;&lt;_collection_scope&gt;EI;SCIE;&lt;/_collection_scope&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{E78851F2-BADE-4555-91D1-9FFC60F8297C}"> ADDIN NE.Ref.{E78851F2-BADE-4555-91D1-9FFC60F8297C}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;487&lt;/ID&gt;&lt;UID&gt;{95B98850-F42A-4E20-AED9-EE78B7A9EB59}&lt;/UID&gt;&lt;Title&gt;Design and Construction of Tunnels&lt;/Title&gt;&lt;Template&gt;Book&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;Lunardi, Pietro&lt;/Author&gt;&lt;Year&gt;2008&lt;/Year&gt;&lt;Details&gt;&lt;_pages&gt;79&lt;/_pages&gt;&lt;_publisher&gt;Springer Berlin Heidelberg&lt;/_publisher&gt;&lt;_created&gt;62478411&lt;/_created&gt;&lt;_modified&gt;62485880&lt;/_modified&gt;&lt;_accessed&gt;62485897&lt;/_accessed&gt;&lt;_place_published&gt;Berlin&lt;/_place_published&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{EC5C219A-650B-472D-B76A-9CF72943BDCF}"> ADDIN NE.Ref.{EC5C219A-650B-472D-B76A-9CF72943BDCF}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;484&lt;/ID&gt;&lt;UID&gt;{2AF70E55-7B88-4FCF-997C-73408AE70540}&lt;/UID&gt;&lt;Title&gt;预切槽法开挖隧道地层变形及预筑拱受力试验&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;王秀英; 王滕; 李孔明; 贺美德; 罗平&lt;/Author&gt;&lt;Year&gt;2017&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;7&lt;/_issue&gt;&lt;_journal&gt;中国公路学报&lt;/_journal&gt;&lt;_keywords&gt;隧道工程;预筑拱;模型试验;预切槽法;地层变形;力学特征&lt;/_keywords&gt;&lt;_pages&gt;101-109&lt;/_pages&gt;&lt;_volume&gt;30&lt;/_volume&gt;&lt;_created&gt;62478406&lt;/_created&gt;&lt;_modified&gt;62486077&lt;/_modified&gt;&lt;_collection_scope&gt;中国科技核心期刊;中文核心期刊;CSCD;EI;&lt;/_collection_scope&gt;&lt;_accessed&gt;62486077&lt;/_accessed&gt;&lt;_translated_title&gt;Experiment on Ground Deformation During Tunneling and Pre-arch Stress by Pre-cutting Method&lt;/_translated_title&gt;&lt;_translated_author&gt;Xiuying, WANG; Teng, WANG; Kongming, LI; Meide, HE; Ping, LUO&lt;/_translated_author&gt;&lt;_tertiary_title&gt;China Journal of Highway and Transport&lt;/_tertiary_title&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{ED5F1913-A7FE-406F-8E15-719B35BBC879}"> ADDIN NE.Ref.{ED5F1913-A7FE-406F-8E15-719B35BBC879}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;503&lt;/ID&gt;&lt;UID&gt;{BE44F04A-0E03-4017-A22C-DF122B32FF65}&lt;/UID&gt;&lt;Title&gt;特大断面隧道分步施工动态压力拱分析研究&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;郑康成; 丁文其; 金威; 罗云&lt;/Author&gt;&lt;Year&gt;2015&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;s1&lt;/_issue&gt;&lt;_journal&gt;岩土工程学报&lt;/_journal&gt;&lt;_pages&gt;72-77&lt;/_pages&gt;&lt;_volume&gt;37&lt;/_volume&gt;&lt;_created&gt;62485864&lt;/_created&gt;&lt;_modified&gt;62486073&lt;/_modified&gt;&lt;_collection_scope&gt;中国科技核心期刊;中文核心期刊;CSCD;EI;&lt;/_collection_scope&gt;&lt;_accessed&gt;62486070&lt;/_accessed&gt;&lt;_translated_title&gt;Experimental and numerical study on staged construction pressure arch of super large section tunnel&lt;/_translated_title&gt;&lt;_translated_author&gt;Kangcheng, ZHENG; Wenqi, DING; Wei, JIN; Yun, LUO&lt;/_translated_author&gt;&lt;_tertiary_title&gt;Chinese Journal of Geotechnical Engineering&lt;/_tertiary_title&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="NE.Ref{EE643644-E9D0-4595-99C1-8F090C0104B6}"> ADDIN NE.Ref.{EE643644-E9D0-4595-99C1-8F090C0104B6}&lt;Citation&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;503&lt;/ID&gt;&lt;UID&gt;{BE44F04A-0E03-4017-A22C-DF122B32FF65}&lt;/UID&gt;&lt;Title&gt;特大断面隧道分步施工动态压力拱分析研究&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;郑康成; 丁文其; 金威; 罗云&lt;/Author&gt;&lt;Year&gt;2015&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;s1&lt;/_issue&gt;&lt;_journal&gt;岩土工程学报&lt;/_journal&gt;&lt;_pages&gt;72-77&lt;/_pages&gt;&lt;_volume&gt;37&lt;/_volume&gt;&lt;_created&gt;62485864&lt;/_created&gt;&lt;_modified&gt;62485865&lt;/_modified&gt;&lt;_collection_scope&gt;中国科技核心期刊;中文核心期刊;CSCD;EI;&lt;/_collection_scope&gt;&lt;_translated_author&gt;Zheng, Kangcheng;Ding, Wenqi;Jin, Wei;Luo, Yun&lt;/_translated_author&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;Group&gt;&lt;References&gt;&lt;Item&gt;&lt;ID&gt;502&lt;/ID&gt;&lt;UID&gt;{A0E9446E-0F05-4765-84A1-727D352FAFC9}&lt;/UID&gt;&lt;Title&gt;软弱破碎围岩高铁隧道压力拱演化规律分析&lt;/Title&gt;&lt;Template&gt;Journal Article&lt;/Template&gt;&lt;Star&gt;0&lt;/Star&gt;&lt;Tag&gt;0&lt;/Tag&gt;&lt;Author&gt;台启民; 张顶立; 王剑晨; 孙振宇; 李奥&lt;/Author&gt;&lt;Year&gt;2015&lt;/Year&gt;&lt;Details&gt;&lt;_issue&gt;6&lt;/_issue&gt;&lt;_journal&gt;北京交通大学学报&lt;/_journal&gt;&lt;_pages&gt;62-68&lt;/_pages&gt;&lt;_volume&gt;39&lt;/_volume&gt;&lt;_created&gt;62485864&lt;/_created&gt;&lt;_modified&gt;62485865&lt;/_modified&gt;&lt;_collection_scope&gt;中文核心期刊;&lt;/_collection_scope&gt;&lt;_translated_author&gt;Tai, Qimin;Zhang, Dingli;Wang, Jianchen;Sun, Zhenyu;Li, Ao&lt;/_translated_author&gt;&lt;/Details&gt;&lt;Extra&gt;&lt;DBUID&gt;{12EBBEDB-4A22-47FF-9DDB-33625C1DE849}&lt;/DBUID&gt;&lt;/Extra&gt;&lt;/Item&gt;&lt;/References&gt;&lt;/Group&gt;&lt;/Citation&gt;_x000a_</keyword>
+         <keyword role="ne_docsoft">MSWord</keyword>
+         <keyword role="ne_docversion">NoteExpress 2.0</keyword>
+         <keyword role="ne_stylename">岩石力学与工程学报 New</keyword>
+      </keywordset>
+      <keywordset role="custom-meta">
+         <keyword role="MTEquationSection">1</keyword>
+         <keyword role="MTWinEqns">true</keyword>
+         <keyword role="MTEquationNumber2">(#E1)</keyword>
+         <keyword role="ZOTERO_PREF_1">&lt;data data-version="3" zotero-version="7.0.27"&gt;&lt;session id="WXjCiUDk"/&gt;&lt;style id="http://www.zotero.org/styles/china-national-standard-gb-t-7714-2015-numeric-bilan-sup" hasBibliography="1" bibliographyStyleHasBeenSet="1"/&gt;&lt;prefs&gt;&lt;pref name="fieldType" val</keyword>
+         <keyword role="ZOTERO_PREF_2">ue="Field"/&gt;&lt;pref name="automaticJournalAbbreviations" value="true"/&gt;&lt;/prefs&gt;&lt;/data&gt;</keyword>
+      </keywordset>
+      <css:rules>
+         <css:rule layout-type="para"
+                   native-name="样式1"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="16.8pt"
+                   css:text-indent="10pt"
+                   css:text-align="center"
+                   css:font-size="10.5pt"
+                   css:font-family="Times New Roman"
+                   css:border-bottom-style="thickThinSmallGap"
+                   css:border-bottom-width="2.25pt"
+                   name="_10">
+            <tabs>
+               <tab align="center" horizontal-position="207.65pt"/>
+               <tab align="right" horizontal-position="415.3pt"/>
+            </tabs>
+         </css:rule>
+         <css:rule layout-type="para"
+                   native-name="页脚1"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="12pt"
+                   css:text-indent="0pt"
+                   css:text-align="justify"
+                   css:font-size="7.5pt"
+                   css:font-family="Times New Roman"
+                   name="_12"/>
+         <css:rule layout-type="para"
+                   native-name="页眉1"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="16.8pt"
+                   css:text-indent="0pt"
+                   css:text-align="justify"
+                   css:font-size="10.5pt"
+                   css:font-family="Times New Roman"
+                   css:border-bottom-style="thickThinSmallGap"
+                   css:border-bottom-width="2.25pt"
+                   name="_14">
+            <tabs>
+               <tab align="center" horizontal-position="207.65pt"/>
+               <tab align="right" horizontal-position="415.3pt"/>
+            </tabs>
+         </css:rule>
+         <css:rule layout-type="para"
+                   native-name="页眉2"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="16.8pt"
+                   css:text-indent="0pt"
+                   css:text-align="center"
+                   css:font-size="9pt"
+                   css:font-family="Times New Roman"
+                   css:border-bottom-style="solid"
+                   css:border-bottom-width="0.75pt"
+                   name="_23">
+            <tabs>
+               <tab align="center" horizontal-position="207.65pt"/>
+               <tab align="right" horizontal-position="415.3pt"/>
+            </tabs>
+         </css:rule>
+         <css:rule layout-type="para"
+                   native-name="heading 1"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="1"
+                   css:text-indent="0pt"
+                   css:text-align="justify"
+                   css:font-size="14pt"
+                   css:font-family="Times New Roman"
+                   css:margin-left="0pt"
+                   css:page-break-after="avoid"
+                   css:margin-top="5pt"
+                   css:margin-bottom="5pt"
+                   remap="h1"
+                   css:font-weight="bold"
+                   numbering-level="1"
+                   numbering-multilevel-type="hybridmulti"
+                   name="Heading1">
+            <css:attic css:list-style-type="decimal"/>
+         </css:rule>
+         <css:rule layout-type="para"
+                   native-name="heading 2"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="1"
+                   css:text-indent="0pt"
+                   css:text-align="justify"
+                   css:font-size="10.5pt"
+                   css:font-family="Arial"
+                   remap="h2"
+                   css:font-weight="bold"
+                   name="Heading2"/>
+         <css:rule layout-type="para"
+                   native-name="MTDisplayEquation"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="1"
+                   css:text-indent="0pt"
+                   css:text-align="justify"
+                   css:font-size="10.5pt"
+                   css:font-family="Times New Roman"
+                   name="MTDisplayEquation">
+            <tabs>
+               <tab align="center" horizontal-position="116pt"/>
+               <tab align="right" horizontal-position="232pt"/>
+            </tabs>
+         </css:rule>
+         <css:rule layout-type="para"
+                   native-name="header"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="16.8pt"
+                   css:text-indent="10pt"
+                   css:text-align="center"
+                   css:font-size="9pt"
+                   css:font-family="Times New Roman"
+                   css:border-bottom-style="solid"
+                   css:border-bottom-width="0.75pt"
+                   name="a5">
+            <tabs>
+               <tab align="center" horizontal-position="207.65pt"/>
+               <tab align="right" horizontal-position="415.3pt"/>
+            </tabs>
+         </css:rule>
+         <css:rule layout-type="para"
+                   native-name="footer"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="16.8pt"
+                   css:text-indent="10pt"
+                   css:text-align="left"
+                   css:font-size="9pt"
+                   css:font-family="Times New Roman"
+                   name="a7">
+            <tabs>
+               <tab align="center" horizontal-position="207.65pt"/>
+               <tab align="right" horizontal-position="415.3pt"/>
+            </tabs>
+         </css:rule>
+         <css:rule layout-type="para"
+                   native-name="Body Text Indent"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="16.8pt"
+                   css:text-indent="21pt"
+                   css:text-align="justify"
+                   css:font-size="10.5pt"
+                   css:font-family="Times New Roman"
+                   name="a9"/>
+         <css:rule layout-type="para"
+                   native-name="Title"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="1"
+                   css:text-indent="0pt"
+                   css:text-align="center"
+                   css:font-size="22pt"
+                   css:font-family="Times New Roman"
+                   remap="h1"
+                   css:font-weight="bold"
+                   name="af2"/>
+         <css:rule xmlns:docx2hub="http://transpect.io/docx2hub"
+                   layout-type="para"
+                   native-name="Subtitle"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="16.8pt"
+                   css:text-indent="0pt"
+                   css:text-align="center"
+                   css:font-size="14pt"
+                   css:font-family="Times New Roman"
+                   docx2hub:generated-aliases="w:val:英文标题"
+                   remap="h1"
+                   css:font-weight="bold"
+                   name="af4"/>
+         <css:rule layout-type="para"
+                   native-name="中文作者"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="14.5pt"
+                   css:text-indent="0pt"
+                   css:text-align="center"
+                   css:font-size="10.5pt"
+                   css:font-family="Times New Roman"
+                   name="af6"/>
+         <css:rule layout-type="para"
+                   native-name="中文作者介绍"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="14.5pt"
+                   css:text-indent="0pt"
+                   css:text-align="center"
+                   css:font-size="7.5pt"
+                   css:font-family="Times New Roman"
+                   name="af8"/>
+         <css:rule layout-type="para"
+                   native-name="英文作者"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="13pt"
+                   css:text-indent="0pt"
+                   css:text-align="center"
+                   css:font-size="10.5pt"
+                   css:font-family="Times New Roman"
+                   name="afa"/>
+         <css:rule layout-type="para"
+                   native-name="英文作者介绍"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="13pt"
+                   css:text-indent="0pt"
+                   css:text-align="center"
+                   css:font-size="9pt"
+                   css:font-family="Times New Roman"
+                   css:font-style="italic"
+                   name="afc"/>
+         <css:rule layout-type="para"
+                   native-name="中文摘要"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="14.5pt"
+                   css:text-indent="0pt"
+                   css:text-align="justify"
+                   css:font-size="9pt"
+                   css:font-family="Times New Roman"
+                   css:margin-left="21pt"
+                   css:margin-right="21pt"
+                   name="afe"/>
+         <css:rule layout-type="para"
+                   native-name="英文摘要"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="13pt"
+                   css:text-indent="0pt"
+                   css:text-align="justify"
+                   css:font-size="10.5pt"
+                   css:font-family="Times New Roman"
+                   name="aff0"/>
+         <css:rule layout-type="para"
+                   native-name="图、表"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="1"
+                   css:text-indent="0pt"
+                   css:text-align="center"
+                   css:font-size="7.5pt"
+                   css:font-family="Times New Roman"
+                   name="affc"/>
+         <css:rule layout-type="para"
+                   native-name="图、表头"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="13pt"
+                   css:text-indent="0pt"
+                   css:text-align="center"
+                   css:font-size="9pt"
+                   css:font-family="宋体"
+                   name="afff0"/>
+         <css:rule layout-type="para"
+                   native-name="Bibliography"
+                   css:orphans="1"
+                   css:widows="1"
+                   css:line-height="12pt"
+                   css:text-align="justify"
+                   css:font-size="10.5pt"
+                   css:font-family="Times New Roman"
+                   name="afff2">
+            <css:attic css:text-indent="-19.2pt" css:margin-left="19.2pt"/>
+            <tabs>
+               <tab align="left" horizontal-position="19.2pt"/>
+            </tabs>
+         </css:rule>
+         <css:rule layout-type="inline"
+                   native-name="MTEquationSection"
+                   css:display="none"
+                   css:color="#FF0000"
+                   css:font-size="6.5pt"
+                   name="MTEquationSection"/>
+         <css:rule layout-type="inline" native-name="page number" name="a8"/>
+         <css:rule layout-type="table" native-name="Table Grid" name="affb"/>
+      </css:rules>
+   </info>
+   <para role="af2">标题</para>
+   <para role="af6">作  者<superscript>1</superscript>，作  者<superscript>1</superscript>
+   </para>
+   <para role="af8">(1. 作者单位，城市 100000)</para>
+   <para role="afe">
+      <phrase css:font-weight="bold">摘要</phrase>：摘要。</para>
+   <para role="afe">
+      <phrase css:font-weight="bold">关键词</phrase>：关键词</para>
+   <para role="afe">
+      <phrase css:font-weight="bold">中图分类号</phrase>：U455.4             <phrase css:font-weight="bold">文献标识码：</phrase>A       <phrase css:font-weight="bold">文章编号：</phrase>1000<phrase css:font-family="宋体">–</phrase>6915(2006)01<phrase css:font-family="宋体">–</phrase>0001<phrase css:font-family="宋体">–</phrase>03</para>
+   <para css:line-height="14.5pt"
+         css:margin-left="21pt"
+         css:margin-right="21pt"
+         css:text-indent="18pt"/>
+   <para role="af4">TITLE</para>
+   <para role="afa">Author<superscript>1</superscript>
+      <phrase xml:lang="en-GB">，Author</phrase>
+      <superscript>1</superscript>
+   </para>
+   <para role="afc">(1. Institution<phrase xml:lang="en-GB">，City</phrase>
+      <phrase css:font-family="宋体"> 1</phrase>00000<phrase xml:lang="en-GB">，</phrase>China)</para>
+   <para role="aff0">
+      <phrase css:font-weight="bold">Abstract</phrase>
+      <phrase xml:lang="en-GB" css:font-weight="bold">：</phrase>Abstract.</para>
+   <para role="aff0">
+      <phrase css:font-weight="bold">Key words</phrase>
+      <phrase xml:lang="en-GB">：Key words</phrase>
+   </para>
+   <para xmlns:docx2tex="http://transpect.io/docx2tex"
+         text-indent="0"
+         margin-left="0"
+         role="Heading1"
+         css:text-indent="0pt"
+         css:margin-left="0pt"
+         docx2tex:config="headline"
+         css:margin-top="15.6pt"
+         css:margin-bottom="15.6pt">一级标题<?latex \label{mark-1}?></para>
+   <para xmlns:docx2tex="http://transpect.io/docx2tex"
+         text-indent="0"
+         margin-left="0"
+         role="Heading2"
+         css:text-indent="0pt"
+         docx2tex:config="headline">3.1 二级标题</para>
+   <para css:text-indent="21pt">正文。<inlineequation role="mtef" condition="ole">
+         <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML">
+            <mml:mrow>
+               <mml:mrow>
+                  <mml:mi>I</mml:mi>
+                  <mml:mi>n</mml:mi>
+               </mml:mrow>
+               <mml:mo>/</mml:mo>
+               <mml:mrow>
+                  <mml:mi>l</mml:mi>
+                  <mml:mi>i</mml:mi>
+                  <mml:mi>n</mml:mi>
+                  <mml:mi>e</mml:mi>
+               </mml:mrow>
+            </mml:mrow>
+            <mml:mo>=</mml:mo>
+            <mml:mstyle displaystyle="true">
+               <mml:mo>∑</mml:mo>
+               <mml:mrow>
+                  <mml:mi>e</mml:mi>
+                  <mml:mi>q</mml:mi>
+                  <mml:mi>u</mml:mi>
+                  <mml:mfenced close=")" open="(" separators="">
+                     <mml:mi>a</mml:mi>
+                     <mml:mi>t</mml:mi>
+                  </mml:mfenced>
+                  <mml:mi>i</mml:mi>
+                  <mml:mi>o</mml:mi>
+                  <mml:mi>n</mml:mi>
+               </mml:mrow>
+            </mml:mstyle>
+         </mml:math>
+      </inlineequation>
+   </para>
+   <para css:text-indent="21pt">正文。来张<link linkend="_Ref213199996"><?latex {\hyperref[ref-01]{图1}}?></link>。</para>
+   <para role="affc">
+      <mediaobject>
+         <imageobject>
+            <imagedata role="hub:embedded"
+                       fileref="example_forward.docx.tmp/word/media/image2.png"
+                       css:width="226.75pt"
+                       css:height="171.07204724409448pt"/>
+         </imageobject>
+      </mediaobject>
+   </para>
+   <para role="afff0">图1  试验设备<anchor role="start" xml:id="_Ref213199996"><?latex \label{ref-01}?></anchor>
+   </para>
+   <para role="afff0" css:text-indent="18pt">Fig.1  Test equipment</para>
+   <para xmlns:docx2tex="http://transpect.io/docx2tex"
+         text-indent="0"
+         margin-left="0"
+         role="Heading2"
+         css:text-indent="0pt"
+         docx2tex:config="headline">3.3 二级标题</para>
+   <para css:text-indent="21pt">正文<citation linkends="bib1">
+         <superscript>[1]</superscript>
+      </citation>。看<link linkend="_Ref213200008"><?latex {\hyperref[ref-02]{表1}}?></link>。</para>
+   <para role="afff0">表1  模型及原型材料参数表<anchor role="start" xml:id="_Ref213200008"><?latex \label{ref-02}?></anchor>
+   </para>
+   <table frame="topbot"
+          role="affb"
+          css:border-collapse="collapse"
+          css:margin-left="0pt"
+          css:padding-top="0pt"
+          css:padding-left="5.4pt"
+          css:padding-bottom="0pt"
+          css:padding-right="5.4pt"
+          css:border-top-style="none"
+          css:border-top-width="0.5pt"
+          css:border-left-style="none"
+          css:border-left-width="0.5pt"
+          css:border-bottom-style="none"
+          css:border-bottom-width="0.5pt"
+          css:border-right-style="none"
+          css:border-right-width="0.5pt">
+      <title role="affc" css:line-height="13pt">
+         <phrase css:font-family="宋体" css:font-size="9pt">Table 1  Model and prototype material parameter table</phrase>
+      </title>
+      <tgroup cols="4" rowsep="1" colsep="1">
+<?cals2tabular \begin{tabularx}{\textwidth}{|p{\dimexpr 0.25\linewidth-2\tabcolsep-2\arrayrulewidth}|p{\dimexpr 0.25\linewidth-2\tabcolsep-\arrayrulewidth}|p{\dimexpr 0.25\linewidth-2\tabcolsep-\arrayrulewidth}|p{\dimexpr 0.25\linewidth-2\tabcolsep-\arrayrulewidth}|} \hline ?>
+         <tbody>
+            <row>
+               <entry css:width="57.8pt"
+                      css:border-top-style="solid"
+                      css:border-top-width="1pt"
+                      css:border-left-style="none"
+                      css:border-bottom-style="solid"
+                      css:border-bottom-width="0.5pt"
+                      css:border-right-style="none"
+                      colname="col1">
+                  <para role="affc" css:line-height="13pt">材料</para>
+               </entry>
+               <?cals2tabular & ?>
+               <entry css:width="57.8pt"
+                      css:border-top-style="solid"
+                      css:border-top-width="1pt"
+                      css:border-left-style="none"
+                      css:border-bottom-style="solid"
+                      css:border-bottom-width="0.5pt"
+                      css:border-right-style="none"
+                      colname="col2">
+                  <para role="affc" css:line-height="13pt">
+                     <phrase css:font-style="italic">E / </phrase>GPa</para>
+               </entry>
+               <?cals2tabular & ?>
+               <entry css:width="57.8pt"
+                      css:border-top-style="solid"
+                      css:border-top-width="1pt"
+                      css:border-left-style="none"
+                      css:border-bottom-style="solid"
+                      css:border-bottom-width="0.5pt"
+                      css:border-right-style="none"
+                      colname="col3">
+                  <para role="affc" css:line-height="13pt">
+                     <phrase css:font-style="italic">μ</phrase>
+                  </para>
+               </entry>
+               <?cals2tabular & ?>
+               <entry css:width="57.8pt"
+                      css:border-top-style="solid"
+                      css:border-top-width="1pt"
+                      css:border-left-style="none"
+                      css:border-bottom-style="solid"
+                      css:border-bottom-width="0.5pt"
+                      css:border-right-style="none"
+                      colname="col4">
+                  <para role="affc" css:line-height="13pt">
+                     <phrase css:font-style="italic">d</phrase> / mm</para>
+               </entry>
+            </row>
+            <?cals2tabular \\?>
+            <?cals2tabular \hline ?>
+            <row>
+               <entry css:width="57.8pt"
+                      css:border-top-style="solid"
+                      css:border-top-width="0.5pt"
+                      css:border-left-style="none"
+                      css:border-bottom-style="none"
+                      css:border-right-style="none"
+                      colname="col1">
+                  <para role="affc" css:line-height="13pt">C30混凝土</para>
+               </entry>
+               <?cals2tabular & ?>
+               <entry css:width="57.8pt"
+                      css:border-top-style="solid"
+                      css:border-top-width="0.5pt"
+                      css:border-left-style="none"
+                      css:border-bottom-style="none"
+                      css:border-right-style="none"
+                      colname="col2">
+                  <para role="affc" css:line-height="13pt">24</para>
+               </entry>
+               <?cals2tabular & ?>
+               <entry css:width="57.8pt"
+                      css:border-top-style="solid"
+                      css:border-top-width="0.5pt"
+                      css:border-left-style="none"
+                      css:border-bottom-style="none"
+                      css:border-right-style="none"
+                      colname="col3">
+                  <para role="affc" css:line-height="13pt">0.2</para>
+               </entry>
+               <?cals2tabular & ?>
+               <entry css:width="57.8pt"
+                      css:border-top-style="solid"
+                      css:border-top-width="0.5pt"
+                      css:border-left-style="none"
+                      css:border-bottom-style="none"
+                      css:border-right-style="none"
+                      colname="col4">
+                  <para role="affc" css:line-height="13pt">400</para>
+               </entry>
+            </row>
+            <?cals2tabular \\?>
+            <?cals2tabular \hline ?>
+            <row>
+               <entry css:width="57.8pt"
+                      css:border-top-style="none"
+                      css:border-left-style="none"
+                      css:border-bottom-style="solid"
+                      css:border-bottom-width="1pt"
+                      css:border-right-style="none"
+                      colname="col1">
+                  <para role="affc" css:line-height="13pt">工业有机玻璃</para>
+               </entry>
+               <?cals2tabular & ?>
+               <entry css:width="57.8pt"
+                      css:border-top-style="none"
+                      css:border-left-style="none"
+                      css:border-bottom-style="solid"
+                      css:border-bottom-width="1pt"
+                      css:border-right-style="none"
+                      colname="col2">
+                  <para role="affc" css:line-height="13pt">3.5</para>
+               </entry>
+               <?cals2tabular & ?>
+               <entry css:width="57.8pt"
+                      css:border-top-style="none"
+                      css:border-left-style="none"
+                      css:border-bottom-style="solid"
+                      css:border-bottom-width="1pt"
+                      css:border-right-style="none"
+                      colname="col3">
+                  <para role="affc" css:line-height="13pt">0.42</para>
+               </entry>
+               <?cals2tabular & ?>
+               <entry css:width="57.8pt"
+                      css:border-top-style="none"
+                      css:border-left-style="none"
+                      css:border-bottom-style="solid"
+                      css:border-bottom-width="1pt"
+                      css:border-right-style="none"
+                      colname="col4">
+                  <para role="affc" css:line-height="13pt">12</para>
+               </entry>
+            </row>
+            <?cals2tabular \\?>
+            <?cals2tabular \hline ?>
+         </tbody>
+         <?cals2tabular \end{tabularx}?>
+      </tgroup>
+   </table>
+   <para css:text-indent="21pt">行间公式：</para>
+   <equation role="mtef"
+             css:top="12pt"
+             css:position="relative"
+             condition="numbered"><?latex \tag{1}
+?>
+      <anchor xml:id="ZEqnNum145741"><?latex \label{ref-03}?></anchor>
+      <mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" display="block">
+         <mml:mfrac>
+            <mml:mrow>
+               <mml:mi>f</mml:mi>
+               <mml:mi>r</mml:mi>
+            </mml:mrow>
+            <mml:mrow>
+               <mml:mi>a</mml:mi>
+               <mml:mi>c</mml:mi>
+            </mml:mrow>
+         </mml:mfrac>
+         <mml:mo>=</mml:mo>
+         <mml:mstyle displaystyle="true">
+            <mml:msubsup>
+               <mml:mo>∫</mml:mo>
+               <mml:mi>a</mml:mi>
+               <mml:mi>b</mml:mi>
+            </mml:msubsup>
+            <mml:mrow>
+               <mml:mi>c</mml:mi>
+               <mml:mi mathvariant="normal">d</mml:mi>
+               <mml:mi>e</mml:mi>
+            </mml:mrow>
+         </mml:mstyle>
+         <mml:mo>±</mml:mo>
+         <mml:mroot>
+            <mml:mi>f</mml:mi>
+            <mml:mi>g</mml:mi>
+         </mml:mroot>
+         <mml:mo>∈</mml:mo>
+         <mml:mover accent="true">
+            <mml:mrow>
+               <mml:mi>h</mml:mi>
+               <mml:mi>i</mml:mi>
+               <mml:mi>j</mml:mi>
+            </mml:mrow>
+            <mml:mo stretchy="true">⇀</mml:mo>
+         </mml:mover>
+         <mml:mi>k</mml:mi>
+         <mml:mstyle displaystyle="true">
+            <mml:munderover>
+               <mml:mo>⋃</mml:mo>
+               <mml:mrow>
+                  <mml:mi>l</mml:mi>
+                  <mml:mi>m</mml:mi>
+                  <mml:mi>n</mml:mi>
+               </mml:mrow>
+               <mml:mrow>
+                  <mml:mi>o</mml:mi>
+                  <mml:mi>p</mml:mi>
+                  <mml:mi>q</mml:mi>
+               </mml:mrow>
+            </mml:munderover>
+            <mml:mrow>
+               <mml:mi>R</mml:mi>
+               <mml:mi>S</mml:mi>
+               <mml:mi>T</mml:mi>
+            </mml:mrow>
+         </mml:mstyle>
+         <mml:mi>α</mml:mi>
+         <mml:mi mathvariant="normal">Β</mml:mi>
+         <mml:mi>χ</mml:mi>
+         <mml:mi mathvariant="normal">Δ</mml:mi>
+         <mml:mi>ι</mml:mi>
+         <mml:mi mathvariant="normal">Ο</mml:mi>
+         <mml:mi>ρ</mml:mi>
+         <mml:mi mathvariant="normal">Ρ</mml:mi>
+      </mml:math>
+   </equation>
+   <para css:text-indent="21pt">结论见式<link linkend="ZEqnNum145741"><?latex {\hyperref[ref-03]{(1)}}?></link>。</para>
+   <para xmlns:docx2tex="http://transpect.io/docx2tex"
+         text-indent="0"
+         margin-left="0"
+         role="Heading1"
+         css:text-indent="0pt"
+         css:margin-left="0pt"
+         docx2tex:config="headline"
+         css:margin-top="15.6pt"
+         css:margin-bottom="15.6pt">结  论<?latex \label{mark-2}?></para>
+   <para css:text-indent="21pt">结论：</para>
+   <para role="a9" css:line-height="16pt">（1）。</para>
+   <para xmlns:docx2tex="http://transpect.io/docx2tex"
+         text-indent="0"
+         margin-left="0"
+         role="Heading1"
+         css:text-indent="0pt"
+         css:margin-left="0pt"
+         docx2tex:config="headline">参考文献</para>
+   <?docx2hub_csl_xml_bibliography?>
+   <bibliography role="CSL-formatted">
+      <bibliomixed role="afff2">
+         <phrase role="hub:identifier">[1]</phrase>
+         <tab xml:space="preserve">	</tab>陈龙, 黄宏伟. 岩石隧道工程风险浅析[J]. 岩石力学与工程学报, 2005(01): 110～115.</bibliomixed>
+   </bibliography>
+   <bibliography role="CSL">
+      <biblioentry xml:id="bib1">
+         <biblioset relation="article-journal" xml:lang="中文;">
+            <authorgroup>
+               <author>
+                  <personname>
+                     <surname>陈</surname>
+                     <firstname>龙</firstname>
+                  </personname>
+               </author>
+               <author>
+                  <personname>
+                     <surname>黄</surname>
+                     <firstname>宏伟</firstname>
+                  </personname>
+               </author>
+            </authorgroup>
+            <?tr_csl_id 85?>
+            <abstract>
+               <para>近年来,由于我国经济的飞速发展,岩石隧道修建突飞猛进,如何减少事故发生率,减少灾害损失是亟待解决的问题;但是事故资料的不完整性以及风险因素的不确定性都给风险分析带来了困难。借鉴了日本等国家20a来有关岩石隧道事故灾害的统计资料,对目前岩石隧道建设过程中的风险因素进行了归类,并给出了处理措施。同时还讨论了风险分析的方法在岩石隧道工程中的应用,提出了一种实用的风险分析方法。</para>
+            </abstract>
+            <bibliomisc role="container-title">岩石力学与工程学报</bibliomisc>
+            <biblioid class="issn">1000-6915</biblioid>
+            <issuenum>01</issuenum>
+            <pagenums>110–115</pagenums>
+            <bibliosource>CNKI</bibliosource>
+            <title>岩石隧道工程风险浅析</title>
+            <releaseinfo role="issued">
+               <phrase role="string">2005</phrase>
+            </releaseinfo>
+            <bibliomisc role="citation-key">ChenYanShiSuiDaoGongChengFengXianQianXi2005</bibliomisc>
+         </biblioset>
+      </biblioentry>
+   </bibliography>
+</hub>

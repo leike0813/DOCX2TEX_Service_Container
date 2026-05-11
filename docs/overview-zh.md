@@ -12,16 +12,16 @@
   - evolve-hub：基于 XSLT 的结构归一化与语义提升（列表/章节/图题等）。
   - xml2tex：依据 xml2tex 配置（CSV 或 XML DSL）生成 LaTeX 文本。
 - 核心技术：
-  - XProc 1.0（Calabash）：流水线编排（`docx2tex/xpl/*.xpl`）。
-  - XSLT 2.0：结构变换与生成（`docx2tex/xsl/*.xsl`、`docx2tex/xml2tex/xsl/*.xsl`）。
-  - Relax NG：配置校验（`docx2tex/xml2tex/schema/xml2tex.rng`）。
+  - XProc 1.0（Calabash）：流水线编排（`src/engines/docx2tex_engine/vendor/docx2tex/xpl/*.xpl`）。
+  - XSLT 2.0：结构变换与生成（`src/engines/docx2tex_engine/vendor/docx2tex/xsl/*.xsl`、`src/engines/docx2tex_engine/vendor/docx2tex/xml2tex/xsl/*.xsl`）。
+  - Relax NG：配置校验（`src/engines/docx2tex_engine/vendor/docx2tex/xml2tex/schema/xml2tex.rng`）。
   - transpect 生态：`xproc-util`、`cascade`、`mml2tex`、`calstable` 等工具集。
 
 参考文件：
-- 入口总管：`docx2tex/xpl/docx2tex.xpl:1`
-- evolve-hub 编排：`docx2tex/xpl/evolve-hub.xpl:1`，driver：`docx2tex/xsl/evolve-hub-driver.xsl:1`
-- xml2tex 编排与生成：`docx2tex/xml2tex/xpl/xml2tex.xpl:1`，生成器：`docx2tex/xml2tex/xsl/xml2tex.xsl:1`
-- 默认配置：`docx2tex/conf/conf.csv:1`、`docx2tex/conf/conf.xml:1`
+- 入口总管：`src/engines/docx2tex_engine/vendor/docx2tex/xpl/docx2tex.xpl:1`
+- evolve-hub 编排：`src/engines/docx2tex_engine/vendor/docx2tex/xpl/evolve-hub.xpl:1`，driver：`src/engines/docx2tex_engine/vendor/docx2tex/xsl/evolve-hub-driver.xsl:1`
+- xml2tex 编排与生成：`src/engines/docx2tex_engine/vendor/docx2tex/xml2tex/xpl/xml2tex.xpl:1`，生成器：`src/engines/docx2tex_engine/vendor/docx2tex/xml2tex/xsl/xml2tex.xsl:1`
+- 默认配置：`src/engines/docx2tex_engine/vendor/docx2tex/conf/conf.csv:1`、`src/engines/docx2tex_engine/vendor/docx2tex/conf/conf.xml:1`
 
 ---
 
@@ -34,7 +34,7 @@
    - 列表侦测/嵌套修正、章节层级归纳、图像与题注绑定、上/下标统一等。
 3) xml2tex：加载 xml2tex 配置（CSV 或 XML），生成用于文本输出的 XSLT，再将（进化后的）Hub XML 转为 LaTeX 文本。
 
-### 2.2 入口与重要选项（来自 `docx2tex/xpl/docx2tex.xpl`）
+### 2.2 入口与重要选项（来自 `src/engines/docx2tex_engine/vendor/docx2tex/xpl/docx2tex.xpl`）
 
 - `conf`：CSV 或 XML 配置路径，决定 xml2tex 的映射规则与 preamble 等（默认 `../conf/conf.csv`）。
 - `custom-evolve-hub-driver`：自定义 evolve-hub driver 样式表入口（默认指向 `xsl/evolve-hub-driver.xsl`）。
@@ -55,9 +55,9 @@ xml2tex 是“把 XML（Hub XML）映射为 LaTeX 文本”的可配置引擎。
 
 ### 3.1 配置来源与合并
 
-- CSV 快速映射：`docx2tex/conf/conf.csv:1` 示例演示“样式名 → LaTeX 结构”的简单映射（如 `Überschrift 1 → \chapter{…}`、`Zitat → quote 环境`）。
-- XML 配置 DSL：`docx2tex/conf/conf.xml:1` 使用 `<xml2tex:set>` 提供更细粒度的控制（模板、样式、前后模板块）。
-- 级联加载与校验：`docx2tex/xml2tex/xpl/xml2tex.xpl:1`
+- CSV 快速映射：`src/engines/docx2tex_engine/vendor/docx2tex/conf/conf.csv:1` 示例演示“样式名 → LaTeX 结构”的简单映射（如 `Überschrift 1 → \chapter{…}`、`Zitat → quote 环境`）。
+- XML 配置 DSL：`src/engines/docx2tex_engine/vendor/docx2tex/conf/conf.xml:1` 使用 `<xml2tex:set>` 提供更细粒度的控制（模板、样式、前后模板块）。
+- 级联加载与校验：`src/engines/docx2tex_engine/vendor/docx2tex/xml2tex/xpl/xml2tex.xpl:1`
   - 使用 transpect 的 `cascade` 工具递归加载配置（支持 import/组合）。
   - 使用 Relax NG（`schema/xml2tex.rng`）对最终合并后的配置进行验证。
 
@@ -121,8 +121,8 @@ evolve-hub 的作用是“让 Hub XML 更接近目标语义”，为 xml2tex 生
 
 ### 4.1 driver 与模式（mode）
 
-- 标准 driver：`docx2tex/xsl/evolve-hub-driver.xsl:1`（导入 transpect 官方 evolve-hub 规则，并追加 docx2tex 的预/后处理）。
-- 常见模式（可在 `docx2tex/xpl/evolve-hub.xpl:1` 看到多次 `tr:xslt-mode` 调用）：
+- 标准 driver：`src/engines/docx2tex_engine/vendor/docx2tex/xsl/evolve-hub-driver.xsl:1`（导入 transpect 官方 evolve-hub 规则，并追加 docx2tex 的预/后处理）。
+- 常见模式（可在 `src/engines/docx2tex_engine/vendor/docx2tex/xpl/evolve-hub.xpl:1` 看到多次 `tr:xslt-mode` 调用）：
   - `hub:twipsify-lengths`：单位/长度归一化；
   - `hub:split-at-tab`：按制表符分割；
   - `hub:identifiers`：标识归一化、相邻同类分组；
@@ -131,7 +131,7 @@ evolve-hub 的作用是“让 Hub XML 更接近目标语义”，为 xml2tex 生
 ### 4.2 如何提供自定义 driver
 
 - `custom-evolve-hub-driver` 端口（`docx2tex.xpl`）可传入你自己的 XSLT；推荐在自定义 XSLT 中 `xsl:import` 标准 driver 并在其之上覆写模板（保持升级兼容）。
-- 官方示例：`docx2tex/xsl/custom-evolve-hub-driver-example.xsl:1`
+- 官方示例：`src/engines/docx2tex_engine/vendor/docx2tex/xsl/custom-evolve-hub-driver-example.xsl:1`
 
 ```xml
 <xsl:stylesheet version="3.0"
@@ -204,14 +204,14 @@ evolve-hub 的作用是“让 Hub XML 更接近目标语义”，为 xml2tex 生
 
 ## 8. 参考文件索引（便于查阅源码）
 
-- `docx2tex/xpl/docx2tex.xpl:1`（主入口，所有关键选项与挂接点）
-- `docx2tex/xpl/evolve-hub.xpl:1`（evolve-hub 编排，remove-indents、各模式调用）
-- `docx2tex/xsl/evolve-hub-driver.xsl:1`（标准 driver，含预/后处理导入）
-- `docx2tex/xsl/custom-evolve-hub-driver-example.xsl:1`（自定义 driver 示例）
-- `docx2tex/conf/conf.csv:1`、`docx2tex/conf/conf.xml:1`（默认 xml2tex 配置示例）
-- `docx2tex/xml2tex/xpl/xml2tex.xpl:1`（配置加载/验证、生成与输出编排）
-- `docx2tex/xml2tex/xsl/xml2tex.xsl:1`（将 XML 配置转为 XSLT 生成器）
-- `docx2tex/xml2tex/xsl/mml2tex.xsl:1`（MathML → TeX 转换）
+- `src/engines/docx2tex_engine/vendor/docx2tex/xpl/docx2tex.xpl:1`（主入口，所有关键选项与挂接点）
+- `src/engines/docx2tex_engine/vendor/docx2tex/xpl/evolve-hub.xpl:1`（evolve-hub 编排，remove-indents、各模式调用）
+- `src/engines/docx2tex_engine/vendor/docx2tex/xsl/evolve-hub-driver.xsl:1`（标准 driver，含预/后处理导入）
+- `src/engines/docx2tex_engine/vendor/docx2tex/xsl/custom-evolve-hub-driver-example.xsl:1`（自定义 driver 示例）
+- `src/engines/docx2tex_engine/vendor/docx2tex/conf/conf.csv:1`、`src/engines/docx2tex_engine/vendor/docx2tex/conf/conf.xml:1`（默认 xml2tex 配置示例）
+- `src/engines/docx2tex_engine/vendor/docx2tex/xml2tex/xpl/xml2tex.xpl:1`（配置加载/验证、生成与输出编排）
+- `src/engines/docx2tex_engine/vendor/docx2tex/xml2tex/xsl/xml2tex.xsl:1`（将 XML 配置转为 XSLT 生成器）
+- `src/engines/docx2tex_engine/vendor/docx2tex/xml2tex/xsl/mml2tex.xsl:1`（MathML → TeX 转换）
 
 ---
 
@@ -221,4 +221,3 @@ evolve-hub 的作用是“让 Hub XML 更接近目标语义”，为 xml2tex 生
 - 建立项目级自定义 driver：import 标准 driver，仅在需要的模式/模板上做精细覆写，降低升级成本。
 - 分层管理挂接点：`custom-evolve-hub-driver`、`custom-xsl`、`xml2tex` 配置分别承载“结构归一化”、“项目特定变换”、“输出映射”。
 - 若未来需要往返转换（DOCX ↔ Hub ↔ TeX），优先以路线 B 验证可行性，再根据精度要求选择 A/C。
-

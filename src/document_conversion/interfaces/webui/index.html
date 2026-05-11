@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>docx2tex WebUI</title>
+    <link rel="stylesheet" href="/webui/style.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <p class="eyebrow">DOCUMENT CONVERSION PLATFORM</p>
+        <h1>在浏览器里完成文档格式互转</h1>
+        <p class="subtitle">
+          选择转换路径，拖放上传源文件，按需配置引擎参数，等待任务完成后直接下载 ZIP 产物。
+        </p>
+      </section>
+
+      <section class="panel">
+        <form id="upload-form" class="form-grid">
+          <label class="field">
+            <span>转换路径</span>
+            <select id="path-select" name="path_id"></select>
+          </label>
+
+          <div
+            id="dropzone"
+            class="dropzone"
+            tabindex="0"
+            role="button"
+            aria-label="文件拖放上传区"
+          >
+            <input id="file-input" name="file" type="file" accept=".docx" hidden />
+            <div class="dropzone-copy">
+              <strong id="dropzone-title">拖放 DOCX 到这里</strong>
+              <span id="dropzone-hint">或点击选择文件</span>
+            </div>
+            <p id="selected-file" class="selected-file">尚未选择文件</p>
+          </div>
+
+          <label class="field field-switch">
+            <span>Debug 模式</span>
+            <input id="debug-toggle" name="debug" type="checkbox" />
+          </label>
+
+          <section id="docx-controls" class="mode-section" aria-labelledby="docx-mode-title">
+            <div class="section-header">
+              <div>
+                <p class="stylemap-eyebrow">DOCX → LATEX</p>
+                <h2 id="docx-mode-title">docx2tex 路线</h2>
+              </div>
+            </div>
+
+            <label class="field">
+              <span>docx2tex 配置预设</span>
+              <select id="docx-profile" name="profile_id"></select>
+            </label>
+
+            <label class="field">
+              <span>custom_xsl 预设</span>
+              <select id="custom-xsl-preset" name="custom_xsl_preset"></select>
+            </label>
+
+            <label class="field">
+              <span>TableModel</span>
+              <select id="table-model" name="TableModel"></select>
+            </label>
+
+            <label class="field">
+              <span>MathTypeSource</span>
+              <select id="math-type-source" name="MathTypeSource"></select>
+            </label>
+
+            <section class="stylemap-builder" aria-labelledby="stylemap-title">
+              <div class="stylemap-header">
+                <div>
+                  <p class="stylemap-eyebrow">StyleMap</p>
+                  <h2 id="stylemap-title">样式映射注入</h2>
+                  <p class="stylemap-help">
+                    每行填写一个目标键和一组源样式名，源样式用逗号分隔。
+                  </p>
+                </div>
+                <button id="add-stylemap-row" type="button" class="secondary-button">
+                  添加映射行
+                </button>
+              </div>
+              <div id="stylemap-rows" class="stylemap-rows"></div>
+            </section>
+          </section>
+
+          <section id="pandoc-controls" class="mode-section" aria-labelledby="pandoc-mode-title" hidden>
+            <div class="section-header">
+              <div>
+                <p class="stylemap-eyebrow">LATEX → DOCX</p>
+                <h2 id="pandoc-mode-title">Pandoc 路线</h2>
+              </div>
+            </div>
+
+            <label class="field">
+              <span>Pandoc Profile</span>
+              <select id="pandoc-profile" name="profile_id"></select>
+            </label>
+
+            <label class="field">
+              <span>main_tex</span>
+              <input id="main-tex" name="main_tex" type="text" placeholder="例如 main.tex 或 paper/main.tex" />
+            </label>
+
+            <label class="field">
+              <span>reference-doc</span>
+              <select id="reference-doc-id" name="reference_doc_id"></select>
+            </label>
+
+            <label class="field">
+              <span>numbering metadata</span>
+              <select id="numbering-metadata-id" name="numbering_metadata_id"></select>
+            </label>
+
+            <label class="field">
+              <span>Lua filters</span>
+              <select id="lua-filter-ids" name="lua_filter_ids" multiple class="multi-select"></select>
+            </label>
+
+            <label class="field">
+              <span>Executable filters</span>
+              <select id="exec-filter-ids" name="exec_filter_ids" multiple class="multi-select"></select>
+            </label>
+
+            <label class="field">
+              <span>top-level-division</span>
+              <select id="top-level-division" name="top_level_division"></select>
+            </label>
+
+            <label class="field field-switch">
+              <span>启用 citeproc</span>
+              <input id="citeproc-toggle" name="citeproc" type="checkbox" />
+            </label>
+
+            <label class="field">
+              <span>CSL</span>
+              <select id="csl-id" name="csl_id"></select>
+            </label>
+
+            <label class="field field-wide">
+              <span>bibliography 路径</span>
+              <textarea
+                id="bibliography-paths"
+                name="bibliography_paths"
+                rows="4"
+                placeholder="可留空自动扫描 ZIP 内 .bib；也可填写 refs.bib, appendix/references.bib"
+              ></textarea>
+            </label>
+          </section>
+
+          <div class="actions">
+            <button id="submit-button" type="submit">开始转换</button>
+          </div>
+        </form>
+
+        <p id="form-error" class="message error" hidden></p>
+
+        <section id="status-card" class="status-card" hidden>
+          <div class="status-header">
+            <div>
+              <p class="status-label">任务 ID</p>
+              <code id="task-id">-</code>
+            </div>
+            <div class="status-pill" id="task-state">pending</div>
+          </div>
+          <p id="task-error" class="message error" hidden></p>
+          <div class="actions">
+            <a id="download-link" class="download-link" href="#" hidden>下载 ZIP 结果</a>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="/webui/app.js" defer></script>
+  </body>
+</html>

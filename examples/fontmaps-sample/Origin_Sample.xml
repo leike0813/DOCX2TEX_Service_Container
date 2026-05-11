@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<symbols>
+  <!-- A trivial example mapping modeled after docx2tex/fontmaps/Origin.xml -->
+  <symbol number="F02C" entity="&#xF02C;" char="&#x002C;"/>
+</symbols>
+

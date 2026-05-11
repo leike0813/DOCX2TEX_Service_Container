@@ -1,0 +1,14 @@
+inherits: base
+preprocessors:
+  - name: bicaption
+    order: 0
+  - name: tabularray
+    order: 10
+detect:
+  classes:
+    - elsarticle
+  packages:
+    natbib: 2
+  features:
+    "\\begin{frontmatter}": 4
+  threshold: 4
