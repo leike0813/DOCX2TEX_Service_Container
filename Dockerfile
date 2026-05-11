@@ -9,7 +9,6 @@ ENV DEBIAN_FRONTEND=noninteractive \
     WORK_ROOT=/work \
     DATA_ROOT=/data \
     LOG_DIR=/var/log/docx2tex \
-    DOCX2TEX_HOME=/svc/src/engines/docx2tex_engine/vendor/docx2tex \
     XML_CATALOG_FILES= \
     PYTHONUNBUFFERED=1 \
     UVICORN_WORKERS=2 \
@@ -48,7 +47,7 @@ RUN set -eux; \
     python -m pip install --no-cache-dir /svc
 
 RUN set -eux; \
-    test -f "$DOCX2TEX_HOME/xpl/docx2tex.xpl"; \
+    python -c "from engines.docx2tex_engine.assets import resolve_docx2tex_home; p = resolve_docx2tex_home(); print(p); raise SystemExit(0 if (p / 'xpl' / 'docx2tex.xpl').is_file() else 1)"; \
     python -c "from engines.docx2tex_engine.assets import resolve_catalog_template; print(resolve_catalog_template())"; \
     command -v java; \
     command -v inkscape; \
